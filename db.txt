@@ -1,0 +1,8 @@
+create table endcase(
+	endcase_id INT PRIMARY KEY AUTO_INCREMENT,
+    employee_id int,
+    decision_date date,
+    archive_number varchar(50),
+    status varchar(20),
+    CONSTRAINT fk_endcase_employee_id FOREIGN KEY (employee_id) REFERENCES employees(employee_id)
+)

@@ -8,6 +8,5 @@ import java.util.List;
 
 @Repository
 public interface EndCaseRepository extends JpaRepository<EndCase, Integer> {
-    // Tìm kiếm hồ sơ kết thúc theo event form ID
-    List<EndCase> findByEventForm_Id(Integer eventFormId);
+    // Tìm kiếm hồ sơ kết thúc theo event form I
 }

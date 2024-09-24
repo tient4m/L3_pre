@@ -1,9 +1,8 @@
 package com.oct.L3.controller;
 
 import com.oct.L3.Response.ResponseObject;
-import com.oct.L3.dtos.SalaryIncreaseDTO;
-import com.oct.L3.service.EventFormService;
-import com.oct.L3.service.SalaryIncreaseService;
+import com.oct.L3.dtos.PromotionDTO;
+import com.oct.L3.service.PromotionService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -14,18 +13,17 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-import static com.oct.L3.constant.EventType.SALARYINCREASE;
+import static com.oct.L3.constant.EventType.PROMOTION;
 
 @RestController
-@RequestMapping("${api.prefix}/salary-increase")
+@RequestMapping("${api.prefix}/promotion")
 @RequiredArgsConstructor
-public class SalaryIncreaseController {
-    private final SalaryIncreaseService salaryIncreaseService;
-    private final EventFormService eventFormService;
+public class PromotionController {
+
+    private final PromotionService promotionService;
 
     @PostMapping("/create")
-    public ResponseEntity<ResponseObject> createSalaryIncrease(@RequestBody @Valid SalaryIncreaseDTO salaryIncreaseDTO
-                                                               , BindingResult result) {
+    public ResponseEntity<ResponseObject> createPromotion(@RequestBody @Valid PromotionDTO promotionDTO, BindingResult result) {
         if (result.hasErrors()) {
             List<String> errorMessages = result.getFieldErrors()
                     .stream()
@@ -38,25 +36,23 @@ public class SalaryIncreaseController {
                     .build());
         }
         try {
-            salaryIncreaseDTO.getEventForm().setType(SALARYINCREASE);
-            SalaryIncreaseDTO salaryIncreaseResult = salaryIncreaseService.createSalaryIncrease(salaryIncreaseDTO);
+            promotionDTO.getEventForm().setType(PROMOTION);
+            PromotionDTO promotionResult = promotionService.createPromotion(promotionDTO);
             return ResponseEntity.ok().body(ResponseObject.builder()
-                    .message("Salary increase created successfully")
+                    .message("Promotion created successfully")
                     .status(HttpStatus.CREATED)
-                    .data(salaryIncreaseResult)
+                    .data(promotionResult)
                     .build());
         } catch (Exception e) {
             return ResponseEntity.ok().body(ResponseObject.builder()
-                    .message("Salary increase creation failed" + e)
+                    .message("Promotion creation failed" + e)
                     .status(HttpStatus.BAD_REQUEST)
                     .data(null)
                     .build());
         }
     }
-
     @PutMapping("/update/{id}")
-    public ResponseEntity<ResponseObject> updateSalaryIncrease(@PathVariable Integer id, @RequestBody @Valid SalaryIncreaseDTO salaryIncreaseDTO
-                                                               , BindingResult result) {
+    public ResponseEntity<ResponseObject> updatePromotion(@PathVariable Integer evenFormId, @RequestBody @Valid PromotionDTO promotionDTO, BindingResult result) {
         if (result.hasErrors()) {
             List<String> errorMessages = result.getFieldErrors()
                     .stream()
@@ -69,19 +65,18 @@ public class SalaryIncreaseController {
                     .build());
         }
         try {
-            SalaryIncreaseDTO salaryIncreaseResult = salaryIncreaseService.updateSalaryIncrease(id, salaryIncreaseDTO);
+            PromotionDTO promotionResult = promotionService.updatePromotion(evenFormId, promotionDTO);
             return ResponseEntity.ok().body(ResponseObject.builder()
-                    .message("Salary increase updated successfully")
+                    .message("Promotion updated successfully")
                     .status(HttpStatus.OK)
-                    .data(salaryIncreaseResult)
+                    .data(promotionResult)
                     .build());
         } catch (Exception e) {
             return ResponseEntity.ok().body(ResponseObject.builder()
-                    .message("Salary increase update failed" + e)
+                    .message("Promotion update failed" + e)
                     .status(HttpStatus.BAD_REQUEST)
                     .data(null)
                     .build());
         }
     }
-
 }

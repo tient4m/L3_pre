@@ -1,9 +1,8 @@
 package com.oct.L3.controller;
 
 import com.oct.L3.Response.ResponseObject;
-import com.oct.L3.dtos.SalaryIncreaseDTO;
-import com.oct.L3.service.EventFormService;
-import com.oct.L3.service.SalaryIncreaseService;
+import com.oct.L3.dtos.ProposalDTO;
+import com.oct.L3.service.ProposalService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -13,18 +12,19 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Locale;
 
-import static com.oct.L3.constant.EventType.SALARYINCREASE;
+import static com.oct.L3.constant.EventType.PROPOSAL;
 
 @RestController
-@RequestMapping("${api.prefix}/salary-increase")
+@RequestMapping("${api.prefix}/proposal")
 @RequiredArgsConstructor
-public class SalaryIncreaseController {
-    private final SalaryIncreaseService salaryIncreaseService;
-    private final EventFormService eventFormService;
+public class ProposalController {
+
+    private final ProposalService proposalService;
 
     @PostMapping("/create")
-    public ResponseEntity<ResponseObject> createSalaryIncrease(@RequestBody @Valid SalaryIncreaseDTO salaryIncreaseDTO
+    public ResponseEntity<ResponseObject> createProposal(@RequestBody @Valid ProposalDTO proposalDTO
                                                                , BindingResult result) {
         if (result.hasErrors()) {
             List<String> errorMessages = result.getFieldErrors()
@@ -38,16 +38,18 @@ public class SalaryIncreaseController {
                     .build());
         }
         try {
-            salaryIncreaseDTO.getEventForm().setType(SALARYINCREASE);
-            SalaryIncreaseDTO salaryIncreaseResult = salaryIncreaseService.createSalaryIncrease(salaryIncreaseDTO);
+//            String type = proposalDTO.getType();
+//            type.toUpperCase();
+            proposalDTO.getEventForm().setType(PROPOSAL);
+            ProposalDTO proposalResult = proposalService.createProposal(proposalDTO);
             return ResponseEntity.ok().body(ResponseObject.builder()
-                    .message("Salary increase created successfully")
+                    .message("Proposal created successfully")
                     .status(HttpStatus.CREATED)
-                    .data(salaryIncreaseResult)
+                    .data(proposalResult)
                     .build());
         } catch (Exception e) {
             return ResponseEntity.ok().body(ResponseObject.builder()
-                    .message("Salary increase creation failed" + e)
+                    .message("Proposal creation failed" + e)
                     .status(HttpStatus.BAD_REQUEST)
                     .data(null)
                     .build());
@@ -55,8 +57,10 @@ public class SalaryIncreaseController {
     }
 
     @PutMapping("/update/{id}")
-    public ResponseEntity<ResponseObject> updateSalaryIncrease(@PathVariable Integer id, @RequestBody @Valid SalaryIncreaseDTO salaryIncreaseDTO
-                                                               , BindingResult result) {
+    public ResponseEntity<ResponseObject> updateProposal(
+            @PathVariable Integer evenFormId,
+            @RequestBody @Valid ProposalDTO proposalDTO,
+            BindingResult result) {
         if (result.hasErrors()) {
             List<String> errorMessages = result.getFieldErrors()
                     .stream()
@@ -69,19 +73,18 @@ public class SalaryIncreaseController {
                     .build());
         }
         try {
-            SalaryIncreaseDTO salaryIncreaseResult = salaryIncreaseService.updateSalaryIncrease(id, salaryIncreaseDTO);
+            ProposalDTO proposalResult = proposalService.updateProposal(evenFormId,proposalDTO);
             return ResponseEntity.ok().body(ResponseObject.builder()
-                    .message("Salary increase updated successfully")
+                    .message("Proposal updated successfully")
                     .status(HttpStatus.OK)
-                    .data(salaryIncreaseResult)
+                    .data(proposalResult)
                     .build());
         } catch (Exception e) {
             return ResponseEntity.ok().body(ResponseObject.builder()
-                    .message("Salary increase update failed" + e)
+                    .message("Proposal update failed" + e)
                     .status(HttpStatus.BAD_REQUEST)
                     .data(null)
                     .build());
         }
     }
-
 }

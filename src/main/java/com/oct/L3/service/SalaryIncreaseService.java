@@ -8,5 +8,6 @@ public interface SalaryIncreaseService {
 
     SalaryIncreaseDTO updateSalaryIncrease(Integer id, SalaryIncreaseDTO salaryIncreaseDTO) throws DataNotFoundException;
 
-    SalaryIncreaseDTO getSalaryIncreaseById(Integer id) throws DataNotFoundException;
+
+    SalaryIncreaseDTO getSalaryIncreaseByEventFormId(Integer id) throws DataNotFoundException;
 }

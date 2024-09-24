@@ -2,7 +2,6 @@ package com.oct.L3.service.impl;
 
 import com.oct.L3.convertTo.SalaryIncreaseMapper;
 import com.oct.L3.dtos.SalaryIncreaseDTO;
-import com.oct.L3.entity.EventForm;
 import com.oct.L3.entity.SalaryIncrease;
 import com.oct.L3.exceptions.DataNotFoundException;
 import com.oct.L3.repository.SalaryIncreaseRepository;
@@ -26,8 +25,7 @@ public class SalaryIncreaseServiceImpl implements SalaryIncreaseService {
         if (salaryIncreaseDTO.getEventForm() == null) {
             throw new RuntimeException("EventForm is required");
         }
-        salaryIncreaseRepository.save(salaryIncreaseMapper.toEntity(salaryIncreaseDTO));
-        return null;
+        return salaryIncreaseMapper.toDTO(salaryIncreaseRepository.save(salaryIncreaseMapper.toEntity(salaryIncreaseDTO)));
     }
 
     @Transactional
@@ -39,7 +37,7 @@ public class SalaryIncreaseServiceImpl implements SalaryIncreaseService {
     }
 
     @Override
-    public SalaryIncreaseDTO getSalaryIncreaseById(Integer id) throws DataNotFoundException {
+    public SalaryIncreaseDTO getSalaryIncreaseByEventFormId(Integer id) throws DataNotFoundException {
         SalaryIncrease salaryIncrease = salaryIncreaseRepository.findByEventForm(id);
         if (salaryIncrease == null) {
             throw new DataNotFoundException("SalaryIncrease not found");

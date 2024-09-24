@@ -18,12 +18,11 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.io.DataInput;
-import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 
 import static com.oct.L3.constant.EventType.REGISTRATION;
+import static com.oct.L3.constant.EventType.TERMINATION_REQUEST;
 import static com.oct.L3.constant.Status.*;
 
 @Service
@@ -40,6 +39,13 @@ public class EventFormServiceImpl implements EventFormService {
     @Override
     public EventFormDTO saveEventForm(EventFormDTO eventFormDTO) {
         EventForm eventForm = eventFormMapper.toEntity(eventFormDTO);
+        return eventFormMapper.toDTO(eventFormRepository.save(eventForm));
+    }
+
+    public EventFormDTO createEmployeeResignationForm(EventFormDTO eventFormDTO) {
+        EventForm eventForm = eventFormMapper.toEntity(eventFormDTO);
+        eventForm.setStatus(DRAFT);
+        eventForm.setType(REGISTRATION);
         return eventFormMapper.toDTO(eventFormRepository.save(eventForm));
     }
 
@@ -126,6 +132,9 @@ public class EventFormServiceImpl implements EventFormService {
                 throw new  RuntimeException("Error in converting employee data to json",e);
             }
         }
+        if (eventForm.getType().equals(TERMINATION_REQUEST) && APPROVED.equals(status)){
+            eventForm.getEmployee().setStatus(TERMINATED);
+        }
         eventForm.setStatus(status);
         eventForm.setSubmissionDate(submissionDate);
         EventFormHistory eventFormHistory = EventFormHistory.builder()
@@ -138,11 +147,4 @@ public class EventFormServiceImpl implements EventFormService {
         EventForm savedEventForm = eventFormRepository.save(eventForm);
         return eventFormMapper.toDTO(savedEventForm);
     }
-
-
-
-
-
-
-
 }

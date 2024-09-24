@@ -1,8 +1,14 @@
 package com.oct.L3.entity;
 
 import jakarta.persistence.*;
+import lombok.*;
 
 @Entity
+@Getter
+@Setter
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 @Table(name = "proposal")
 public class Proposal {
 

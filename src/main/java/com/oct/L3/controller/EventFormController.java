@@ -1,16 +1,14 @@
 package com.oct.L3.controller;
 
-import com.oct.L3.Response.EventFormResponse;
-import com.oct.L3.Response.PromotionResponse;
-import com.oct.L3.Response.ResponseObject;
-import com.oct.L3.Response.SalaryIncreaseResponse;
+import com.oct.L3.Response.*;
 import com.oct.L3.convertTo.EventFormMapper;
 import com.oct.L3.convertTo.PromotionMapper;
+import com.oct.L3.convertTo.ProposalMapper;
 import com.oct.L3.convertTo.SalaryIncreaseMapper;
-import com.oct.L3.dtos.EventForm.EmployeeRegistrationDTO;
 import com.oct.L3.dtos.EventForm.EventFormDTO;
 import com.oct.L3.service.EventFormService;
 import com.oct.L3.service.PromotionService;
+import com.oct.L3.service.ProposalService;
 import com.oct.L3.service.SalaryIncreaseService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -32,11 +30,47 @@ import java.util.List;
 public class EventFormController {
 
     private final EventFormService eventFormService;
-    private final EventFormMapper eventFormMapper;
     private final PromotionMapper promotionMapper;
     private final SalaryIncreaseMapper salaryIncreaseMapper;
     private final SalaryIncreaseService salaryIncreaseService;
     private final PromotionService promotionService;
+    private final ProposalMapper proposalMapper;
+    private final ProposalService proposalService;
+
+    @PostMapping("termination-request")
+    public ResponseEntity<ResponseObject> createTerminationRequest(
+            @Valid @RequestBody EventFormDTO eventFormDTO,
+            BindingResult result
+    ) {
+        if(result.hasErrors()) {
+            List<String> errorMessages = result.getFieldErrors()
+                    .stream()
+                    .map(FieldError::getDefaultMessage)
+                    .toList();
+            return ResponseEntity.ok().body(ResponseObject.builder()
+                    .message(errorMessages.toString())
+                    .status(HttpStatus.BAD_REQUEST)
+                    .data(null)
+                    .build());
+
+        }
+        eventFormDTO.setType(TERMINATION_REQUEST);
+        eventFormDTO.setStatus(DRAFT);
+        try {
+            EventFormDTO empResult = eventFormService.saveEventForm(eventFormDTO);
+            return ResponseEntity.ok().body(ResponseObject.builder()
+                    .message("Employee termination request successful")
+                    .status(HttpStatus.CREATED)
+                    .data(empResult)
+                    .build());
+        } catch (Exception e) {
+            return ResponseEntity.ok().body(ResponseObject.builder()
+                    .message("Employee termination request failed" + e)
+                    .status(HttpStatus.BAD_REQUEST)
+                    .data(null)
+                    .build());
+        }
+    }
 
     @PostMapping("register")
     public ResponseEntity<ResponseObject> registerEmployee(
@@ -185,7 +219,7 @@ public class EventFormController {
             EventFormDTO empResult = eventFormService.getEventFormById(id);
             switch (empResult.getType()) {
                 case SALARYINCREASE:
-                    SalaryIncreaseResponse salaryIncreaseResponse = salaryIncreaseMapper.toResponse(salaryIncreaseService.getSalaryIncreaseById(empResult.getId()));
+                    SalaryIncreaseResponse salaryIncreaseResponse = salaryIncreaseMapper.toResponse(salaryIncreaseService.getSalaryIncreaseByEventFormId(empResult.getId()));
                     EventFormResponse<SalaryIncreaseResponse> eventFormSalaryIncreaseResponse = EventFormResponse.<SalaryIncreaseResponse>builder()
                             .eventFormId(empResult.getId())
                             .employee(empResult.getEmployeeData())
@@ -221,6 +255,25 @@ public class EventFormController {
                             .message("Employee retrieved successful")
                             .status(HttpStatus.OK)
                             .data(eventFormPromotionResponse)
+                            .build());
+                case PROPOSAL:
+                    ProposalResponse proposalResponse = proposalMapper.toResponse(proposalService.getProposalByEventFormId(empResult.getId()));
+                    EventFormResponse<ProposalResponse> eventFormProposalResponse = EventFormResponse.<ProposalResponse>builder()
+                            .eventFormId(empResult.getId())
+                            .employee(empResult.getEmployeeData())
+                            .type(empResult.getType())
+                            .date(empResult.getDate())
+                            .submissionDate(empResult.getSubmissionDate())
+                            .content(empResult.getContent())
+                            .status(empResult.getStatus())
+                            .note(empResult.getNote())
+                            .formDetails(proposalResponse)
+                            .histories(empResult.getHistories())
+                            .build();
+                    return ResponseEntity.ok().body(ResponseObject.builder()
+                            .message("Employee retrieved successful")
+                            .status(HttpStatus.OK)
+                            .data(eventFormProposalResponse)
                             .build());
                     default:
                     return ResponseEntity.ok().body(ResponseObject.builder()
