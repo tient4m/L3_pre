@@ -7,11 +7,7 @@ import lombok.*;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class UserDTO {
-    private Integer userId;
+public class LoginDTO {
     private String userName;
-    private String fullName;
     private String password;
-    private String role;
-    private Integer position;
 }
