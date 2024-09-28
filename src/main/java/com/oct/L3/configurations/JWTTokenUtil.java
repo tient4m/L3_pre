@@ -1,9 +1,7 @@
 package com.oct.L3.configurations;
 
 import com.oct.L3.entity.User;
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -69,4 +67,8 @@ public class JWTTokenUtil {
         Date expirationDate = this.extractClaim(token, Claims::getExpiration);
         return expirationDate.before(new Date());
     }
+    public String getSubject(String token) {
+        return  extractClaim(token, Claims::getSubject);
+    }
+
 }

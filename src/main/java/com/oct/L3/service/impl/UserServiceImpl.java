@@ -48,7 +48,7 @@ public class UserServiceImpl implements UserService {
         }
         PositionDTO positionDTO = modelMapper.map(user.getPosition(), PositionDTO.class);
         UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(
-                userName, password
+                userName, password,user.getAuthorities()
         );
         authenticationManager.authenticate(usernamePasswordAuthenticationToken);
         String token = jwtTokenUtil.generateToken(user);
