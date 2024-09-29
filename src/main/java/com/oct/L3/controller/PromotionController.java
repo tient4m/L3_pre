@@ -7,6 +7,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
@@ -22,6 +23,7 @@ public class PromotionController {
 
     private final PromotionService promotionService;
 
+    @PreAuthorize("hasRole('MANAGER')")
     @PostMapping("/create")
     public ResponseEntity<ResponseObject> createPromotion(@RequestBody @Valid PromotionDTO promotionDTO, BindingResult result) {
         if (result.hasErrors()) {
@@ -51,6 +53,8 @@ public class PromotionController {
                     .build());
         }
     }
+
+    @PreAuthorize("hasRole('MANAGER')")
     @PutMapping("/update/{id}")
     public ResponseEntity<ResponseObject> updatePromotion(@PathVariable Integer evenFormId, @RequestBody @Valid PromotionDTO promotionDTO, BindingResult result) {
         if (result.hasErrors()) {

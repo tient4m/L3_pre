@@ -3,9 +3,7 @@ package com.oct.L3.dtos.EventForm;
 import com.oct.L3.dtos.CertificateDTO;
 import com.oct.L3.dtos.EmployeeDTO;
 import com.oct.L3.dtos.FamilyRelationshipDTO;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import java.time.LocalDate;
 import java.util.Date;
@@ -14,12 +12,14 @@ import java.util.List;
 @Getter
 @Setter
 @Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class EmployeeRegistrationDTO {
-    private EmployeeDTO employee;
-    private Date date;
-    private Date submissionDate;
+    private EmployeeDTO employeeData;
+    private String type;
+    private Date  date;
     private String content;
-    private Integer leaderId;
+    private Integer managerId;
     private String status;
     private String note;
 }

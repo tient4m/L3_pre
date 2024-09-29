@@ -25,8 +25,11 @@ public class EventForm {
     @JoinColumn(name = "employee_id")
     private Employee employee;
 
-    @Column(name = "employee", columnDefinition = "TEXT")
-    private String employeeDataJson;
+    @Column(name = "manager_comments")
+    private String managerComments;
+
+    @Column(name = "leader_comments")
+    private String leaderComments;
 
     @Column(name = "type", nullable = false)
     private String type;
@@ -37,7 +40,7 @@ public class EventForm {
     @Column(name = "submission_date")
     private Date submissionDate;
 
-    @Column(name = "content", columnDefinition = "TEXT", nullable = false)
+    @Column(name = "content", columnDefinition = "TEXT")
     private String content;
 
     @Column(name = "status")

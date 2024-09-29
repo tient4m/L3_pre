@@ -7,6 +7,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
@@ -23,6 +24,7 @@ public class ProposalController {
 
     private final ProposalService proposalService;
 
+    @PreAuthorize("hasRole('MANAGER')")
     @PostMapping("/create")
     public ResponseEntity<ResponseObject> createProposal(@RequestBody @Valid ProposalDTO proposalDTO
                                                                , BindingResult result) {
@@ -56,6 +58,7 @@ public class ProposalController {
         }
     }
 
+    @PreAuthorize("hasRole('MANAGER')")
     @PutMapping("/update/{id}")
     public ResponseEntity<ResponseObject> updateProposal(
             @PathVariable Integer evenFormId,

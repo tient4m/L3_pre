@@ -6,7 +6,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import io.jsonwebtoken.io.Decoders;
-import io.jsonwebtoken.io.Encoders;
 import io.jsonwebtoken.security.Keys;
 
 import java.security.Key;
@@ -70,5 +69,10 @@ public class JWTTokenUtil {
     public String getSubject(String token) {
         return  extractClaim(token, Claims::getSubject);
     }
+
+    public Integer extractId(String token) {
+        return extractClaim(token, claims -> claims.get("id", Integer.class));
+    }
+
 
 }

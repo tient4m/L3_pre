@@ -1,10 +1,11 @@
 package com.oct.L3.controller;
 
 import com.oct.L3.Response.*;
-import com.oct.L3.convertTo.EventFormMapper;
+import com.oct.L3.configurations.JWTTokenUtil;
 import com.oct.L3.convertTo.PromotionMapper;
 import com.oct.L3.convertTo.ProposalMapper;
 import com.oct.L3.convertTo.SalaryIncreaseMapper;
+import com.oct.L3.dtos.EventForm.EmployeeRegistrationDTO;
 import com.oct.L3.dtos.EventForm.EventFormDTO;
 import com.oct.L3.service.EventFormService;
 import com.oct.L3.service.PromotionService;
@@ -37,7 +38,9 @@ public class EventFormController {
     private final PromotionService promotionService;
     private final ProposalMapper proposalMapper;
     private final ProposalService proposalService;
+    private final JWTTokenUtil jwtTokenUtil;
 
+    @PreAuthorize("hasRole('ROLE_MANAGER')")
     @PostMapping("termination-request")
     public ResponseEntity<ResponseObject> createTerminationRequest(
             @Valid @RequestBody EventFormDTO eventFormDTO,
@@ -55,6 +58,8 @@ public class EventFormController {
                     .build());
 
         }
+
+
         eventFormDTO.setType(TERMINATION_REQUEST);
         eventFormDTO.setStatus(DRAFT);
         try {
@@ -73,9 +78,11 @@ public class EventFormController {
         }
     }
 
+    @PreAuthorize("hasRole('ROLE_MANAGER')")
     @PostMapping("register")
     public ResponseEntity<ResponseObject> registerEmployee(
-            @Valid @RequestBody EventFormDTO eventFormDTO,
+            @Valid @RequestBody EmployeeRegistrationDTO employeeRegistrationDTO,
+            @RequestHeader("Authorization") String authorizationHeader,
             BindingResult result
     ) {
         if(result.hasErrors()) {
@@ -90,10 +97,24 @@ public class EventFormController {
                     .build());
 
         }
-        eventFormDTO.setType(REGISTRATION);
-        eventFormDTO.setStatus(DRAFT);
+        String token = null;
+        if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
+            token = authorizationHeader.substring(7);
+        }
+        employeeRegistrationDTO.setManagerId(jwtTokenUtil.extractId(token));
+        employeeRegistrationDTO.setType(REGISTRATION);
+        employeeRegistrationDTO.setStatus(DRAFT);
+        employeeRegistrationDTO.getEmployeeData().setStatus(PENDING);
+        EventFormDTO eventFormDTO = EventFormDTO.builder()
+                .employeeData(employeeRegistrationDTO.getEmployeeData())
+                .type(employeeRegistrationDTO.getType())
+                .date(employeeRegistrationDTO.getDate())
+                .content(employeeRegistrationDTO.getContent())
+                .managerId(employeeRegistrationDTO.getManagerId())
+                .note(employeeRegistrationDTO.getNote())
+                .status(employeeRegistrationDTO.getStatus())
+                .build();
         try {
-
             EventFormDTO empResult = eventFormService.saveEventForm(eventFormDTO);
             return ResponseEntity.ok().body(ResponseObject.builder()
                     .message("Employee registration successful")
@@ -109,6 +130,7 @@ public class EventFormController {
         }
     }
 
+    @PreAuthorize("hasRole('ROLE_MANAGER')")
     @PutMapping("update/{id}")
     public ResponseEntity<ResponseObject> updateEmployee(
             @Valid @RequestBody EventFormDTO eventFormDTO,
@@ -144,6 +166,7 @@ public class EventFormController {
         }
     }
 
+    @PreAuthorize("hasRole('ROLE_MANAGER')")
     @PatchMapping("send/{leaderId}/{eventFormId}")
     public ResponseEntity<ResponseObject> sendToLeader(
             @PathVariable Integer leaderId,
@@ -168,13 +191,19 @@ public class EventFormController {
         }
     }
 
-    @PatchMapping("rejected/{leaderId}/{eventFormId}")
+    @PreAuthorize("hasRole('ROLE_LEADER')")
+    @PatchMapping("rejected/{eventFormId}")
     public ResponseEntity<ResponseObject> rejectEmployee(
-            @PathVariable Integer leaderId,
             @PathVariable Integer eventFormId,
             @RequestParam String content,
+            @RequestHeader("Authorization") String authorizationHeader,
             @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") Date submissionDate
     ) {
+        String token = null;
+        if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
+            token = authorizationHeader.substring(7);
+        }
+        Integer leaderId = jwtTokenUtil.extractId(token);
         try {
             EventFormDTO empResult = eventFormService.updateEventFormStatus(leaderId,eventFormId,submissionDate,content,REJECTED);
             return ResponseEntity.ok().body(ResponseObject.builder()
@@ -191,13 +220,19 @@ public class EventFormController {
         }
     }
 
-    @PatchMapping("approve/{leaderId}/{eventFormId}")
+    @PreAuthorize("hasRole('ROLE_LEADER')")
+    @PatchMapping("approve/{eventFormId}")
     public ResponseEntity<ResponseObject> approveEmployee(
-            @PathVariable Integer leaderId,
             @PathVariable Integer eventFormId,
+            @RequestHeader("Authorization") String authorizationHeader,
             @RequestParam String content,
             @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") Date submissionDate
     ) {
+        String token = null;
+        if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
+            token = authorizationHeader.substring(7);
+        }
+        Integer leaderId = jwtTokenUtil.extractId(token);
         try {
             EventFormDTO empResult = eventFormService.updateEventFormStatus(eventFormId,leaderId,submissionDate,content,APPROVED);
             return ResponseEntity.ok().body(ResponseObject.builder()
@@ -214,7 +249,7 @@ public class EventFormController {
         }
     }
 
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_MANAGER') or hasRole('ROLE_LEADER')")
     @GetMapping("{id}")
     public ResponseEntity<ResponseObject> getEmployee(@PathVariable Integer id) {
         try {
@@ -293,13 +328,19 @@ public class EventFormController {
         }
     }
 
-    @PatchMapping("additional-requirements/{leaderId}/{eventFormId}")
+    @PreAuthorize("hasRole('ROLE_LEADER')")
+    @PatchMapping("additional-requirements/{eventFormId}")
     public ResponseEntity<ResponseObject> additionalRequirements(
-            @PathVariable Integer leaderId,
+            @RequestHeader("Authorization") String authorizationHeader,
             @PathVariable Integer eventFormId,
             @RequestParam String content,
             @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") Date submissionDate
     ) {
+        String token = null;
+        if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
+            token = authorizationHeader.substring(7);
+        }
+        Integer leaderId = jwtTokenUtil.extractId(token);
         try {
             EventFormDTO empResult = eventFormService.updateEventFormStatus(eventFormId,leaderId,submissionDate,content,ADDITIONAL_REQUIREMENTS);
             return ResponseEntity.ok().body(ResponseObject.builder()

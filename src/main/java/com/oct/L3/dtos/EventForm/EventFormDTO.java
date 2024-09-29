@@ -3,6 +3,7 @@ package com.oct.L3.dtos.EventForm;
 import com.oct.L3.dtos.EmployeeDTO;
 import com.oct.L3.dtos.EventFormHistoryDTO;
 import com.oct.L3.entity.User;
+import jakarta.persistence.Column;
 import lombok.*;
 
 import java.time.LocalDate;
@@ -18,6 +19,8 @@ public class EventFormDTO {
     private Integer Id;
     private Integer employeeId;
     private EmployeeDTO employeeData;
+    private String managerComments;
+    private String leaderComments;
     private String type;
     private Date  date;
     private Date submissionDate;

@@ -25,6 +25,7 @@ import static com.oct.L3.constant.EventType.REGISTRATION;
 import static com.oct.L3.constant.EventType.TERMINATION_REQUEST;
 import static com.oct.L3.constant.Status.*;
 
+
 @Service
 @RequiredArgsConstructor
 public class EventFormServiceImpl implements EventFormService {
@@ -39,7 +40,8 @@ public class EventFormServiceImpl implements EventFormService {
     @Override
     public EventFormDTO saveEventForm(EventFormDTO eventFormDTO) {
         EventForm eventForm = eventFormMapper.toEntity(eventFormDTO);
-        return eventFormMapper.toDTO(eventFormRepository.save(eventForm));
+        eventFormRepository.save(eventForm);
+        return eventFormMapper.toDTO(eventForm);
     }
 
     public EventFormDTO createEmployeeResignationForm(EventFormDTO eventFormDTO) {
@@ -58,13 +60,8 @@ public class EventFormServiceImpl implements EventFormService {
         eventForm.setContent(eventFormDTO.getContent());
         eventForm.setLeader(eventFormDTO.getLeaderId() != null ? userRepository.findById(eventFormDTO.getLeaderId()).get() : null);
         eventForm.setSubmissionDate(eventFormDTO.getSubmissionDate());
-
         if (eventFormDTO.getEmployeeData() != null) {
-            try {
-                eventForm.setEmployeeDataJson(objectMapper.writeValueAsString(eventFormDTO.getEmployeeData()));
-            } catch (Exception e) {
-                throw new  RuntimeException("Error in converting employee data to json",e);
-            }
+            eventForm.setEmployee(employeeMapper.toEntity(eventFormDTO.getEmployeeData()));
         }
         EventForm savedEventForm = eventFormRepository.save(eventForm);
         return eventFormMapper.toDTO(savedEventForm);
@@ -124,13 +121,8 @@ public class EventFormServiceImpl implements EventFormService {
         if (content != null) {
             eventForm.setNote(content);
         }
-        if (eventForm.getType().equals(REGISTRATION) && APPROVED.equals(status) && eventForm.getEmployeeDataJson() != null) {
-            try {
-                EmployeeDTO employeeDTO = objectMapper.readValue(eventForm.getEmployeeDataJson(), EmployeeDTO.class);
-                eventForm.setEmployee(employeeMapper.toEntity(employeeDTO));
-            } catch (Exception e) {
-                throw new  RuntimeException("Error in converting employee data to json",e);
-            }
+        if (eventForm.getType().equals(REGISTRATION) && APPROVED.equals(status) ) {
+            eventForm.getEmployee().setStatus(ACTIVE);
         }
         if (eventForm.getType().equals(TERMINATION_REQUEST) && APPROVED.equals(status)){
             eventForm.getEmployee().setStatus(TERMINATED);

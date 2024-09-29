@@ -7,6 +7,7 @@ import com.oct.L3.Response.EventFormResponse;
 import com.oct.L3.dtos.EmployeeDTO;
 import com.oct.L3.dtos.EventForm.EventFormDTO;
 import com.oct.L3.dtos.EventFormHistoryDTO;
+import com.oct.L3.entity.Employee;
 import com.oct.L3.entity.EventForm;
 import com.oct.L3.entity.User;
 import com.oct.L3.repository.EmployeeRepository;
@@ -29,23 +30,30 @@ public class EventFormMapper {
     public EventFormDTO toDTO(EventForm eventForm) {
         EventFormDTO eventFormDTO = EventFormDTO.builder()
                 .Id(eventForm.getId())
-                .employeeId(eventForm.getEmployee().getId())
+                .leaderComments(eventForm.getLeaderComments())
+                .managerComments(eventForm.getManagerComments())
                 .type(eventForm.getType())
                 .date(eventForm.getDate())
                 .submissionDate(eventForm.getSubmissionDate())
                 .content(eventForm.getContent())
                 .status(eventForm.getStatus())
                 .build();
-        if (eventForm.getEmployeeDataJson() != null) {
-            try {
-                EmployeeDTO employeeDTO = objectMapper.readValue(eventForm.getEmployeeDataJson(), EmployeeDTO.class);
-                eventFormDTO.setEmployeeData(employeeDTO);
-            } catch (JsonProcessingException e) {
-                e.printStackTrace();
-            }
-        }
         if (eventForm.getEmployee() != null) {
             eventFormDTO.setEmployeeId(eventForm.getEmployee().getId());
+        }else {
+            eventFormDTO.setEmployeeId(null);
+        }
+
+//        if (eventForm.getEmployeeDataJson() != null) {
+//            try {
+//                EmployeeDTO employeeDTO = objectMapper.readValue(eventForm.getEmployeeDataJson(), EmployeeDTO.class);
+//                eventFormDTO.setEmployeeData(employeeDTO);
+//            } catch (JsonProcessingException e) {
+//                e.printStackTrace();
+//            }
+//        }
+        if (eventForm.getEmployee() != null) {
+            eventFormDTO.setEmployeeData(employeeMapper.toDTO(eventForm.getEmployee()));
         }
         if (eventForm.getManager() != null) {
             eventFormDTO.setManagerId(eventForm.getManager().getId());
@@ -65,13 +73,21 @@ public class EventFormMapper {
 
         EventForm eventForm = EventForm.builder()
                 .Id(dto.getId())
+                .leaderComments(dto.getLeaderComments())
+                .managerComments(dto.getManagerComments())
                 .type(dto.getType())
                 .date(dto.getDate())
                 .submissionDate(dto.getSubmissionDate())
                 .content(dto.getContent())
                 .status(dto.getStatus())
-                .employee(employeeRepository.findById(dto.getEmployeeId()).orElse(null))
+//                .employee(employeeRepository.findById(dto.getEmployeeId()).orElse(null))
                 .build();
+        if (dto.getEmployeeId() != null) {
+            Employee employee = employeeRepository.findById(dto.getEmployeeId()).orElse(null);
+            eventForm.setEmployee(employee);
+        }else {
+            eventForm.setEmployee(null);
+        }
 
         if (dto.getLeaderId() != null) {
             User leader = new User();
@@ -83,13 +99,9 @@ public class EventFormMapper {
             manager.setId(dto.getManagerId());
             eventForm.setManager(manager);
         }
-
         if (dto.getEmployeeData() != null) {
-            try {
-                eventForm.setEmployeeDataJson(objectMapper.writeValueAsString(dto.getEmployeeData()));
-            } catch (JsonProcessingException e) {
-                e.printStackTrace();
-            }
+            Employee employee = employeeMapper.toEntity(dto.getEmployeeData());
+            eventForm.setEmployee(employee);
         }
         return eventForm;
     }

@@ -30,6 +30,7 @@ public class WebSecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(requests -> requests
                         .requestMatchers("/api/v1/users/login").permitAll()
+                        .requestMatchers("/api/v1/users/create").permitAll()
                         .requestMatchers(HttpMethod.GET,"/api/v1/event-form**").permitAll()
                         .anyRequest().authenticated()
                 );

@@ -13,6 +13,7 @@ public class Status {
     public static final String SUBMITTED = "SUBMITTED";
     public static final String ARCHIVED = "ARCHIVED";
     public static final String TERMINATED = "TERMINATED";
+    public static final String ACTIVE = "ACTIVE";
 
 
 }
