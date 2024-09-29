@@ -2,10 +2,10 @@ package com.oct.L3.controller;
 
 import com.oct.L3.Response.*;
 import com.oct.L3.configurations.JWTTokenUtil;
+import com.oct.L3.convertTo.EventFormMapper;
 import com.oct.L3.convertTo.PromotionMapper;
 import com.oct.L3.convertTo.ProposalMapper;
 import com.oct.L3.convertTo.SalaryIncreaseMapper;
-import com.oct.L3.dtos.EventForm.EmployeeRegistrationDTO;
 import com.oct.L3.dtos.EventForm.EventFormDTO;
 import com.oct.L3.service.EventFormService;
 import com.oct.L3.service.PromotionService;
@@ -39,6 +39,7 @@ public class EventFormController {
     private final ProposalMapper proposalMapper;
     private final ProposalService proposalService;
     private final JWTTokenUtil jwtTokenUtil;
+    private final EventFormMapper eventFormMapper;
 
     @PreAuthorize("hasRole('ROLE_MANAGER')")
     @PostMapping("termination-request")
@@ -56,10 +57,7 @@ public class EventFormController {
                     .status(HttpStatus.BAD_REQUEST)
                     .data(null)
                     .build());
-
         }
-
-
         eventFormDTO.setType(TERMINATION_REQUEST);
         eventFormDTO.setStatus(DRAFT);
         try {
@@ -81,7 +79,7 @@ public class EventFormController {
     @PreAuthorize("hasRole('ROLE_MANAGER')")
     @PostMapping("register")
     public ResponseEntity<ResponseObject> registerEmployee(
-            @Valid @RequestBody EmployeeRegistrationDTO employeeRegistrationDTO,
+            @Valid @RequestBody EventFormDTO eventFormDTO,
             @RequestHeader("Authorization") String authorizationHeader,
             BindingResult result
     ) {
@@ -101,19 +99,9 @@ public class EventFormController {
         if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
             token = authorizationHeader.substring(7);
         }
-        employeeRegistrationDTO.setManagerId(jwtTokenUtil.extractId(token));
-        employeeRegistrationDTO.setType(REGISTRATION);
-        employeeRegistrationDTO.setStatus(DRAFT);
-        employeeRegistrationDTO.getEmployeeData().setStatus(PENDING);
-        EventFormDTO eventFormDTO = EventFormDTO.builder()
-                .employeeData(employeeRegistrationDTO.getEmployeeData())
-                .type(employeeRegistrationDTO.getType())
-                .date(employeeRegistrationDTO.getDate())
-                .content(employeeRegistrationDTO.getContent())
-                .managerId(employeeRegistrationDTO.getManagerId())
-                .note(employeeRegistrationDTO.getNote())
-                .status(employeeRegistrationDTO.getStatus())
-                .build();
+        eventFormDTO.setManagerId(jwtTokenUtil.extractId(token));
+        eventFormDTO.setType(REGISTRATION);
+        eventFormDTO.setStatus(DRAFT);
         try {
             EventFormDTO empResult = eventFormService.saveEventForm(eventFormDTO);
             return ResponseEntity.ok().body(ResponseObject.builder()
@@ -171,12 +159,12 @@ public class EventFormController {
     public ResponseEntity<ResponseObject> sendToLeader(
             @PathVariable Integer leaderId,
             @PathVariable Integer eventFormId,
-            @RequestParam String content,
+            @RequestParam String managerComments,
             @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") Date submissionDate
     ) {
         try {
 
-            EventFormDTO empResult = eventFormService.sendFormToLeader(leaderId,eventFormId,content,submissionDate);
+            EventFormDTO empResult = eventFormService.sendFormToLeader(leaderId,eventFormId,managerComments,submissionDate);
             return ResponseEntity.ok().body(ResponseObject.builder()
                     .message("Employee sent to leader successful")
                     .status(HttpStatus.OK)
@@ -195,7 +183,7 @@ public class EventFormController {
     @PatchMapping("rejected/{eventFormId}")
     public ResponseEntity<ResponseObject> rejectEmployee(
             @PathVariable Integer eventFormId,
-            @RequestParam String content,
+            @RequestParam String leaderComments,
             @RequestHeader("Authorization") String authorizationHeader,
             @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") Date submissionDate
     ) {
@@ -205,7 +193,7 @@ public class EventFormController {
         }
         Integer leaderId = jwtTokenUtil.extractId(token);
         try {
-            EventFormDTO empResult = eventFormService.updateEventFormStatus(leaderId,eventFormId,submissionDate,content,REJECTED);
+            EventFormDTO empResult = eventFormService.updateEventFormStatus(leaderId,eventFormId,submissionDate,leaderComments,REJECTED);
             return ResponseEntity.ok().body(ResponseObject.builder()
                     .message("Employee rejected successful")
                     .status(HttpStatus.OK)
@@ -225,7 +213,7 @@ public class EventFormController {
     public ResponseEntity<ResponseObject> approveEmployee(
             @PathVariable Integer eventFormId,
             @RequestHeader("Authorization") String authorizationHeader,
-            @RequestParam String content,
+            @RequestParam String leaderComments,
             @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") Date submissionDate
     ) {
         String token = null;
@@ -234,7 +222,7 @@ public class EventFormController {
         }
         Integer leaderId = jwtTokenUtil.extractId(token);
         try {
-            EventFormDTO empResult = eventFormService.updateEventFormStatus(eventFormId,leaderId,submissionDate,content,APPROVED);
+            EventFormDTO empResult = eventFormService.updateEventFormStatus(eventFormId,leaderId,submissionDate,leaderComments,APPROVED);
             return ResponseEntity.ok().body(ResponseObject.builder()
                     .message("Employee approved successful")
                     .status(HttpStatus.OK)
@@ -257,66 +245,34 @@ public class EventFormController {
             switch (empResult.getType()) {
                 case SALARYINCREASE:
                     SalaryIncreaseResponse salaryIncreaseResponse = salaryIncreaseMapper.toResponse(salaryIncreaseService.getSalaryIncreaseByEventFormId(empResult.getId()));
-                    EventFormResponse<SalaryIncreaseResponse> eventFormSalaryIncreaseResponse = EventFormResponse.<SalaryIncreaseResponse>builder()
-                            .eventFormId(empResult.getId())
-                            .employee(empResult.getEmployeeData())
-                            .type(empResult.getType())
-                            .date(empResult.getDate())
-                            .submissionDate(empResult.getSubmissionDate())
-                            .content(empResult.getContent())
-                            .status(empResult.getStatus())
-                            .note(empResult.getNote())
-                            .formDetails(salaryIncreaseResponse)
-                            .histories(empResult.getHistories())
-                            .build();
+                    salaryIncreaseResponse.setEventForm(empResult);
                     return ResponseEntity.ok().body(ResponseObject.builder()
                             .message("Employee retrieved successful")
                             .status(HttpStatus.OK)
-                            .data(eventFormSalaryIncreaseResponse)
+                            .data(salaryIncreaseResponse)
                             .build());
                 case PROMOTION:
                     PromotionResponse promotionResponse = promotionMapper.toResponse(promotionService.getPromotionById(empResult.getId()));
-                    EventFormResponse<PromotionResponse> eventFormPromotionResponse = EventFormResponse.<PromotionResponse>builder()
-                            .eventFormId(empResult.getId())
-                            .employee(empResult.getEmployeeData())
-                            .type(empResult.getType())
-                            .date(empResult.getDate())
-                            .submissionDate(empResult.getSubmissionDate())
-                            .content(empResult.getContent())
-                            .status(empResult.getStatus())
-                            .note(empResult.getNote())
-                            .formDetails(promotionResponse)
-                            .histories(empResult.getHistories())
-                            .build();
+                    promotionResponse.setEventForm(empResult);
                     return ResponseEntity.ok().body(ResponseObject.builder()
                             .message("Employee retrieved successful")
                             .status(HttpStatus.OK)
-                            .data(eventFormPromotionResponse)
+                            .data(promotionResponse)
                             .build());
                 case PROPOSAL:
                     ProposalResponse proposalResponse = proposalMapper.toResponse(proposalService.getProposalByEventFormId(empResult.getId()));
-                    EventFormResponse<ProposalResponse> eventFormProposalResponse = EventFormResponse.<ProposalResponse>builder()
-                            .eventFormId(empResult.getId())
-                            .employee(empResult.getEmployeeData())
-                            .type(empResult.getType())
-                            .date(empResult.getDate())
-                            .submissionDate(empResult.getSubmissionDate())
-                            .content(empResult.getContent())
-                            .status(empResult.getStatus())
-                            .note(empResult.getNote())
-                            .formDetails(proposalResponse)
-                            .histories(empResult.getHistories())
-                            .build();
+                    proposalResponse.setEventForm(empResult);
                     return ResponseEntity.ok().body(ResponseObject.builder()
                             .message("Employee retrieved successful")
                             .status(HttpStatus.OK)
-                            .data(eventFormProposalResponse)
+                            .data(proposalResponse)
                             .build());
                     default:
+                        EventFormResponse eventFormResponse  = eventFormMapper.toResponse(empResult);
                     return ResponseEntity.ok().body(ResponseObject.builder()
                             .message("Employee retrieved successful")
                             .status(HttpStatus.OK)
-                            .data(empResult)
+                            .data(eventFormResponse)
                             .build());
             }
         } catch (Exception e) {
@@ -333,7 +289,7 @@ public class EventFormController {
     public ResponseEntity<ResponseObject> additionalRequirements(
             @RequestHeader("Authorization") String authorizationHeader,
             @PathVariable Integer eventFormId,
-            @RequestParam String content,
+            @RequestParam String leaderComments,
             @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") Date submissionDate
     ) {
         String token = null;
@@ -342,7 +298,7 @@ public class EventFormController {
         }
         Integer leaderId = jwtTokenUtil.extractId(token);
         try {
-            EventFormDTO empResult = eventFormService.updateEventFormStatus(eventFormId,leaderId,submissionDate,content,ADDITIONAL_REQUIREMENTS);
+            EventFormDTO empResult = eventFormService.updateEventFormStatus(eventFormId,leaderId,submissionDate,leaderComments,ADDITIONAL_REQUIREMENTS);
             return ResponseEntity.ok().body(ResponseObject.builder()
                     .message("Employee additional requirements successful")
                     .status(HttpStatus.OK)

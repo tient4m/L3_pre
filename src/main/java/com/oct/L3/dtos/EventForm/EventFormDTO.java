@@ -18,7 +18,6 @@ import java.util.List;
 public class EventFormDTO {
     private Integer Id;
     private Integer employeeId;
-    private EmployeeDTO employeeData;
     private String managerComments;
     private String leaderComments;
     private String type;

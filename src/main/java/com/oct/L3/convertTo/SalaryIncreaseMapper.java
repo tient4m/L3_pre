@@ -42,6 +42,7 @@ public class SalaryIncreaseMapper {
                 .reason(dto.getReason())
                 .level(dto.getLevel())
                 .note(dto.getNote())
+                .eventForm(dto.getEventForm())
                 .build();
     }
 }

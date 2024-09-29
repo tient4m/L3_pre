@@ -1,5 +1,6 @@
 package com.oct.L3.Response;
 
+import com.oct.L3.dtos.EventForm.EventFormDTO;
 import lombok.*;
 
 @Getter
@@ -13,4 +14,5 @@ public class ProposalResponse {
     private String type;
     private String description;
     private String note;
+    private EventFormDTO eventForm;
 }
