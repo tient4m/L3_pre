@@ -44,16 +44,8 @@ public class EventFormMapper {
             eventFormDTO.setEmployeeId(null);
         }
 
-//        if (eventForm.getEmployeeDataJson() != null) {
-//            try {
-//                EmployeeDTO employeeDTO = objectMapper.readValue(eventForm.getEmployeeDataJson(), EmployeeDTO.class);
-//                eventFormDTO.setEmployeeData(employeeDTO);
-//            } catch (JsonProcessingException e) {
-//                e.printStackTrace();
-//            }
-//        }
         if (eventForm.getEmployee() != null) {
-            eventFormDTO.setEmployeeData(employeeMapper.toDTO(eventForm.getEmployee()));
+            eventFormDTO.setEmployeeId(eventForm.getEmployee().getId());
         }
         if (eventForm.getManager() != null) {
             eventFormDTO.setManagerId(eventForm.getManager().getId());
@@ -99,15 +91,11 @@ public class EventFormMapper {
             manager.setId(dto.getManagerId());
             eventForm.setManager(manager);
         }
-        if (dto.getEmployeeData() != null) {
-            Employee employee = employeeMapper.toEntity(dto.getEmployeeData());
-            eventForm.setEmployee(employee);
-        }
         return eventForm;
     }
 
-    public <T> EventFormResponse<T> toResponse(EventFormDTO dto, T formDetails) {
-        return EventFormResponse.<T>builder()
+    public  EventFormResponse toResponse(EventFormDTO dto) {
+        return EventFormResponse.builder()
                 .eventFormId(dto.getId())
                 .employee(employeeMapper.toDTO(
                         employeeRepository
@@ -121,7 +109,6 @@ public class EventFormMapper {
                 .content(dto.getContent())
                 .status(dto.getStatus())
                 .note(dto.getNote())
-                .formDetails(formDetails)
                 .build();
     }
 }

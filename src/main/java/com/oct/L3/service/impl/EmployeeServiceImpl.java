@@ -30,6 +30,18 @@ public class EmployeeServiceImpl implements EmployeeService {
         return employeeMapper.toDTO(employeeRepository.save(employee));
     }
 
+    @Override
+    public EmployeeDTO updateEmployee(Integer id,EmployeeDTO employeeDTO) {
+        if (!employeeRepository.existsById(id)) {
+            throw new RuntimeException("Employee not found");
+        }
+        if (employeeDTO.getId() != id) {
+            throw new RuntimeException("Id not match");
+        }
+        Employee employee = employeeMapper.toEntity(employeeDTO);
+        return employeeMapper.toDTO(employeeRepository.save(employee));
+    }
+
 
 
 

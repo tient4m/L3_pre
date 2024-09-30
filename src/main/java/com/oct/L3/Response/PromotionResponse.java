@@ -1,5 +1,6 @@
 package com.oct.L3.Response;
 
+import com.oct.L3.dtos.EventForm.EventFormDTO;
 import com.oct.L3.entity.Position;
 import lombok.*;
 
@@ -15,4 +16,5 @@ public class PromotionResponse {
     private Position oldPosition;
     private Position newPosition;
     private String note;
+    private EventFormDTO eventForm;
 }

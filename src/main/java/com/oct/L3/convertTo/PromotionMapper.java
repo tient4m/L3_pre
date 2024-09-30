@@ -49,6 +49,7 @@ public class PromotionMapper {
                 .oldPosition(positionRepository.findById(dto.getOldPosition()).get())
                 .newPosition(dto.getNewPosition() == null ? null : positionRepository.findById(dto.getNewPosition()).get())
                 .note(dto.getNote())
+                .eventForm(dto.getEventForm())
                 .build();
         return promotionResponse;
     }

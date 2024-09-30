@@ -12,7 +12,7 @@ import java.util.List;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class EventFormResponse<T> {
+public class EventFormResponse{
     private Integer eventFormId;
     private EmployeeDTO employee;
     private String type;
@@ -22,5 +22,4 @@ public class EventFormResponse<T> {
     private String status;
     private String note;
     private List<EventFormHistoryDTO> histories;
-    private T formDetails;
 }

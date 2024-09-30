@@ -60,21 +60,18 @@ public class EventFormServiceImpl implements EventFormService {
         eventForm.setContent(eventFormDTO.getContent());
         eventForm.setLeader(eventFormDTO.getLeaderId() != null ? userRepository.findById(eventFormDTO.getLeaderId()).get() : null);
         eventForm.setSubmissionDate(eventFormDTO.getSubmissionDate());
-        if (eventFormDTO.getEmployeeData() != null) {
-            eventForm.setEmployee(employeeMapper.toEntity(eventFormDTO.getEmployeeData()));
-        }
         EventForm savedEventForm = eventFormRepository.save(eventForm);
         return eventFormMapper.toDTO(savedEventForm);
     }
 
 
     @Override
-    public EventFormDTO sendFormToLeader(Integer leaderId, Integer eventFormId, String content, Date submissionDate) throws DataNotFoundException {
+    public EventFormDTO sendFormToLeader(Integer leaderId, Integer eventFormId, String managerComments, Date submissionDate) throws DataNotFoundException {
         User leader = userRepository.findById(leaderId).orElseThrow(()-> new DataNotFoundException("Leader not found"));
         EventForm eventForm = eventFormRepository.findById(eventFormId).orElseThrow(()-> new DataNotFoundException("EventForm not found"));
         eventForm.setLeader(leader);
         eventForm.setStatus(PENDING);
-        eventForm.setContent(content);
+        eventForm.setManagerComments(managerComments);
         eventForm.setSubmissionDate(submissionDate);
         EventFormHistory eventFormHistory = EventFormHistory.builder()
                 .eventForm(eventForm)
@@ -90,10 +87,6 @@ public class EventFormServiceImpl implements EventFormService {
     public EventFormDTO getEventFormById(Integer id) throws DataNotFoundException {
         EventForm eventForm = eventFormRepository.findById(id).orElseThrow(()-> new DataNotFoundException("EventForm not found"));
         EventFormDTO eventFormDTO = eventFormMapper.toDTO(eventForm);
-        if (eventFormDTO.getEmployeeData() == null && eventFormDTO.getEmployeeId() != null) {
-            Employee employee = eventForm.getEmployee();
-            eventFormDTO.setEmployeeData(employeeMapper.toDTO(employee));
-        }
         return eventFormDTO;
     }
 
@@ -109,7 +102,7 @@ public class EventFormServiceImpl implements EventFormService {
     public EventFormDTO updateEventFormStatus(Integer eventFormId,
                                               Integer leaderId,
                                               Date  submissionDate,
-                                              String content,
+                                              String leaderComments,
                                               String status) throws DataNotFoundException {
         EventForm eventForm = eventFormRepository.findById(eventFormId).orElseThrow(()-> new DataNotFoundException("EventForm not found"));
         if(!PENDING.equals(eventForm.getStatus())){
@@ -118,8 +111,8 @@ public class EventFormServiceImpl implements EventFormService {
         if (eventForm.getLeader().getId() != leaderId) {
             throw new DataNotFoundException("Leader is not the leader of the event form");
         }
-        if (content != null) {
-            eventForm.setNote(content);
+        if (leaderComments != null) {
+            eventForm.setLeaderComments(leaderComments);
         }
         if (eventForm.getType().equals(REGISTRATION) && APPROVED.equals(status) ) {
             eventForm.getEmployee().setStatus(ACTIVE);
@@ -132,7 +125,7 @@ public class EventFormServiceImpl implements EventFormService {
         EventFormHistory eventFormHistory = EventFormHistory.builder()
                 .eventForm(eventForm)
                 .status(status)
-                .comments(content)
+                .comments(leaderComments)
                 .actionDate(submissionDate)
                 .build();
         eventFormHistoryRepository.save(eventFormHistory);

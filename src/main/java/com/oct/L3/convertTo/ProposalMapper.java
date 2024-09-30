@@ -40,6 +40,7 @@ public class ProposalMapper {
                 .type(dto.getType())
                 .description(dto.getDescription())
                 .note(dto.getNote())
+                .eventForm(dto.getEventForm())
                 .build();
         return proposalResponse;
     }
