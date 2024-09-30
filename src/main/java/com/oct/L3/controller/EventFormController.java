@@ -45,6 +45,7 @@ public class EventFormController {
     @PostMapping("termination-request")
     public ResponseEntity<ResponseObject> createTerminationRequest(
             @Valid @RequestBody EventFormDTO eventFormDTO,
+            @RequestHeader("Authorization") String authorizationHeader,
             BindingResult result
     ) {
         if(result.hasErrors()) {
@@ -58,6 +59,11 @@ public class EventFormController {
                     .data(null)
                     .build());
         }
+        String token = null;
+        if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
+            token = authorizationHeader.substring(7);
+        }
+        eventFormDTO.setManagerId(jwtTokenUtil.extractId(token));
         eventFormDTO.setType(TERMINATION_REQUEST);
         eventFormDTO.setStatus(DRAFT);
         try {
@@ -138,7 +144,6 @@ public class EventFormController {
 
         }
         try {
-
             EventFormDTO empResult = eventFormService.updateEventForm(id,eventFormDTO);
             return ResponseEntity.ok().body(ResponseObject.builder()
                     .message("Employee updated successful")
@@ -241,6 +246,7 @@ public class EventFormController {
     @GetMapping("{id}")
     public ResponseEntity<ResponseObject> getEmployee(@PathVariable Integer id) {
         try {
+
             EventFormDTO empResult = eventFormService.getEventFormById(id);
             switch (empResult.getType()) {
                 case SALARYINCREASE:

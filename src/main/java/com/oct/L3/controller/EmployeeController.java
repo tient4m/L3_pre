@@ -1,12 +1,15 @@
 package com.oct.L3.controller;
 
 import com.oct.L3.Response.ResponseObject;
+import com.oct.L3.configurations.JWTTokenUtil;
 import com.oct.L3.dtos.EmployeeDTO;
 import com.oct.L3.service.EmployeeService;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
@@ -18,11 +21,12 @@ import static com.oct.L3.constant.EventType.*;
 
 import java.util.List;
 
+@RequiredArgsConstructor
 @RestController
 @RequestMapping("${api.prefix}/employee")
 public class EmployeeController {
-    @Autowired
     private EmployeeService employeeService;
+    private final JWTTokenUtil jwtTokenUtil;
 
     @GetMapping("")
     public ResponseEntity<ResponseObject> getAllEmployees() {
@@ -36,6 +40,7 @@ public class EmployeeController {
     @PreAuthorize("hasRole('MANAGER')")
     @PostMapping("")
     public ResponseEntity<ResponseObject> saveEmployee(@RequestBody @Valid EmployeeDTO employeeDTO,
+                                                       @RequestHeader("Authorization") String authorizationHeader,
                                                        BindingResult result
     ) {
         if(result.hasErrors()) {
@@ -49,6 +54,12 @@ public class EmployeeController {
                     .data(null)
                     .build());
         }
+        String token = null;
+        if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
+            token = authorizationHeader.substring(7);
+        }
+        Integer managerId = jwtTokenUtil.extractId(token);
+        employeeDTO.setManagerId(managerId);
         employeeDTO.setStatus(DRAFT);
         try {
             return ResponseEntity.ok().body(ResponseObject.builder()
@@ -97,5 +108,4 @@ public class EmployeeController {
                     .build());
         }
     }
-
 }

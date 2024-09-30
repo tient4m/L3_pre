@@ -15,11 +15,15 @@ import com.oct.L3.repository.EventFormRepository;
 import com.oct.L3.repository.UserRepository;
 import com.oct.L3.service.*;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PostAuthorize;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 
 import static com.oct.L3.constant.EventType.REGISTRATION;
 import static com.oct.L3.constant.EventType.TERMINATION_REQUEST;
@@ -50,16 +54,16 @@ public class EventFormServiceImpl implements EventFormService {
     }
 
     @Override
+    @PostAuthorize("returnObject.managerId == principal.id")
     public EventFormDTO updateEventForm(Integer id, EventFormDTO eventFormDTO) throws DataNotFoundException {
         EventForm eventForm = eventFormRepository.findById(id).orElseThrow(()-> new DataNotFoundException("EventForm not found"));
         if (!DRAFT.equals(eventForm.getStatus())&& !REJECTED.equals(eventForm.getStatus())&&!ADDITIONAL_REQUIREMENTS.equals(eventForm.getStatus())) {
             throw new DataNotFoundException("EventForm is not in draft,rejected and additional requirements status");
         }
-        eventForm.setContent(eventFormDTO.getContent());
-        eventForm.setLeader(eventFormDTO.getLeaderId() != null ? userRepository.findById(eventFormDTO.getLeaderId()).get() : null);
-        eventForm.setSubmissionDate(eventFormDTO.getSubmissionDate());
-        EventForm savedEventForm = eventFormRepository.save(eventForm);
-        return eventFormMapper.toDTO(savedEventForm);
+        eventFormDTO.setId(id);
+        EventForm savedEventForm = eventFormMapper.mergerEntityAndDTO(eventForm,eventFormDTO);
+        EventFormDTO eventFormDTO2= eventFormMapper.toDTO(eventFormRepository.save(savedEventForm));
+        return eventFormDTO2;
     }
 
 
@@ -82,6 +86,7 @@ public class EventFormServiceImpl implements EventFormService {
     }
 
     @Override
+    @PostAuthorize("returnObject.managerId == principal.id")
     public EventFormDTO getEventFormById(Integer id) throws DataNotFoundException {
         EventForm eventForm = eventFormRepository.findById(id).orElseThrow(()-> new DataNotFoundException("EventForm not found"));
         EventFormDTO eventFormDTO = eventFormMapper.toDTO(eventForm);

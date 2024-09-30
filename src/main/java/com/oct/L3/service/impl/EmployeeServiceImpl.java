@@ -6,6 +6,7 @@ import com.oct.L3.entity.*;
 import com.oct.L3.repository.EmployeeRepository;
 import com.oct.L3.service.EmployeeService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -31,6 +32,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
     @Override
+    @PostAuthorize("returnObject.managerId == principal.id")
     public EmployeeDTO updateEmployee(Integer id,EmployeeDTO employeeDTO) {
         if (!employeeRepository.existsById(id)) {
             throw new RuntimeException("Employee not found");

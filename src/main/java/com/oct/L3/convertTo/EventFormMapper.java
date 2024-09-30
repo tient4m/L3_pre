@@ -9,6 +9,7 @@ import com.oct.L3.dtos.EventForm.EventFormDTO;
 import com.oct.L3.dtos.EventFormHistoryDTO;
 import com.oct.L3.entity.Employee;
 import com.oct.L3.entity.EventForm;
+import com.oct.L3.entity.EventFormHistory;
 import com.oct.L3.entity.User;
 import com.oct.L3.repository.EmployeeRepository;
 import lombok.RequiredArgsConstructor;
@@ -37,6 +38,7 @@ public class EventFormMapper {
                 .submissionDate(eventForm.getSubmissionDate())
                 .content(eventForm.getContent())
                 .status(eventForm.getStatus())
+                .note(eventForm.getNote())
                 .build();
         if (eventForm.getEmployee() != null) {
             eventFormDTO.setEmployeeId(eventForm.getEmployee().getId());
@@ -72,6 +74,7 @@ public class EventFormMapper {
                 .submissionDate(dto.getSubmissionDate())
                 .content(dto.getContent())
                 .status(dto.getStatus())
+                .note(dto.getNote())
 //                .employee(employeeRepository.findById(dto.getEmployeeId()).orElse(null))
                 .build();
         if (dto.getEmployeeId() != null) {
@@ -90,6 +93,11 @@ public class EventFormMapper {
             User manager = new User();
             manager.setId(dto.getManagerId());
             eventForm.setManager(manager);
+        }
+        if (dto.getHistories() != null && !dto.getHistories().isEmpty()) {
+            eventForm.setHistories(dto.getHistories().stream()
+                    .map(history -> modelMapper.map(history, EventFormHistory.class))
+                    .collect(Collectors.toList()));
         }
         return eventForm;
     }
@@ -110,6 +118,57 @@ public class EventFormMapper {
                 .status(dto.getStatus())
                 .note(dto.getNote())
                 .build();
+    }
+
+    public EventForm mergerEntityAndDTO(EventForm eventForm, EventFormDTO dto) {
+        if (dto.getLeaderComments() != null && dto.getLeaderComments().equals(eventForm.getLeaderComments())) {
+            eventForm.setLeaderComments(dto.getLeaderComments());
+        }
+        if (dto.getManagerComments() != null) {
+            eventForm.setManagerComments(dto.getManagerComments());
+        }
+        if (dto.getType() != null) {
+            eventForm.setType(dto.getType());
+        }
+        if (dto.getDate() != null) {
+            eventForm.setDate(dto.getDate());
+        }
+        if (dto.getSubmissionDate() != null) {
+            eventForm.setSubmissionDate(dto.getSubmissionDate());
+        }
+        if (dto.getContent() != null) {
+            eventForm.setContent(dto.getContent());
+        }
+        if (dto.getStatus() != null) {
+            eventForm.setStatus(dto.getStatus());
+        }
+
+        if (dto.getEmployeeId() != null) {
+            Employee employee = employeeRepository.findById(dto.getEmployeeId()).orElse(null);
+            eventForm.setEmployee(employee);
+        }
+
+        if (dto.getManagerId() != null) {
+            User manager = new User();
+            manager.setId(dto.getManagerId());
+            eventForm.setManager(manager);
+        }
+        if (dto.getNote() != null ){
+            eventForm.setNote(dto.getNote());
+        }
+
+        if (dto.getLeaderId() != null) {
+            User leader = new User();
+            leader.setId(dto.getLeaderId());
+            eventForm.setLeader(leader);
+        }
+
+        if (dto.getHistories() != null && !dto.getHistories().isEmpty()) {
+            eventForm.setHistories(dto.getHistories().stream()
+                    .map(history -> modelMapper.map(history, EventFormHistory.class))
+                    .collect(Collectors.toList()));
+        }
+        return eventForm;
     }
 }
 
