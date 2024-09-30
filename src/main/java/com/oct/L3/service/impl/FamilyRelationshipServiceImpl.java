@@ -21,38 +21,7 @@ public class FamilyRelationshipServiceImpl implements FamilyRelationshipService 
 
     @Override
     public void saveOrUpdateFamilyRelationships(List<FamilyRelationshipDTO> familyRelationships, Employee employee) {
-//        List<FamilyRelationship> relationships = new ArrayList<>();
-//        for (FamilyRelationshipDTO familyDTO : familyRelationships) {
-//            FamilyRelationship familyRelationship;
-//            if (familyDTO.getRelationshipId() != null) {
-//                familyRelationship = familyRelationshipRepository.findById(familyDTO.getRelationshipId())
-//                        .orElseThrow(() -> new EntityNotFoundException("Family relationship not found with ID: " + familyDTO.getRelationshipId()));
-//                familyRelationship.setFullName(familyDTO.getFullName());
-//                familyRelationship.setGender(familyDTO.getGender());
-//                familyRelationship.setDateOfBirth(familyDTO.getDateOfBirth());
-//                familyRelationship.setIdentityCard(familyDTO.getIdentityCard());
-//                familyRelationship.setRelationship(familyDTO.getRelationship());
-//                familyRelationship.setAddress(familyDTO.getAddress());
-//                familyRelationship.setPhoneNumber(familyDTO.getPhoneNumber());
-//                familyRelationship.setEmail(familyDTO.getEmail());
-//                familyRelationship.setJob(familyDTO.getJob());
-//            } else {
-//                familyRelationship = FamilyRelationship.builder()
-//                        .employee(employee)
-//                        .fullName(familyDTO.getFullName())
-//                        .gender(familyDTO.getGender())
-//                        .dateOfBirth(familyDTO.getDateOfBirth())
-//                        .identityCard(familyDTO.getIdentityCard())
-//                        .relationship(familyDTO.getRelationship())
-//                        .address(familyDTO.getAddress())
-//                        .phoneNumber(familyDTO.getPhoneNumber())
-//                        .email(familyDTO.getEmail())
-//                        .job(familyDTO.getJob())
-//                        .build();
-//            }
-//            relationships.add(familyRelationship);
-//        }
-//        familyRelationshipRepository.saveAll(relationships);
+
  }
 
 

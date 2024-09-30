@@ -27,7 +27,7 @@ public class EndCaseServiceImpl implements EndCaseService {
         }
         EndCase endCase = EndCase.builder()
                 .employee(employee)
-                .decision_date(endCaseDTO.getDecision_date())
+                .decisionDate(endCaseDTO.getDecisionDate())
                 .archiveNumber(endCaseDTO.getArchiveNumber())
                 .status(ARCHIVED)
                 .build();
@@ -36,7 +36,7 @@ public class EndCaseServiceImpl implements EndCaseService {
         return EndCaseDTO.builder()
                 .endCaseId(endCase.getId())
                 .employeeId(endCase.getEmployee().getId())
-                .decision_date(endCase.getDecision_date())
+                .decisionDate(endCase.getDecisionDate())
                 .archiveNumber(endCase.getArchiveNumber())
                 .status(endCase.getStatus())
                 .build();

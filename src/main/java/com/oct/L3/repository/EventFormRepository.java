@@ -15,4 +15,6 @@ public interface EventFormRepository extends JpaRepository<EventForm, Integer> {
 
     @Query(value = "SELECT * FROM eventform WHERE manager_id = ?1 OR leader_id = ?1", nativeQuery = true)
     List<EventForm> findAllByManagerIdOrLeaderId(Integer id);
+
+    List<EventForm> findByEmployeeId(Integer employeeId);
 }

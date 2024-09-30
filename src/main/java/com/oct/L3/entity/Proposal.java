@@ -17,7 +17,7 @@ public class Proposal {
     @Column(name = "proposal_id")
     private Integer Id;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "event_form_id")
     private EventForm eventForm;
 

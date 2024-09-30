@@ -24,8 +24,12 @@ public class PromotionServiceImpl implements PromotionService {
 
     @Override
     public PromotionDTO createPromotion(PromotionDTO promotionDTO) {
+        Promotion promotion = promotionMapper.toEntity(promotionDTO);
+        if (!promotion.getEventForm().getEmployee().getStatus().equals("ACTIVE")) {
+            throw new RuntimeException("Employee is not active");
+        }
         this.checkPosition(promotionDTO);
-        return promotionMapper.toDTO(promotionRepository.save(promotionMapper.toEntity(promotionDTO)));
+        return promotionMapper.toDTO(promotionRepository.save(promotion));
     }
 
     @Transactional

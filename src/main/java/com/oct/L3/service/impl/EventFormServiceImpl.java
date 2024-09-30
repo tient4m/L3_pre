@@ -39,16 +39,14 @@ public class EventFormServiceImpl implements EventFormService {
 
     @Override
     public EventFormDTO saveEventForm(EventFormDTO eventFormDTO) {
+        if (eventFormDTO.getType().equals(TERMINATION_REQUEST)){
+            if (hasIncompleteEventForms(eventFormDTO.getEmployeeId())) {
+                throw new RuntimeException("Employee has incomplete event forms");
+            }
+        }
         EventForm eventForm = eventFormMapper.toEntity(eventFormDTO);
         eventFormRepository.save(eventForm);
         return eventFormMapper.toDTO(eventForm);
-    }
-
-    public EventFormDTO createEmployeeResignationForm(EventFormDTO eventFormDTO) {
-        EventForm eventForm = eventFormMapper.toEntity(eventFormDTO);
-        eventForm.setStatus(DRAFT);
-        eventForm.setType(REGISTRATION);
-        return eventFormMapper.toDTO(eventFormRepository.save(eventForm));
     }
 
     @Override
@@ -132,4 +130,19 @@ public class EventFormServiceImpl implements EventFormService {
         EventForm savedEventForm = eventFormRepository.save(eventForm);
         return eventFormMapper.toDTO(savedEventForm);
     }
+
+    private boolean hasIncompleteEventForms(Integer employeeId) {
+        List<EventForm> eventForms = eventFormRepository.findByEmployeeId(employeeId);
+        for (EventForm eventForm : eventForms) {
+            if (!isEventFormCompleted(eventForm.getStatus())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean isEventFormCompleted(String status) {
+        return "APPROVED".equals(status);
+    }
 }
+

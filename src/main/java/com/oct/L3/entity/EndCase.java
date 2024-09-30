@@ -24,7 +24,7 @@ public class EndCase {
     private Employee employee;
 
     @Column(name = "decision_date")
-    private Date decision_date;
+    private Date decisionDate;
 
     @Column(name = "archive_number")
     private String archiveNumber;

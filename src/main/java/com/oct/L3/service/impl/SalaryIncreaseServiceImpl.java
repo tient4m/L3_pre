@@ -11,6 +11,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import static com.oct.L3.constant.Status.ACTIVE;
+
 @Service
 @RequiredArgsConstructor
 public class SalaryIncreaseServiceImpl implements SalaryIncreaseService {
@@ -19,15 +21,20 @@ public class SalaryIncreaseServiceImpl implements SalaryIncreaseService {
     private final EventFormService eventFormService;
     private final SalaryIncreaseMapper salaryIncreaseMapper;
 
+
     @Transactional
     @Override
     public SalaryIncreaseDTO createSalaryIncrease(SalaryIncreaseDTO salaryIncreaseDTO) {
+        SalaryIncrease salaryIncrease = salaryIncreaseMapper.toEntity(salaryIncreaseDTO);
+        if (!salaryIncrease.getEventForm().getEmployee().getStatus().equals(ACTIVE)) {
+            throw new RuntimeException("Employee is not active");
+        }
         if (salaryIncreaseDTO.getEventForm() == null) {
             throw new RuntimeException("EventForm is required");
         }
-        return salaryIncreaseMapper.toDTO(salaryIncreaseRepository.save(salaryIncreaseMapper.toEntity(salaryIncreaseDTO)));
+        return salaryIncreaseMapper.toDTO(salaryIncreaseRepository.save(salaryIncrease));
     }
-
+ 
     @Transactional
     @Override
     public SalaryIncreaseDTO updateSalaryIncrease(Integer id, SalaryIncreaseDTO salaryIncreaseDTO) throws DataNotFoundException {

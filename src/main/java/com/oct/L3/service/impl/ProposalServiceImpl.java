@@ -21,10 +21,14 @@ public class ProposalServiceImpl implements ProposalService {
 
         @Override
         public ProposalDTO createProposal(ProposalDTO proposalDTO) {
+                Proposal proposal = proposalMapper.toEntity(proposalDTO);
+                if (!proposal.getEventForm().getEmployee().getStatus().equals("ACTIVE")) {
+                        throw new RuntimeException("Employee is not active");
+                }
                 if (proposalDTO.getEventForm() == null) {
                         throw new RuntimeException("EventForm is required");
                 }
-                return proposalMapper.toDTO(proposalRepository.save(proposalMapper.toEntity(proposalDTO)));
+                return proposalMapper.toDTO(proposalRepository.save(proposal));
         }
 
         @Transactional

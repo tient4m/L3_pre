@@ -1,6 +1,7 @@
 package com.oct.L3.controller;
 
 import com.oct.L3.Response.ResponseObject;
+import com.oct.L3.configurations.JWTTokenUtil;
 import com.oct.L3.dtos.ProposalDTO;
 import com.oct.L3.service.ProposalService;
 import jakarta.validation.Valid;
@@ -23,10 +24,12 @@ import static com.oct.L3.constant.EventType.PROPOSAL;
 public class ProposalController {
 
     private final ProposalService proposalService;
+    private final JWTTokenUtil jwtTokenUtil;
 
     @PreAuthorize("hasRole('MANAGER')")
     @PostMapping("/create")
     public ResponseEntity<ResponseObject> createProposal(@RequestBody @Valid ProposalDTO proposalDTO
+            , @RequestHeader(name = "Authorization", required = false) String authorizationHeader
                                                                , BindingResult result) {
         if (result.hasErrors()) {
             List<String> errorMessages = result.getFieldErrors()
@@ -40,6 +43,13 @@ public class ProposalController {
                     .build());
         }
         try {
+
+            String token = null;
+            if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
+                token = authorizationHeader.substring(7);
+            }
+            proposalDTO.getEventForm().setStatus("PENDING");
+            proposalDTO.getEventForm().setManagerId(jwtTokenUtil.extractId(token));
 //            String type = proposalDTO.getType();
 //            type.toUpperCase();
             proposalDTO.getEventForm().setType(PROPOSAL);
@@ -61,7 +71,7 @@ public class ProposalController {
     @PreAuthorize("hasRole('MANAGER')")
     @PutMapping("/update/{id}")
     public ResponseEntity<ResponseObject> updateProposal(
-            @PathVariable Integer evenFormId,
+            @PathVariable Integer id,
             @RequestBody @Valid ProposalDTO proposalDTO,
             BindingResult result) {
         if (result.hasErrors()) {
@@ -76,7 +86,7 @@ public class ProposalController {
                     .build());
         }
         try {
-            ProposalDTO proposalResult = proposalService.updateProposal(evenFormId,proposalDTO);
+            ProposalDTO proposalResult = proposalService.updateProposal(id,proposalDTO);
             return ResponseEntity.ok().body(ResponseObject.builder()
                     .message("Proposal updated successfully")
                     .status(HttpStatus.OK)

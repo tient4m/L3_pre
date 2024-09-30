@@ -12,7 +12,7 @@ import java.util.Date;
 public class EndCaseDTO {
     private Integer endCaseId;
     private Integer employeeId;
-    private Date decision_date;
+    private Date decisionDate;
     private String archiveNumber;
     private String status;
 }
