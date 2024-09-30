@@ -169,8 +169,8 @@ public class EventFormController {
     @PreAuthorize("hasRole('ROLE_MANAGER')")
     @PatchMapping("send/{leaderId}/{eventFormId}")
     public ResponseEntity<ResponseObject> sendToLeader(
-            @PathVariable Integer leaderId,
             @PathVariable Integer eventFormId,
+            @RequestParam Integer leaderId,
             @RequestParam String content,
             @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") Date submissionDate
     ) {
