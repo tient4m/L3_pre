@@ -3,6 +3,7 @@ package com.oct.L3.dtos;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.oct.L3.entity.Certificate;
 import com.oct.L3.entity.FamilyRelationship;
+import jakarta.validation.constraints.Email;
 import lombok.*;
 
 import java.time.LocalDate;
@@ -23,6 +24,8 @@ public class EmployeeDTO {
     private String address;
     private String identityCard;
     private String phoneNumber;
+
+    @Email
     private String email;
     private Integer positionId;
     private Integer managerId;
