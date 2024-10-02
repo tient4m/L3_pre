@@ -17,7 +17,7 @@ public class SalaryIncrease {
     @Column(name = "salary_increase_id")
     private Integer Id;
 
-    @ManyToOne(cascade = CascadeType.PERSIST)
+    @ManyToOne(cascade = {CascadeType.PERSIST})
     @JoinColumn(name = "event_form_id")
     private EventForm eventForm;
 

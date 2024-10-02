@@ -10,6 +10,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
@@ -66,7 +68,8 @@ public class SalaryIncreaseController {
 
     @PreAuthorize("hasRole('MANAGER')")
     @PutMapping("/update/{id}")
-    public ResponseEntity<ResponseObject> updateSalaryIncrease(@PathVariable Integer id, @RequestBody @Valid SalaryIncreaseDTO salaryIncreaseDTO
+    public ResponseEntity<ResponseObject> updateSalaryIncrease(@PathVariable Integer id,
+                                                               @RequestBody @Valid SalaryIncreaseDTO salaryIncreaseDTO
                                                                , BindingResult result) {
         if (result.hasErrors()) {
             List<String> errorMessages = result.getFieldErrors()
@@ -79,6 +82,10 @@ public class SalaryIncreaseController {
                     .data(null)
                     .build());
         }
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        authentication.getAuthorities().forEach(authority -> {
+            System.out.println(authority.getAuthority());
+        });
         try {
             SalaryIncreaseDTO salaryIncreaseResult = salaryIncreaseService.updateSalaryIncrease(id, salaryIncreaseDTO);
             return ResponseEntity.ok().body(ResponseObject.builder()

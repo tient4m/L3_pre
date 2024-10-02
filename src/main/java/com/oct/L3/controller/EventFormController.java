@@ -17,6 +17,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
@@ -124,7 +125,8 @@ public class EventFormController {
         }
     }
 
-    @PreAuthorize("hasRole('ROLE_MANAGER')")
+    @PreAuthorize("hasRole('MANAGER')")
+    @Transactional
     @PutMapping("update/{id}")
     public ResponseEntity<ResponseObject> updateEmployee(
             @Valid @RequestBody EventFormDTO eventFormDTO,
@@ -198,7 +200,7 @@ public class EventFormController {
         }
         Integer leaderId = jwtTokenUtil.extractId(token);
         try {
-            EventFormDTO empResult = eventFormService.updateEventFormStatus(leaderId,eventFormId,submissionDate,leaderComments,REJECTED);
+            EventFormDTO empResult = eventFormService.handleFormStatusByLeader(leaderId,eventFormId,submissionDate,leaderComments,REJECTED);
             return ResponseEntity.ok().body(ResponseObject.builder()
                     .message("Employee rejected successful")
                     .status(HttpStatus.OK)
@@ -227,7 +229,7 @@ public class EventFormController {
         }
         Integer leaderId = jwtTokenUtil.extractId(token);
         try {
-            EventFormDTO empResult = eventFormService.updateEventFormStatus(eventFormId,leaderId,submissionDate,leaderComments,APPROVED);
+            EventFormDTO empResult = eventFormService.handleFormStatusByLeader(eventFormId,leaderId,submissionDate,leaderComments,APPROVED);
             return ResponseEntity.ok().body(ResponseObject.builder()
                     .message("Employee approved successful")
                     .status(HttpStatus.OK)
@@ -304,7 +306,7 @@ public class EventFormController {
         }
         Integer leaderId = jwtTokenUtil.extractId(token);
         try {
-            EventFormDTO empResult = eventFormService.updateEventFormStatus(eventFormId,leaderId,submissionDate,leaderComments,ADDITIONAL_REQUIREMENTS);
+            EventFormDTO empResult = eventFormService.handleFormStatusByLeader(eventFormId,leaderId,submissionDate,leaderComments,ADDITIONAL_REQUIREMENTS);
             return ResponseEntity.ok().body(ResponseObject.builder()
                     .message("Employee additional requirements successful")
                     .status(HttpStatus.OK)

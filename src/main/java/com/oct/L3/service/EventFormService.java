@@ -19,9 +19,9 @@ public interface EventFormService {
 
     List<EventFormDTO> getAllEventFormsByManagerIdOrLeaderId(Integer id) throws DataNotFoundException;
 
-    EventFormDTO updateEventFormStatus(Integer eventFormId,
-                                       Integer leaderId,
-                                       Date  submissionDate,
-                                       String leaderComments,
-                                       String status) throws DataNotFoundException;
+    EventFormDTO handleFormStatusByLeader(Integer eventFormId,
+                                          Integer leaderId,
+                                          Date  submissionDate,
+                                          String leaderComments,
+                                          String status) throws DataNotFoundException;
 }

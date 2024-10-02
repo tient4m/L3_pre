@@ -16,7 +16,7 @@ public class EmployeeDTO {
     private Integer id;
 
     @NotBlank(message = "Name is required")
-    @Pattern(regexp = "^[a-zA-Z\\s]+$", message = "Name must not contain numbers or special characters")
+    @Pattern(regexp = "^[\\p{L}\\s]+$", message = "Name must not contain numbers or special characters")
     private String name;
 
     @NotBlank(message = "Employee code is required")
@@ -49,10 +49,7 @@ public class EmployeeDTO {
 
     private Integer positionId;
     private Integer managerId;
-
-    @NotBlank(message = "Status is required")
     private String status;
-
     private String hometown;
     private String ethnicity;
     private String educationLevel;

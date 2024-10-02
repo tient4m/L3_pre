@@ -6,7 +6,7 @@ import com.oct.L3.exceptions.DataNotFoundException;
 public interface SalaryIncreaseService {
     SalaryIncreaseDTO createSalaryIncrease(SalaryIncreaseDTO salaryIncreaseDTO);
 
-    SalaryIncreaseDTO updateSalaryIncrease(Integer id, SalaryIncreaseDTO salaryIncreaseDTO) throws DataNotFoundException;
+    SalaryIncreaseDTO updateSalaryIncrease(Integer eventFormId, SalaryIncreaseDTO salaryIncreaseDTO) throws DataNotFoundException;
 
 
     SalaryIncreaseDTO getSalaryIncreaseByEventFormId(Integer id) throws DataNotFoundException;

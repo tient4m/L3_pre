@@ -37,7 +37,7 @@ public class Employee {
     @Column(name = "address")
     private String address;
 
-    @Column(name = "identity_card")
+    @Column(name = "identity_card",unique = true)
     private String identityCard;
 
     @Column(name = "phone_number")

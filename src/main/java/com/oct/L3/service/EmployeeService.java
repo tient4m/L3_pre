@@ -10,4 +10,6 @@ public interface EmployeeService {
     EmployeeDTO saveEmployee(EmployeeDTO employeeDTO);
 
     EmployeeDTO updateEmployee(Integer id, EmployeeDTO employeeDTO);
+
+    void deleteEmployee(Integer id);
 }

@@ -8,6 +8,7 @@ import com.oct.L3.service.EmployeeService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -42,6 +43,15 @@ public class EmployeeServiceImpl implements EmployeeService {
         }
         Employee employee = employeeMapper.toEntity(employeeDTO);
         return employeeMapper.toDTO(employeeRepository.save(employee));
+    }
+
+    @Override
+    @Transactional
+    public void deleteEmployee(Integer id) {
+        if (!employeeRepository.existsById(id)) {
+            throw new RuntimeException("Employee not found");
+        }
+            employeeRepository.deleteById(id);
     }
 
 

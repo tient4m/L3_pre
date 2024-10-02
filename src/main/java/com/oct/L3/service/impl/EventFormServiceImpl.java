@@ -1,21 +1,22 @@
 package com.oct.L3.service.impl;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.oct.L3.convertTo.EmployeeMapper;
 import com.oct.L3.convertTo.EventFormMapper;
-import com.oct.L3.dtos.EmployeeDTO;
 import com.oct.L3.dtos.EventForm.EventFormDTO;
 import com.oct.L3.entity.Employee;
 import com.oct.L3.entity.EventForm;
 import com.oct.L3.entity.EventFormHistory;
 import com.oct.L3.entity.User;
 import com.oct.L3.exceptions.DataNotFoundException;
+import com.oct.L3.exceptions.InvalidEmployeeStatusException;
+import com.oct.L3.repository.EmployeeRepository;
 import com.oct.L3.repository.EventFormHistoryRepository;
 import com.oct.L3.repository.EventFormRepository;
 import com.oct.L3.repository.UserRepository;
 import com.oct.L3.service.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PostAuthorize;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -35,7 +36,7 @@ import static com.oct.L3.constant.Status.*;
 public class EventFormServiceImpl implements EventFormService {
     private final EventFormRepository eventFormRepository;
     private final EventFormMapper eventFormMapper;
-    private final ObjectMapper objectMapper = new ObjectMapper();
+    private final EmployeeRepository employeeRepository;
     private final UserRepository userRepository;
     private final EventFormHistoryRepository eventFormHistoryRepository;
     private final EmployeeMapper employeeMapper;
@@ -43,10 +44,17 @@ public class EventFormServiceImpl implements EventFormService {
 
     @Override
     public EventFormDTO saveEventForm(EventFormDTO eventFormDTO) {
+        Employee employee = employeeRepository.findById(eventFormDTO.getEmployeeId()).orElseThrow(()-> new RuntimeException("Employee not found"));
+        if (employee.getStatus().equals(TERMINATED) || employee.getStatus().equals(ARCHIVED)){
+            throw new InvalidEmployeeStatusException("Invalid employee status");
+        }
         if (eventFormDTO.getType().equals(TERMINATION_REQUEST)){
             if (hasIncompleteEventForms(eventFormDTO.getEmployeeId())) {
-                throw new RuntimeException("Employee has incomplete event forms");
+                throw new InvalidEmployeeStatusException("Employee has incomplete event forms");
             }
+        }
+        if (!employee.getStatus().equals(DRAFT) && eventFormDTO.getType().equals(REGISTRATION)){
+            throw new InvalidEmployeeStatusException("Invalid employee status");
         }
         EventForm eventForm = eventFormMapper.toEntity(eventFormDTO);
         eventFormRepository.save(eventForm);
@@ -54,7 +62,9 @@ public class EventFormServiceImpl implements EventFormService {
     }
 
     @Override
+//    @Transactional
     @PostAuthorize("returnObject.managerId == principal.id")
+    @PreAuthorize("hasAuthority('ROLE_MANAGER') ")
     public EventFormDTO updateEventForm(Integer id, EventFormDTO eventFormDTO) throws DataNotFoundException {
         EventForm eventForm = eventFormRepository.findById(id).orElseThrow(()-> new DataNotFoundException("EventForm not found"));
         if (!DRAFT.equals(eventForm.getStatus())&& !REJECTED.equals(eventForm.getStatus())&&!ADDITIONAL_REQUIREMENTS.equals(eventForm.getStatus())) {
@@ -62,8 +72,7 @@ public class EventFormServiceImpl implements EventFormService {
         }
         eventFormDTO.setId(id);
         EventForm savedEventForm = eventFormMapper.mergerEntityAndDTO(eventForm,eventFormDTO);
-        EventFormDTO eventFormDTO2= eventFormMapper.toDTO(eventFormRepository.save(savedEventForm));
-        return eventFormDTO2;
+        return eventFormMapper.toDTO(eventFormRepository.save(savedEventForm));
     }
 
 
@@ -72,6 +81,7 @@ public class EventFormServiceImpl implements EventFormService {
         User leader = userRepository.findById(leaderId).orElseThrow(()-> new DataNotFoundException("Leader not found"));
         EventForm eventForm = eventFormRepository.findById(eventFormId).orElseThrow(()-> new DataNotFoundException("EventForm not found"));
         eventForm.setLeader(leader);
+        eventForm.getEmployee().setStatus(PENDING);
         eventForm.setStatus(PENDING);
         eventForm.setManagerComments(managerComments);
         eventForm.setSubmissionDate(submissionDate);
@@ -79,6 +89,7 @@ public class EventFormServiceImpl implements EventFormService {
                 .eventForm(eventForm)
                 .status(PENDING)
                 .actionDate(submissionDate)
+                .comments(managerComments)
                 .build();
         eventFormHistoryRepository.save(eventFormHistory);
         EventForm savedEventForm = eventFormRepository.save(eventForm);
@@ -89,8 +100,7 @@ public class EventFormServiceImpl implements EventFormService {
     @PostAuthorize("returnObject.managerId == principal.id")
     public EventFormDTO getEventFormById(Integer id) throws DataNotFoundException {
         EventForm eventForm = eventFormRepository.findById(id).orElseThrow(()-> new DataNotFoundException("EventForm not found"));
-        EventFormDTO eventFormDTO = eventFormMapper.toDTO(eventForm);
-        return eventFormDTO;
+        return eventFormMapper.toDTO(eventForm);
     }
 
     @Override
@@ -102,23 +112,23 @@ public class EventFormServiceImpl implements EventFormService {
 
     @Transactional
     @Override
-    public EventFormDTO updateEventFormStatus(Integer eventFormId,
-                                              Integer leaderId,
-                                              Date  submissionDate,
-                                              String leaderComments,
-                                              String status) throws DataNotFoundException {
+    public EventFormDTO handleFormStatusByLeader(Integer eventFormId,
+                                                 Integer leaderId,
+                                                 Date  submissionDate,
+                                                 String leaderComments,
+                                                 String status) throws DataNotFoundException {
         EventForm eventForm = eventFormRepository.findById(eventFormId).orElseThrow(()-> new DataNotFoundException("EventForm not found"));
         if(!PENDING.equals(eventForm.getStatus())){
             throw new DataNotFoundException("EventForm is not in pending status");
         }
-        if (eventForm.getLeader().getId() != leaderId) {
+        if (!Objects.equals(eventForm.getLeader().getId(), leaderId)) {
             throw new DataNotFoundException("Leader is not the leader of the event form");
         }
         if (leaderComments != null) {
             eventForm.setLeaderComments(leaderComments);
         }
-        if (eventForm.getType().equals(REGISTRATION) && APPROVED.equals(status) ) {
-            eventForm.getEmployee().setStatus(ACTIVE);
+        if (eventForm.getType().equals(REGISTRATION) && APPROVED.equals(status)) {
+                eventForm.getEmployee().setStatus(ACTIVE);
         }
         if (eventForm.getType().equals(TERMINATION_REQUEST) && APPROVED.equals(status)){
             eventForm.getEmployee().setStatus(TERMINATED);
@@ -136,6 +146,8 @@ public class EventFormServiceImpl implements EventFormService {
         return eventFormMapper.toDTO(savedEventForm);
     }
 
+
+
     private boolean hasIncompleteEventForms(Integer employeeId) {
         List<EventForm> eventForms = eventFormRepository.findByEmployeeId(employeeId);
         for (EventForm eventForm : eventForms) {
@@ -145,7 +157,6 @@ public class EventFormServiceImpl implements EventFormService {
         }
         return false;
     }
-
     private boolean isEventFormCompleted(String status) {
         return "APPROVED".equals(status);
     }

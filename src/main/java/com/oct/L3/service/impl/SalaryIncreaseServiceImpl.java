@@ -2,8 +2,10 @@ package com.oct.L3.service.impl;
 
 import com.oct.L3.convertTo.SalaryIncreaseMapper;
 import com.oct.L3.dtos.SalaryIncreaseDTO;
+import com.oct.L3.entity.EventForm;
 import com.oct.L3.entity.SalaryIncrease;
 import com.oct.L3.exceptions.DataNotFoundException;
+import com.oct.L3.repository.EventFormRepository;
 import com.oct.L3.repository.SalaryIncreaseRepository;
 import com.oct.L3.service.EventFormService;
 import com.oct.L3.service.SalaryIncreaseService;
@@ -20,6 +22,7 @@ public class SalaryIncreaseServiceImpl implements SalaryIncreaseService {
     private final SalaryIncreaseRepository salaryIncreaseRepository;
     private final EventFormService eventFormService;
     private final SalaryIncreaseMapper salaryIncreaseMapper;
+    private final EventFormRepository eventFormRepository;
 
 
     @Transactional
@@ -38,9 +41,13 @@ public class SalaryIncreaseServiceImpl implements SalaryIncreaseService {
     @Transactional
     @Override
     public SalaryIncreaseDTO updateSalaryIncrease(Integer id, SalaryIncreaseDTO salaryIncreaseDTO) throws DataNotFoundException {
-        eventFormService.updateEventForm( id, salaryIncreaseDTO.getEventForm());
-        salaryIncreaseRepository.save(salaryIncreaseMapper.toEntity(salaryIncreaseDTO));
-        return null;
+        eventFormService.updateEventForm(id, salaryIncreaseDTO.getEventForm());
+        EventForm updatedEventForm = eventFormRepository.findById(id)
+                .orElseThrow(() -> new DataNotFoundException("EventForm not found"));
+        SalaryIncrease salaryIncrease = salaryIncreaseMapper.toEntity(salaryIncreaseDTO);
+        salaryIncrease.setEventForm(updatedEventForm);
+        salaryIncrease = salaryIncreaseRepository.save(salaryIncrease);
+        return salaryIncreaseMapper.toDTO(salaryIncrease);
     }
 
     @Override
