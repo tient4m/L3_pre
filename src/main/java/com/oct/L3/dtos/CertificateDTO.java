@@ -17,7 +17,7 @@ public class CertificateDTO {
 
     private Integer id;
 
-    @NotBlank(message = "Certificate name is required")
+    @NotBlank(message = "CertificateEntity name is required")
     private String name;
 
     @NotBlank(message = "Field of certificate is required")

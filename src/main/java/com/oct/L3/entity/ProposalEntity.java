@@ -3,25 +3,21 @@ package com.oct.L3.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.util.Set;
-
 @Entity
 @Getter
 @Setter
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Builder
-@Table(name = "positions")
-public class Position {
+@Table(name = "proposal")
+public class ProposalEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "position_id")
     private Integer Id;
-
-    @Column(name = "name", nullable = false)
-    private String name;
-
-    @Column(name = "description")
+    private Integer eventFormId;
+    private String content;
+    private String type;
     private String description;
+    private String note;
 }

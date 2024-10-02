@@ -16,7 +16,7 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
--- Table structure for table `certificates`
+-- Table structure for table `certificateEntities`
 --
 
 DROP TABLE IF EXISTS `certificates`;
@@ -36,12 +36,12 @@ CREATE TABLE `certificates` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `certificates`
+-- Dumping data for table `certificateEntities`
 --
 
 LOCK TABLES `certificates` WRITE;
-/*!40000 ALTER TABLE `certificates` DISABLE KEYS */;
-/*!40000 ALTER TABLE `certificates` ENABLE KEYS */;
+/*!40000 ALTER TABLE `certificateEntities` DISABLE KEYS */;
+/*!40000 ALTER TABLE `certificateEntities` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 

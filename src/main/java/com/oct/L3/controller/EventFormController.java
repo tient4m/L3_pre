@@ -1,12 +1,12 @@
 package com.oct.L3.controller;
 
-import com.oct.L3.Response.*;
+import com.oct.L3.dtos.response.*;
 import com.oct.L3.configurations.JWTTokenUtil;
-import com.oct.L3.convertTo.EventFormMapper;
-import com.oct.L3.convertTo.PromotionMapper;
-import com.oct.L3.convertTo.ProposalMapper;
-import com.oct.L3.convertTo.SalaryIncreaseMapper;
-import com.oct.L3.dtos.EventForm.EventFormDTO;
+import com.oct.L3.mapper.EventFormMapper;
+import com.oct.L3.mapper.PromotionMapper;
+import com.oct.L3.mapper.ProposalMapper;
+import com.oct.L3.mapper.SalaryIncreaseMapper;
+import com.oct.L3.dtos.eventform.EventFormDTO;
 import com.oct.L3.service.EventFormService;
 import com.oct.L3.service.PromotionService;
 import com.oct.L3.service.ProposalService;
@@ -63,13 +63,13 @@ public class EventFormController {
         try {
             EventFormDTO empResult = eventFormService.saveEventForm(eventFormDTO);
             return ResponseEntity.ok().body(ResponseObject.builder()
-                    .message("Employee termination request successful")
+                    .message("EmployeeEntity termination request successful")
                     .status(HttpStatus.CREATED)
                     .data(empResult)
                     .build());
         } catch (Exception e) {
             return ResponseEntity.ok().body(ResponseObject.builder()
-                    .message("Employee termination request failed" + e)
+                    .message("EmployeeEntity termination request failed" + e)
                     .status(HttpStatus.BAD_REQUEST)
                     .data(null)
                     .build());
@@ -105,13 +105,13 @@ public class EventFormController {
         try {
             EventFormDTO empResult = eventFormService.saveEventForm(eventFormDTO);
             return ResponseEntity.ok().body(ResponseObject.builder()
-                    .message("Employee registration successful")
+                    .message("EmployeeEntity registration successful")
                     .status(HttpStatus.CREATED)
                     .data(empResult)
                     .build());
         } catch (Exception e) {
             return ResponseEntity.ok().body(ResponseObject.builder()
-                    .message("Employee registration failed" + e)
+                    .message("EmployeeEntity registration failed" + e)
                     .status(HttpStatus.BAD_REQUEST)
                     .data(null)
                     .build());
@@ -141,13 +141,13 @@ public class EventFormController {
 
             EventFormDTO empResult = eventFormService.updateEventForm(id,eventFormDTO);
             return ResponseEntity.ok().body(ResponseObject.builder()
-                    .message("Employee updated successful")
+                    .message("EmployeeEntity updated successful")
                     .status(HttpStatus.OK)
                     .data(empResult)
                     .build());
         } catch (Exception e) {
             return ResponseEntity.ok().body(ResponseObject.builder()
-                    .message("Employee registration failed" + e)
+                    .message("EmployeeEntity registration failed" + e)
                     .status(HttpStatus.BAD_REQUEST)
                     .data(null)
                     .build());
@@ -166,13 +166,13 @@ public class EventFormController {
 
             EventFormDTO empResult = eventFormService.sendFormToLeader(leaderId,eventFormId,managerComments,submissionDate);
             return ResponseEntity.ok().body(ResponseObject.builder()
-                    .message("Employee sent to leader successful")
+                    .message("EmployeeEntity sent to leaderId successful")
                     .status(HttpStatus.OK)
                     .data(empResult)
                     .build());
         } catch (Exception e) {
             return ResponseEntity.ok().body(ResponseObject.builder()
-                    .message("Employee sent to leader failed" + e)
+                    .message("EmployeeEntity sent to leaderId failed" + e)
                     .status(HttpStatus.BAD_REQUEST)
                     .data(null)
                     .build());
@@ -195,13 +195,13 @@ public class EventFormController {
         try {
             EventFormDTO empResult = eventFormService.updateEventFormStatus(leaderId,eventFormId,submissionDate,leaderComments,REJECTED);
             return ResponseEntity.ok().body(ResponseObject.builder()
-                    .message("Employee rejected successful")
+                    .message("EmployeeEntity rejected successful")
                     .status(HttpStatus.OK)
                     .data(empResult)
                     .build());
         } catch (Exception e) {
             return ResponseEntity.ok().body(ResponseObject.builder()
-                    .message("Employee rejected failed" + e)
+                    .message("EmployeeEntity rejected failed" + e)
                     .status(HttpStatus.BAD_REQUEST)
                     .data(null)
                     .build());
@@ -224,13 +224,13 @@ public class EventFormController {
         try {
             EventFormDTO empResult = eventFormService.updateEventFormStatus(eventFormId,leaderId,submissionDate,leaderComments,APPROVED);
             return ResponseEntity.ok().body(ResponseObject.builder()
-                    .message("Employee approved successful")
+                    .message("EmployeeEntity approved successful")
                     .status(HttpStatus.OK)
                     .data(empResult)
                     .build());
         } catch (Exception e) {
             return ResponseEntity.ok().body(ResponseObject.builder()
-                    .message("Employee approved failed" + e)
+                    .message("EmployeeEntity approved failed" + e)
                     .status(HttpStatus.BAD_REQUEST)
                     .data(null)
                     .build());
@@ -247,7 +247,7 @@ public class EventFormController {
                     SalaryIncreaseResponse salaryIncreaseResponse = salaryIncreaseMapper.toResponse(salaryIncreaseService.getSalaryIncreaseByEventFormId(empResult.getId()));
                     salaryIncreaseResponse.setEventForm(empResult);
                     return ResponseEntity.ok().body(ResponseObject.builder()
-                            .message("Employee retrieved successful")
+                            .message("EmployeeEntity retrieved successful")
                             .status(HttpStatus.OK)
                             .data(salaryIncreaseResponse)
                             .build());
@@ -255,7 +255,7 @@ public class EventFormController {
                     PromotionResponse promotionResponse = promotionMapper.toResponse(promotionService.getPromotionById(empResult.getId()));
                     promotionResponse.setEventForm(empResult);
                     return ResponseEntity.ok().body(ResponseObject.builder()
-                            .message("Employee retrieved successful")
+                            .message("EmployeeEntity retrieved successful")
                             .status(HttpStatus.OK)
                             .data(promotionResponse)
                             .build());
@@ -263,21 +263,21 @@ public class EventFormController {
                     ProposalResponse proposalResponse = proposalMapper.toResponse(proposalService.getProposalByEventFormId(empResult.getId()));
                     proposalResponse.setEventForm(empResult);
                     return ResponseEntity.ok().body(ResponseObject.builder()
-                            .message("Employee retrieved successful")
+                            .message("EmployeeEntity retrieved successful")
                             .status(HttpStatus.OK)
                             .data(proposalResponse)
                             .build());
                     default:
                         EventFormResponse eventFormResponse  = eventFormMapper.toResponse(empResult);
                     return ResponseEntity.ok().body(ResponseObject.builder()
-                            .message("Employee retrieved successful")
+                            .message("EmployeeEntity retrieved successful")
                             .status(HttpStatus.OK)
                             .data(eventFormResponse)
                             .build());
             }
         } catch (Exception e) {
             return ResponseEntity.ok().body(ResponseObject.builder()
-                    .message("Employee retrieved failed" + e)
+                    .message("EmployeeEntity retrieved failed" + e)
                     .status(HttpStatus.BAD_REQUEST)
                     .data(null)
                     .build());
@@ -300,13 +300,13 @@ public class EventFormController {
         try {
             EventFormDTO empResult = eventFormService.updateEventFormStatus(eventFormId,leaderId,submissionDate,leaderComments,ADDITIONAL_REQUIREMENTS);
             return ResponseEntity.ok().body(ResponseObject.builder()
-                    .message("Employee additional requirements successful")
+                    .message("EmployeeEntity additional requirements successful")
                     .status(HttpStatus.OK)
                     .data(empResult)
                     .build());
         } catch (Exception e) {
             return ResponseEntity.ok().body(ResponseObject.builder()
-                    .message("Employee additional requirements failed" + e)
+                    .message("EmployeeEntity additional requirements failed" + e)
                     .status(HttpStatus.BAD_REQUEST)
                     .data(null)
                     .build());

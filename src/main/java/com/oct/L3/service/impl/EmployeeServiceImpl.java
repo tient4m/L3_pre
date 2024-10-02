@@ -1,6 +1,6 @@
 package com.oct.L3.service.impl;
 
-import com.oct.L3.convertTo.EmployeeMapper;
+import com.oct.L3.mapper.EmployeeMapper;
 import com.oct.L3.dtos.EmployeeDTO;
 import com.oct.L3.entity.*;
 import com.oct.L3.repository.EmployeeRepository;
@@ -24,22 +24,23 @@ public class EmployeeServiceImpl implements EmployeeService {
                 .toList();
     }
 
+
     @Override
     public EmployeeDTO saveEmployee(EmployeeDTO employeeDTO) {
-        Employee employee = employeeMapper.toEntity(employeeDTO);
-        return employeeMapper.toDTO(employeeRepository.save(employee));
+        EmployeeEntity employeeEntity = employeeMapper.toEntity(employeeDTO);
+        return employeeMapper.toDTO(employeeRepository.save(employeeEntity));
     }
 
     @Override
     public EmployeeDTO updateEmployee(Integer id,EmployeeDTO employeeDTO) {
         if (!employeeRepository.existsById(id)) {
-            throw new RuntimeException("Employee not found");
+            throw new RuntimeException("EmployeeEntity not found");
         }
         if (employeeDTO.getId() != id) {
             throw new RuntimeException("Id not match");
         }
-        Employee employee = employeeMapper.toEntity(employeeDTO);
-        return employeeMapper.toDTO(employeeRepository.save(employee));
+        EmployeeEntity employeeEntity = employeeMapper.toEntity(employeeDTO);
+        return employeeMapper.toDTO(employeeRepository.save(employeeEntity));
     }
 
 

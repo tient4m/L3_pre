@@ -1,8 +1,8 @@
 package com.oct.L3.service.impl;
 
-import com.oct.L3.convertTo.SalaryIncreaseMapper;
+import com.oct.L3.entity.SalaryIncreaseEntity;
+import com.oct.L3.mapper.SalaryIncreaseMapper;
 import com.oct.L3.dtos.SalaryIncreaseDTO;
-import com.oct.L3.entity.SalaryIncrease;
 import com.oct.L3.exceptions.DataNotFoundException;
 import com.oct.L3.repository.SalaryIncreaseRepository;
 import com.oct.L3.service.EventFormService;
@@ -25,14 +25,14 @@ public class SalaryIncreaseServiceImpl implements SalaryIncreaseService {
     @Transactional
     @Override
     public SalaryIncreaseDTO createSalaryIncrease(SalaryIncreaseDTO salaryIncreaseDTO) {
-        SalaryIncrease salaryIncrease = salaryIncreaseMapper.toEntity(salaryIncreaseDTO);
-        if (!salaryIncrease.getEventForm().getEmployee().getStatus().equals(ACTIVE)) {
-            throw new RuntimeException("Employee is not active");
+        SalaryIncreaseEntity salaryIncreaseEntity = salaryIncreaseMapper.toEntity(salaryIncreaseDTO);
+        if (!salaryIncreaseEntity.getEventFormId().getEmployeeId().getStatus().equals(ACTIVE)) {
+            throw new RuntimeException("EmployeeEntity is not active");
         }
         if (salaryIncreaseDTO.getEventForm() == null) {
-            throw new RuntimeException("EventForm is required");
+            throw new RuntimeException("EventFormEntity is required");
         }
-        return salaryIncreaseMapper.toDTO(salaryIncreaseRepository.save(salaryIncrease));
+        return salaryIncreaseMapper.toDTO(salaryIncreaseRepository.save(salaryIncreaseEntity));
     }
  
     @Transactional
@@ -45,11 +45,11 @@ public class SalaryIncreaseServiceImpl implements SalaryIncreaseService {
 
     @Override
     public SalaryIncreaseDTO getSalaryIncreaseByEventFormId(Integer id) throws DataNotFoundException {
-        SalaryIncrease salaryIncrease = salaryIncreaseRepository.findByEventForm(id);
-        if (salaryIncrease == null) {
-            throw new DataNotFoundException("SalaryIncrease not found");
+        SalaryIncreaseEntity salaryIncreaseEntity = salaryIncreaseRepository.findByEventForm(id);
+        if (salaryIncreaseEntity == null) {
+            throw new DataNotFoundException("SalaryIncreaseEntity not found");
         }
-        return salaryIncreaseMapper.toDTO(salaryIncrease);
+        return salaryIncreaseMapper.toDTO(salaryIncreaseEntity);
     }
 
 }

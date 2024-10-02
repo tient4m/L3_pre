@@ -1,4 +1,4 @@
-package com.oct.L3.Response;
+package com.oct.L3.dtos.response;
 
 import com.oct.L3.dtos.EmployeeDTO;
 import com.oct.L3.dtos.EventFormHistoryDTO;

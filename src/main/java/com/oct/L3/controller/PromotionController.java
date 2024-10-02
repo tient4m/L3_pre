@@ -1,6 +1,6 @@
 package com.oct.L3.controller;
 
-import com.oct.L3.Response.ResponseObject;
+import com.oct.L3.dtos.response.ResponseObject;
 import com.oct.L3.dtos.PromotionDTO;
 import com.oct.L3.service.PromotionService;
 import jakarta.validation.Valid;
@@ -41,13 +41,13 @@ public class PromotionController {
             promotionDTO.getEventForm().setType(PROMOTION);
             PromotionDTO promotionResult = promotionService.createPromotion(promotionDTO);
             return ResponseEntity.ok().body(ResponseObject.builder()
-                    .message("Promotion created successfully")
+                    .message("PromotionEntity created successfully")
                     .status(HttpStatus.CREATED)
                     .data(promotionResult)
                     .build());
         } catch (Exception e) {
             return ResponseEntity.ok().body(ResponseObject.builder()
-                    .message("Promotion creation failed" + e)
+                    .message("PromotionEntity creation failed" + e)
                     .status(HttpStatus.BAD_REQUEST)
                     .data(null)
                     .build());
@@ -71,13 +71,13 @@ public class PromotionController {
         try {
             PromotionDTO promotionResult = promotionService.updatePromotion(evenFormId, promotionDTO);
             return ResponseEntity.ok().body(ResponseObject.builder()
-                    .message("Promotion updated successfully")
+                    .message("PromotionEntity updated successfully")
                     .status(HttpStatus.OK)
                     .data(promotionResult)
                     .build());
         } catch (Exception e) {
             return ResponseEntity.ok().body(ResponseObject.builder()
-                    .message("Promotion update failed" + e)
+                    .message("PromotionEntity update failed" + e)
                     .status(HttpStatus.BAD_REQUEST)
                     .data(null)
                     .build());

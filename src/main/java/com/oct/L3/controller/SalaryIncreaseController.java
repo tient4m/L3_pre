@@ -1,6 +1,6 @@
 package com.oct.L3.controller;
 
-import com.oct.L3.Response.ResponseObject;
+import com.oct.L3.dtos.response.ResponseObject;
 import com.oct.L3.configurations.JWTTokenUtil;
 import com.oct.L3.dtos.SalaryIncreaseDTO;
 import com.oct.L3.service.EventFormService;

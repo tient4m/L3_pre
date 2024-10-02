@@ -1,8 +1,8 @@
 package com.oct.L3.service.impl;
 
 import com.oct.L3.dtos.EndCaseDTO;
-import com.oct.L3.entity.Employee;
-import com.oct.L3.entity.EndCase;
+import com.oct.L3.entity.EmployeeEntity;
+import com.oct.L3.entity.EndCaseEntity;
 import com.oct.L3.repository.EmployeeRepository;
 import com.oct.L3.repository.EndCaseRepository;
 import com.oct.L3.service.EndCaseService;
@@ -21,24 +21,24 @@ public class EndCaseServiceImpl implements EndCaseService {
 
     @Override
     public EndCaseDTO createEndCase(EndCaseDTO endCaseDTO) {
-        Employee employee = employeeRepository.findById(endCaseDTO.getEmployeeId()).orElseThrow(() -> new RuntimeException("Employee not found"));
-        if (!employee.getStatus().equals(TERMINATED)){
-            throw new IllegalStateException("Employee is not terminated");
+        EmployeeEntity employeeEntity = employeeRepository.findById(endCaseDTO.getEmployeeId()).orElseThrow(() -> new RuntimeException("EmployeeEntity not found"));
+        if (!employeeEntity.getStatus().equals(TERMINATED)){
+            throw new IllegalStateException("EmployeeEntity is not terminated");
         }
-        EndCase endCase = EndCase.builder()
-                .employee(employee)
+        EndCaseEntity endCaseEntity = EndCaseEntity.builder()
+                .employeeId(employeeEntity)
                 .decisionDate(endCaseDTO.getDecisionDate())
                 .archiveNumber(endCaseDTO.getArchiveNumber())
                 .status(ARCHIVED)
                 .build();
-        employee.setStatus(ARCHIVED);
-        endCaseRepository.save(endCase);
+        employeeEntity.setStatus(ARCHIVED);
+        endCaseRepository.save(endCaseEntity);
         return EndCaseDTO.builder()
-                .endCaseId(endCase.getId())
-                .employeeId(endCase.getEmployee().getId())
-                .decisionDate(endCase.getDecisionDate())
-                .archiveNumber(endCase.getArchiveNumber())
-                .status(endCase.getStatus())
+                .endCaseId(endCaseEntity.getId())
+                .employeeId(endCaseEntity.getEmployeeId().getId())
+                .decisionDate(endCaseEntity.getDecisionDate())
+                .archiveNumber(endCaseEntity.getArchiveNumber())
+                .status(endCaseEntity.getStatus())
                 .build();
     }
 }

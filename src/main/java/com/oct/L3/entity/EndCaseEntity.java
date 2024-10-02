@@ -12,24 +12,14 @@ import java.util.Date;
 @NoArgsConstructor
 @Builder
 @Table(name = "endcase")
-public class EndCase {
+public class EndCaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "end_case_id")
     private Integer Id;
-
-    @OneToOne
-    @JoinColumn(name = "employee_id")
-    private Employee employee;
-
-    @Column(name = "decision_date")
+    private Integer employeeId;
     private Date decisionDate;
-
-    @Column(name = "archive_number")
     private String archiveNumber;
-
-    @Column(name = "status")
     private String status;
 
 }

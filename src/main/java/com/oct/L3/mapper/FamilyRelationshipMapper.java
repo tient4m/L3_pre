@@ -1,8 +1,5 @@
-package com.oct.L3.convertTo;
+package com.oct.L3.mapper;
 
-import com.oct.L3.dtos.FamilyRelationshipDTO;
-import com.oct.L3.entity.Employee;
-import com.oct.L3.entity.FamilyRelationship;
 import com.oct.L3.repository.EmployeeRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -12,10 +9,10 @@ import org.springframework.stereotype.Component;
 public class FamilyRelationshipMapper {
     private final EmployeeRepository employeeRepository;
 
-//    public  FamilyRelationshipDTO toDTO(FamilyRelationship familyRelationship) {
+//    public  FamilyRelationshipDTO toDTO(FamilyRelationshipEntity familyRelationship) {
 //        return FamilyRelationshipDTO.builder()
 //                .relationshipId(familyRelationship.getId())
-//                .employee(familyRelationship.getEmployee().getId())
+//                .employeeId(familyRelationship.getEmployeeId().getId())
 //                .fullName(familyRelationship.getFullName())
 //                .gender(familyRelationship.getGender())
 //                .dateOfBirth(familyRelationship.getDateOfBirth())
@@ -28,14 +25,14 @@ public class FamilyRelationshipMapper {
 //                .build();
 //    }
 //
-//    public FamilyRelationship toEntity(FamilyRelationshipDTO dto) {
-//        Employee employee = null;
-//        if (dto.getEmployee() != null) {
-//            employee = employeeRepository.findById(dto.getEmployee()).orElse(null);
+//    public FamilyRelationshipEntity toEntity(FamilyRelationshipDTO dto) {
+//        EmployeeEntity employeeId = null;
+//        if (dto.getEmployeeId() != null) {
+//            employeeId = employeeRepository.findById(dto.getEmployeeId()).orElse(null);
 //        }
-//        return FamilyRelationship.builder()
+//        return FamilyRelationshipEntity.builder()
 //                .Id(dto.getId())
-//                .employee(employee)  // Chỉ gán nếu employee không null
+//                .employeeId(employeeId)  // Chỉ gán nếu employeeId không null
 //                .fullName(dto.getFullName())
 //                .gender(dto.getGender())
 //                .dateOfBirth(dto.getDateOfBirth())

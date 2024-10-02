@@ -17,30 +17,18 @@ import java.util.List;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class User implements UserDetails {
+public class UserEntity implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "user_id")
     private Integer Id;
-
-    @Column(name = "user_name", nullable = false, unique = true)
     private String userName;
-
-    @Column(name = "full_name", nullable = false)
     private String fullName;
-
-    @Column(name = "role")
     private String role;
-
-    @Column(name = "password", nullable = false)
     private String password;
+    private Integer positionId;
 
-    @ManyToOne
-    @JoinColumn(name = "position_id", nullable = false)
-    private Position position;
-
-    public User(Integer leaderId) {
+    public UserEntity(Integer leaderId) {
     }
 
     @Override
@@ -54,6 +42,7 @@ public class User implements UserDetails {
     public String getUsername() {
         return this.userName;
     }
+
     @Override
     public boolean isAccountNonExpired() {
         return true;

@@ -1,4 +1,4 @@
-package com.oct.L3.enums;
+package com.oct.L3.constant.enums;
 
 public enum Roles {
     ADMIN,

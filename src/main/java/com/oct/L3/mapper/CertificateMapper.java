@@ -1,8 +1,5 @@
-package com.oct.L3.convertTo;
+package com.oct.L3.mapper;
 
-import com.oct.L3.dtos.CertificateDTO;
-import com.oct.L3.entity.Certificate;
-import com.oct.L3.entity.Employee;
 import com.oct.L3.repository.EmployeeRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -12,10 +9,10 @@ import org.springframework.stereotype.Component;
 public class CertificateMapper {
     private final EmployeeRepository employeeRepository;
 
-//    public CertificateDTO toDTO(Certificate certificate) {
+//    public CertificateDTO toDTO(CertificateEntity certificate) {
 //        return CertificateDTO.builder()
 //                .id(certificate.getId())
-//                .employee(certificate.getEmployee().getId())
+//                .employeeId(certificate.getEmployeeId().getId())
 //                .name(certificate.getName())
 //                .field(certificate.getField())
 //                .issueDate(certificate.getIssueDate())
@@ -23,14 +20,14 @@ public class CertificateMapper {
 //                .build();
 //    }
 //
-//    public Certificate toEntity(CertificateDTO dto) {
-//        Employee employee = null;
-//        if (dto.getEmployee() != null) {
-//            employee = employeeRepository.findById(dto.getEmployee()).orElse(null);
+//    public CertificateEntity toEntity(CertificateDTO dto) {
+//        EmployeeEntity employeeId = null;
+//        if (dto.getEmployeeId() != null) {
+//            employeeId = employeeRepository.findById(dto.getEmployeeId()).orElse(null);
 //        }
-//        return Certificate.builder()
+//        return CertificateEntity.builder()
 //                .Id(dto.getCertificateId())
-//                .employee(employee)
+//                .employeeId(employeeId)
 //                .name(dto.getName())
 //                .field(dto.getField())
 //                .issueDate(dto.getIssueDate())

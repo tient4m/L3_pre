@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.time.LocalDate;
 import java.util.Date;
 
 @Entity
@@ -13,29 +12,17 @@ import java.util.Date;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "certificates")
-public class Certificate {
+@Table(name = "certificateEntities")
+public class CertificateEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "certificate_id")
     private Integer Id;
-
-    @ManyToOne
-    @JoinColumn(name = "employee_id")
-    private Employee employee;
-
-    @Column(name = "name")
+    private Integer employeeId;
     private String name;
-
-    @Column(name = "field")
     private String field;
-
-    @Column(name = "issue_date")
     @JsonFormat(pattern = "yyyy-MM-dd")
     private Date issueDate;
-
-    @Column(name = "description")
     private String description;
 
 }

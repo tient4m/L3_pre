@@ -1,6 +1,6 @@
 package com.oct.L3.exceptions;
 
-import com.oct.L3.Response.ResponseObject;
+import com.oct.L3.dtos.response.ResponseObject;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;

@@ -1,21 +1,21 @@
-package com.oct.L3.dtos.EventForm;
+package com.oct.L3.entity;
 
-import com.oct.L3.dtos.EmployeeDTO;
-import com.oct.L3.dtos.EventFormHistoryDTO;
-import com.oct.L3.entity.User;
-import jakarta.persistence.Column;
+import jakarta.persistence.*;
 import lombok.*;
 
-import java.time.LocalDate;
 import java.util.Date;
-import java.util.List;
 
+@Entity
+@Builder
 @Getter
 @Setter
-@Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class EventFormDTO {
+@Table(name = "eventform")
+public class EventFormEntity {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer Id;
     private Integer employeeId;
     private String managerComments;
@@ -24,9 +24,9 @@ public class EventFormDTO {
     private Date  date;
     private Date submissionDate;
     private String content;
+    private String status;
     private Integer leaderId;
     private Integer managerId;
-    private String status;
     private String note;
-    private List<EventFormHistoryDTO> histories;
+
 }

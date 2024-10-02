@@ -1,15 +1,13 @@
-package com.oct.L3.convertTo;
+package com.oct.L3.mapper;
 
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.oct.L3.Response.EventFormResponse;
-import com.oct.L3.dtos.EmployeeDTO;
-import com.oct.L3.dtos.EventForm.EventFormDTO;
+import com.oct.L3.dtos.response.EventFormResponse;
+import com.oct.L3.dtos.eventform.EventFormDTO;
 import com.oct.L3.dtos.EventFormHistoryDTO;
-import com.oct.L3.entity.Employee;
-import com.oct.L3.entity.EventForm;
-import com.oct.L3.entity.User;
+import com.oct.L3.entity.EmployeeEntity;
+import com.oct.L3.entity.EventFormEntity;
+import com.oct.L3.entity.UserEntity;
 import com.oct.L3.repository.EmployeeRepository;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -27,43 +25,43 @@ public class EventFormMapper {
     private final EmployeeRepository employeeRepository;
     private final EmployeeMapper employeeMapper;
 
-    public EventFormDTO toDTO(EventForm eventForm) {
+    public EventFormDTO toDTO(EventFormEntity eventFormEntity) {
         EventFormDTO eventFormDTO = EventFormDTO.builder()
-                .Id(eventForm.getId())
-                .leaderComments(eventForm.getLeaderComments())
-                .managerComments(eventForm.getManagerComments())
-                .type(eventForm.getType())
-                .date(eventForm.getDate())
-                .submissionDate(eventForm.getSubmissionDate())
-                .content(eventForm.getContent())
-                .status(eventForm.getStatus())
+                .Id(eventFormEntity.getId())
+                .leaderComments(eventFormEntity.getLeaderComments())
+                .managerComments(eventFormEntity.getManagerComments())
+                .type(eventFormEntity.getType())
+                .date(eventFormEntity.getDate())
+                .submissionDate(eventFormEntity.getSubmissionDate())
+                .content(eventFormEntity.getContent())
+                .status(eventFormEntity.getStatus())
                 .build();
-        if (eventForm.getEmployee() != null) {
-            eventFormDTO.setEmployeeId(eventForm.getEmployee().getId());
+        if (eventFormEntity.getEmployeeId() != null) {
+            eventFormDTO.setEmployeeId(eventFormEntity.getEmployeeId().getId());
         }else {
             eventFormDTO.setEmployeeId(null);
         }
 
-        if (eventForm.getEmployee() != null) {
-            eventFormDTO.setEmployeeId(eventForm.getEmployee().getId());
+        if (eventFormEntity.getEmployeeId() != null) {
+            eventFormDTO.setEmployeeId(eventFormEntity.getEmployeeId().getId());
         }
-        if (eventForm.getManager() != null) {
-            eventFormDTO.setManagerId(eventForm.getManager().getId());
+        if (eventFormEntity.getManagerId() != null) {
+            eventFormDTO.setManagerId(eventFormEntity.getManagerId().getId());
         }
-        if (eventForm.getLeader() != null) {
-            eventFormDTO.setLeaderId(eventForm.getLeader().getId());
+        if (eventFormEntity.getLeaderId() != null) {
+            eventFormDTO.setLeaderId(eventFormEntity.getLeaderId().getId());
         }
-        if (eventForm.getHistories() != null) {
-            eventFormDTO.setHistories(eventForm.getHistories().stream()
+        if (eventFormEntity.getHistories() != null) {
+            eventFormDTO.setHistories(eventFormEntity.getHistories().stream()
                     .map(eventFormHistory -> modelMapper.map(eventFormHistory, EventFormHistoryDTO.class))
                     .collect(Collectors.toList()));
         }
         return eventFormDTO;
     }
 
-    public EventForm toEntity(EventFormDTO dto) {
+    public EventFormEntity toEntity(EventFormDTO dto) {
 
-        EventForm eventForm = EventForm.builder()
+        EventFormEntity eventFormEntity = EventFormEntity.builder()
                 .Id(dto.getId())
                 .leaderComments(dto.getLeaderComments())
                 .managerComments(dto.getManagerComments())
@@ -72,26 +70,26 @@ public class EventFormMapper {
                 .submissionDate(dto.getSubmissionDate())
                 .content(dto.getContent())
                 .status(dto.getStatus())
-//                .employee(employeeRepository.findById(dto.getEmployeeId()).orElse(null))
+//                .employeeId(employeeRepository.findById(dto.getEmployeeId()).orElse(null))
                 .build();
         if (dto.getEmployeeId() != null) {
-            Employee employee = employeeRepository.findById(dto.getEmployeeId()).orElse(null);
-            eventForm.setEmployee(employee);
+            EmployeeEntity employeeEntity = employeeRepository.findById(dto.getEmployeeId()).orElse(null);
+            eventFormEntity.setEmployeeId(employeeEntity);
         }else {
-            eventForm.setEmployee(null);
+            eventFormEntity.setEmployeeId(null);
         }
 
         if (dto.getLeaderId() != null) {
-            User leader = new User();
+            UserEntity leader = new UserEntity();
             leader.setId(dto.getLeaderId());
-            eventForm.setLeader(leader);
+            eventFormEntity.setLeaderId(leader);
         }
         if (dto.getManagerId() != null) {
-            User manager = new User();
+            UserEntity manager = new UserEntity();
             manager.setId(dto.getManagerId());
-            eventForm.setManager(manager);
+            eventFormEntity.setManagerId(manager);
         }
-        return eventForm;
+        return eventFormEntity;
     }
 
     public  EventFormResponse toResponse(EventFormDTO dto) {

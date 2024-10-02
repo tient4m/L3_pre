@@ -1,8 +1,8 @@
-package com.oct.L3.convertTo;
+package com.oct.L3.mapper;
 
-import com.oct.L3.Response.PromotionResponse;
+import com.oct.L3.dtos.response.PromotionResponse;
 import com.oct.L3.dtos.PromotionDTO;
-import com.oct.L3.entity.Promotion;
+import com.oct.L3.entity.PromotionEntity;
 import com.oct.L3.repository.PositionRepository;
 import com.oct.L3.repository.PromotionRepository;
 import lombok.RequiredArgsConstructor;
@@ -17,27 +17,27 @@ public class PromotionMapper {
     private final PositionRepository positionRepository;
     private final ModelMapper modelMapper = new ModelMapper();
 
-    public PromotionDTO toDTO(Promotion entity) {
+    public PromotionDTO toDTO(PromotionEntity entity) {
         return PromotionDTO.builder()
                 .promotionId(entity.getId())
                 .times(entity.getTimes())
                 .reason(entity.getReason())
-                .oldPosition(entity.getOldPosition().getId())
-                .newPosition(entity.getNewPosition() == null ? null : entity.getNewPosition().getId())
+                .oldPosition(entity.getOldPositionId().getId())
+                .newPosition(entity.getNewPositionId() == null ? null : entity.getNewPositionId().getId())
                 .note(entity.getNote())
-                .eventForm(entity.getEventForm() == null ? null : EventFormMapper.toDTO(entity.getEventForm()))
+                .eventForm(entity.getEventFormId() == null ? null : EventFormMapper.toDTO(entity.getEventFormId()))
                 .build();
     }
 
-    public  Promotion toEntity(PromotionDTO dto) {
-        return Promotion.builder()
+    public PromotionEntity toEntity(PromotionDTO dto) {
+        return PromotionEntity.builder()
                 .Id(dto.getPromotionId())
                 .times(dto.getTimes())
                 .reason(dto.getReason())
-                .oldPosition(positionRepository.findById(dto.getOldPosition()).get())
-                .newPosition(dto.getNewPosition() == null ? null : positionRepository.findById(dto.getNewPosition()).get())
+                .oldPositionId(positionRepository.findById(dto.getOldPosition()).get())
+                .newPositionId(dto.getNewPosition() == null ? null : positionRepository.findById(dto.getNewPosition()).get())
                 .note(dto.getNote())
-                .eventForm(dto.getEventForm() == null ? null : EventFormMapper.toEntity(dto.getEventForm()))
+                .eventFormId(dto.getEventForm() == null ? null : EventFormMapper.toEntity(dto.getEventForm()))
                 .build();
     }
 
@@ -46,8 +46,8 @@ public class PromotionMapper {
                 .promotionId(dto.getPromotionId())
                 .times(dto.getTimes())
                 .reason(dto.getReason())
-                .oldPosition(positionRepository.findById(dto.getOldPosition()).get())
-                .newPosition(dto.getNewPosition() == null ? null : positionRepository.findById(dto.getNewPosition()).get())
+                .oldPositionEntity(positionRepository.findById(dto.getOldPosition()).get())
+                .newPositionEntity(dto.getNewPosition() == null ? null : positionRepository.findById(dto.getNewPosition()).get())
                 .note(dto.getNote())
                 .eventForm(dto.getEventForm())
                 .build();

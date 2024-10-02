@@ -1,6 +1,6 @@
-package com.oct.L3.Response;
+package com.oct.L3.dtos.response;
 
-import com.oct.L3.dtos.EventForm.EventFormDTO;
+import com.oct.L3.dtos.eventform.EventFormDTO;
 import lombok.*;
 
 @Getter

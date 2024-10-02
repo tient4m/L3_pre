@@ -1,6 +1,6 @@
 package com.oct.L3.service;
 
-import com.oct.L3.dtos.EventForm.EventFormDTO;
+import com.oct.L3.dtos.eventform.EventFormDTO;
 import com.oct.L3.exceptions.DataNotFoundException;
 
 import java.util.Date;

@@ -19,7 +19,7 @@ public class EmployeeDTO {
     @Pattern(regexp = "^[a-zA-Z\\s]+$", message = "Name must not contain numbers or special characters")
     private String name;
 
-    @NotBlank(message = "Employee code is required")
+    @NotBlank(message = "EmployeeEntity code is required")
     @Pattern(regexp = "^(?!.*(.).*\\1)[A-Za-z0-9]+$", message = "Code must not have repeated characters")
     private String code;
 

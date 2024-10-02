@@ -1,7 +1,7 @@
-package com.oct.L3.Response;
+package com.oct.L3.dtos.response;
 
-import com.oct.L3.dtos.EventForm.EventFormDTO;
-import com.oct.L3.entity.Position;
+import com.oct.L3.dtos.eventform.EventFormDTO;
+import com.oct.L3.entity.PositionEntity;
 import lombok.*;
 
 @Getter
@@ -13,8 +13,8 @@ public class PromotionResponse {
     private Integer promotionId;
     private Integer times;
     private String reason;
-    private Position oldPosition;
-    private Position newPosition;
+    private PositionEntity oldPositionEntity;
+    private PositionEntity newPositionEntity;
     private String note;
     private EventFormDTO eventForm;
 }

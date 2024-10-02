@@ -1,6 +1,6 @@
 package com.oct.L3.service;
 
-import com.oct.L3.Response.UserLoginResponse;
+import com.oct.L3.dtos.response.UserLoginResponse;
 import com.oct.L3.dtos.UserDTO;
 
 public interface UserService {

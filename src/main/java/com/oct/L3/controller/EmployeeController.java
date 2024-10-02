@@ -1,6 +1,6 @@
 package com.oct.L3.controller;
 
-import com.oct.L3.Response.ResponseObject;
+import com.oct.L3.dtos.response.ResponseObject;
 import com.oct.L3.dtos.EmployeeDTO;
 import com.oct.L3.service.EmployeeService;
 import jakarta.validation.Valid;
@@ -13,7 +13,6 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 
 import static com.oct.L3.constant.Status.*;
-import static com.oct.L3.constant.EventType.*;
 
 
 import java.util.List;
@@ -52,7 +51,7 @@ public class EmployeeController {
         employeeDTO.setStatus(DRAFT);
         try {
             return ResponseEntity.ok().body(ResponseObject.builder()
-                    .message("Employee saved successfully")
+                    .message("EmployeeEntity saved successfully")
                     .status(HttpStatus.OK)
                     .data(employeeService.saveEmployee(employeeDTO))
                     .build());
@@ -85,7 +84,7 @@ public class EmployeeController {
         }
         try {
             return ResponseEntity.ok().body(ResponseObject.builder()
-                    .message("Employee updated successfully")
+                    .message("EmployeeEntity updated successfully")
                     .status(HttpStatus.OK)
                     .data(employeeService.updateEmployee(id, employeeDTO))
                     .build());

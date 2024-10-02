@@ -1,11 +1,11 @@
 package com.oct.L3.service.impl;
 
-import com.oct.L3.Response.UserLoginResponse;
+import com.oct.L3.dtos.response.UserLoginResponse;
 import com.oct.L3.configurations.JWTTokenUtil;
-import com.oct.L3.convertTo.UserMapper;
+import com.oct.L3.entity.UserEntity;
+import com.oct.L3.mapper.UserMapper;
 import com.oct.L3.dtos.PositionDTO;
 import com.oct.L3.dtos.UserDTO;
-import com.oct.L3.entity.User;
 import com.oct.L3.repository.PositionRepository;
 import com.oct.L3.repository.UserRepository;
 import com.oct.L3.service.UserService;
@@ -29,34 +29,34 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDTO save(UserDTO userDTO) {
-        User user = User.builder()
+        UserEntity userEntity = UserEntity.builder()
                 .userName(userDTO.getUserName())
                 .password(passwordEncoder.encode(userDTO.getPassword()))
                 .fullName(userDTO.getFullName())
-                .position(positionRepository.findById(userDTO.getPosition()).orElseThrow(() -> new RuntimeException("Position not found")))
+                .positionId(positionRepository.findById(userDTO.getPosition()).orElseThrow(() -> new RuntimeException("PositionEntity not found")))
                 .role(userDTO.getRole())
                 .build();
-        return userMapper.toDTO(userRepository.save(user));
+        return userMapper.toDTO(userRepository.save(userEntity));
     }
 
     @Override
     public UserLoginResponse login(String userName, String password) throws Exception {
-        User user = userRepository.findByUserName(userName)
-                .orElseThrow(() -> new RuntimeException("User not found"));
-        if (!passwordEncoder.matches(password, user.getPassword())) {
+        UserEntity userEntity = userRepository.findByUserName(userName)
+                .orElseThrow(() -> new RuntimeException("UserEntity not found"));
+        if (!passwordEncoder.matches(password, userEntity.getPassword())) {
             throw new RuntimeException("Password is incorrect");
         }
-        PositionDTO positionDTO = modelMapper.map(user.getPosition(), PositionDTO.class);
+        PositionDTO positionDTO = modelMapper.map(userEntity.getPositionId(), PositionDTO.class);
         UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(
-                userName, password,user.getAuthorities()
+                userName, password, userEntity.getAuthorities()
         );
         authenticationManager.authenticate(usernamePasswordAuthenticationToken);
-        String token = jwtTokenUtil.generateToken(user);
+        String token = jwtTokenUtil.generateToken(userEntity);
         return UserLoginResponse.builder()
-                .userId(user.getId())
-                .userName(user.getUsername())
-                .role(user.getRole())
-                .fullName(user.getFullName())
+                .userId(userEntity.getId())
+                .userName(userEntity.getUsername())
+                .role(userEntity.getRole())
+                .fullName(userEntity.getFullName())
                 .positionDTO(positionDTO)
                 .token(token)
                 .build();
@@ -65,7 +65,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public void delete(Integer userId) {
         if (!userRepository.existsById(userId)) {
-            throw new RuntimeException("User not found");
+            throw new RuntimeException("UserEntity not found");
         }
         userRepository.deleteById(userId);
     }

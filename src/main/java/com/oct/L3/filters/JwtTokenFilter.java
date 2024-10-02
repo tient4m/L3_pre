@@ -1,7 +1,7 @@
 package com.oct.L3.filters;
 
 import com.oct.L3.configurations.JWTTokenUtil;
-import com.oct.L3.entity.User;
+import com.oct.L3.entity.UserEntity;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -50,12 +50,12 @@ public class JwtTokenFilter extends OncePerRequestFilter {
             final String phoneNumber = jwtTokenUtil.getSubject(token);
             if (phoneNumber != null
                     && SecurityContextHolder.getContext().getAuthentication() == null) {
-                User userDetails = (User) userDetailsService.loadUserByUsername(phoneNumber);
+                UserEntity userEntityDetails = (UserEntity) userDetailsService.loadUserByUsername(phoneNumber);
                     UsernamePasswordAuthenticationToken authenticationToken =
                             new UsernamePasswordAuthenticationToken(
-                                    userDetails,
+                                    userEntityDetails,
                                     null,
-                                    userDetails.getAuthorities()
+                                    userEntityDetails.getAuthorities()
                             );
                     authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                     SecurityContextHolder.getContext().setAuthentication(authenticationToken);

@@ -16,13 +16,13 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
--- Table structure for table `proposal`
+-- Table structure for table `proposalEntity`
 --
 
-DROP TABLE IF EXISTS `proposal`;
+DROP TABLE IF EXISTS `proposalEntity`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `proposal` (
+CREATE TABLE `proposalEntity` (
   `proposal_id` int NOT NULL AUTO_INCREMENT,
   `event_form_id` int DEFAULT NULL,
   `content` text,
@@ -36,12 +36,12 @@ CREATE TABLE `proposal` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `proposal`
+-- Dumping data for table `proposalEntity`
 --
 
-LOCK TABLES `proposal` WRITE;
-/*!40000 ALTER TABLE `proposal` DISABLE KEYS */;
-/*!40000 ALTER TABLE `proposal` ENABLE KEYS */;
+LOCK TABLES `proposalEntity` WRITE;
+/*!40000 ALTER TABLE `proposalEntity` DISABLE KEYS */;
+/*!40000 ALTER TABLE `proposalEntity` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 

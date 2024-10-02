@@ -1,6 +1,6 @@
 package com.oct.L3.configurations;
 
-import com.oct.L3.entity.User;
+import com.oct.L3.entity.UserEntity;
 import io.jsonwebtoken.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -23,15 +23,15 @@ public class JWTTokenUtil {
     private String secretKey;
 
 
-    public String generateToken(User user) throws Exception {
+    public String generateToken(UserEntity userEntity) throws Exception {
         Map<String, Object> claims = new HashMap<>();
-        claims.put("role", user.getRole());
-        claims.put("id", user.getId());
+        claims.put("role", userEntity.getRole());
+        claims.put("id", userEntity.getId());
         try
         {
             String token = Jwts.builder()
                     .setClaims(claims)
-                    .setSubject(user.getUsername())
+                    .setSubject(userEntity.getUsername())
                     .setExpiration(new Date(System.currentTimeMillis() + expiration * 1000L))
                     .signWith(getSignInKey(), SignatureAlgorithm.HS256)
                     .compact();

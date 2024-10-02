@@ -1,6 +1,6 @@
 package com.oct.L3.controller;
 
-import com.oct.L3.Response.ResponseObject;
+import com.oct.L3.dtos.response.ResponseObject;
 import com.oct.L3.configurations.JWTTokenUtil;
 import com.oct.L3.dtos.ProposalDTO;
 import com.oct.L3.service.ProposalService;
@@ -14,7 +14,6 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Locale;
 
 import static com.oct.L3.constant.EventType.PROPOSAL;
 
@@ -55,13 +54,13 @@ public class ProposalController {
             proposalDTO.getEventForm().setType(PROPOSAL);
             ProposalDTO proposalResult = proposalService.createProposal(proposalDTO);
             return ResponseEntity.ok().body(ResponseObject.builder()
-                    .message("Proposal created successfully")
+                    .message("ProposalEntity created successfully")
                     .status(HttpStatus.CREATED)
                     .data(proposalResult)
                     .build());
         } catch (Exception e) {
             return ResponseEntity.ok().body(ResponseObject.builder()
-                    .message("Proposal creation failed" + e)
+                    .message("ProposalEntity creation failed" + e)
                     .status(HttpStatus.BAD_REQUEST)
                     .data(null)
                     .build());
@@ -88,13 +87,13 @@ public class ProposalController {
         try {
             ProposalDTO proposalResult = proposalService.updateProposal(id,proposalDTO);
             return ResponseEntity.ok().body(ResponseObject.builder()
-                    .message("Proposal updated successfully")
+                    .message("ProposalEntity updated successfully")
                     .status(HttpStatus.OK)
                     .data(proposalResult)
                     .build());
         } catch (Exception e) {
             return ResponseEntity.ok().body(ResponseObject.builder()
-                    .message("Proposal update failed" + e)
+                    .message("ProposalEntity update failed" + e)
                     .status(HttpStatus.BAD_REQUEST)
                     .data(null)
                     .build());
