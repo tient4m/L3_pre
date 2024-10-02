@@ -1,7 +1,6 @@
 package com.oct.L3.repository;
 
 import com.oct.L3.entity.Proposal;
-import com.oct.L3.entity.SalaryIncrease;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;

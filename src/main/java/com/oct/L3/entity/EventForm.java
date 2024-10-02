@@ -3,7 +3,6 @@ package com.oct.L3.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 
@@ -35,7 +34,7 @@ public class EventForm {
     private String type;
 
     @Column(name = "date")
-    private Date  date;
+    private Date date;
 
     @Column(name = "submission_date")
     private Date submissionDate;

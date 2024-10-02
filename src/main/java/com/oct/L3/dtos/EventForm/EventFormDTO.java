@@ -17,7 +17,7 @@ public class EventFormDTO {
     private String managerComments;
     private String leaderComments;
     private String type;
-    private Date  date;
+    private Date date;
     private Date submissionDate;
     private String content;
     private Integer leaderId;

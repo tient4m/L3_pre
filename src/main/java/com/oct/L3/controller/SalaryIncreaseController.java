@@ -31,8 +31,8 @@ public class SalaryIncreaseController {
     @PreAuthorize("hasRole('MANAGER')")
     @PostMapping("/create")
     public ResponseEntity<ResponseObject> createSalaryIncrease(@RequestBody @Valid SalaryIncreaseDTO salaryIncreaseDTO
-                                                               ,@RequestHeader("Authorization") String authorizationHeader
-                                                               , BindingResult result) {
+            , @RequestHeader("Authorization") String authorizationHeader
+            , BindingResult result) {
         if (result.hasErrors()) {
             List<String> errorMessages = result.getFieldErrors()
                     .stream()
@@ -70,7 +70,7 @@ public class SalaryIncreaseController {
     @PutMapping("/update/{id}")
     public ResponseEntity<ResponseObject> updateSalaryIncrease(@PathVariable Integer id,
                                                                @RequestBody @Valid SalaryIncreaseDTO salaryIncreaseDTO
-                                                               , BindingResult result) {
+            , BindingResult result) {
         if (result.hasErrors()) {
             List<String> errorMessages = result.getFieldErrors()
                     .stream()

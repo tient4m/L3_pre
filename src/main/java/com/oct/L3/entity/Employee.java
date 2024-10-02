@@ -1,10 +1,8 @@
 package com.oct.L3.entity;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 
@@ -37,7 +35,7 @@ public class Employee {
     @Column(name = "address")
     private String address;
 
-    @Column(name = "identity_card",unique = true)
+    @Column(name = "identity_card", unique = true)
     private String identityCard;
 
     @Column(name = "phone_number")
@@ -65,11 +63,5 @@ public class Employee {
 
     @Column(name = "education_level")
     private String educationLevel;
-
-    @OneToMany(mappedBy = "employee", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<FamilyRelationship> familyRelationships;
-
-    @OneToMany(mappedBy = "employee", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<Certificate> certificates;
 
 }

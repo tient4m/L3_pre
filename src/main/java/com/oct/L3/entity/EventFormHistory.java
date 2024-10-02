@@ -3,7 +3,6 @@ package com.oct.L3.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.time.LocalDate;
 import java.util.Date;
 
 @Entity

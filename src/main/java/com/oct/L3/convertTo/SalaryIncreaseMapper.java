@@ -1,11 +1,9 @@
 package com.oct.L3.convertTo;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.oct.L3.Response.SalaryIncreaseResponse;
 import com.oct.L3.dtos.SalaryIncreaseDTO;
 import com.oct.L3.entity.SalaryIncrease;
 import lombok.RequiredArgsConstructor;
-import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -35,6 +33,7 @@ public class SalaryIncreaseMapper {
                 .eventForm(dto.getEventForm() == null ? null : EventFormMapper.toEntity(dto.getEventForm()))
                 .build();
     }
+
     public SalaryIncreaseResponse toResponse(SalaryIncreaseDTO dto) {
         return SalaryIncreaseResponse.builder()
                 .salaryIncreaseId(dto.getSalaryIncreaseId())

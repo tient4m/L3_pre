@@ -1,12 +1,14 @@
 package com.oct.L3.configurations;
 
 import com.oct.L3.entity.User;
-import io.jsonwebtoken.*;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.io.Decoders;
+import io.jsonwebtoken.security.Keys;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-import io.jsonwebtoken.io.Decoders;
-import io.jsonwebtoken.security.Keys;
 
 import java.security.Key;
 import java.util.Date;
@@ -27,8 +29,7 @@ public class JWTTokenUtil {
         Map<String, Object> claims = new HashMap<>();
         claims.put("role", user.getRole());
         claims.put("id", user.getId());
-        try
-        {
+        try {
             String token = Jwts.builder()
                     .setClaims(claims)
                     .setSubject(user.getUsername())
@@ -36,10 +37,8 @@ public class JWTTokenUtil {
                     .signWith(getSignInKey(), SignatureAlgorithm.HS256)
                     .compact();
             return token;
-        }
-        catch (Exception e)
-        {
-            throw new RuntimeException("Cannot create jwt token, error: "+e.getMessage());
+        } catch (Exception e) {
+            throw new RuntimeException("Cannot create jwt token, error: " + e.getMessage());
 
         }
     }
@@ -66,8 +65,9 @@ public class JWTTokenUtil {
         Date expirationDate = this.extractClaim(token, Claims::getExpiration);
         return expirationDate.before(new Date());
     }
+
     public String getSubject(String token) {
-        return  extractClaim(token, Claims::getSubject);
+        return extractClaim(token, Claims::getSubject);
     }
 
     public Integer extractId(String token) {

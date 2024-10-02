@@ -1,15 +1,12 @@
 package com.oct.L3.service.impl;
 
 import com.oct.L3.dtos.CertificateDTO;
-import com.oct.L3.entity.Certificate;
 import com.oct.L3.entity.Employee;
 import com.oct.L3.repository.CertificateRepository;
 import com.oct.L3.service.CertificateService;
-import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Service

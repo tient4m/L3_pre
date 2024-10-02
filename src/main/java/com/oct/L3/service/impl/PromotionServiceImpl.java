@@ -68,7 +68,6 @@ public class PromotionServiceImpl implements PromotionService {
     }
 
 
-
     private void checkPosition(PromotionDTO promotionDTO) {
         Promotion promotion = promotionMapper.toEntity(promotionDTO);
         if (promotionDTO.getNewPosition() != null && positionRepository.findById(promotionDTO.getNewPosition()).isEmpty()) {

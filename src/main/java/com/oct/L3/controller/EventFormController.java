@@ -22,11 +22,12 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 
-import static com.oct.L3.constant.Status.*;
-import static com.oct.L3.constant.EventType.*;
-
 import java.util.Date;
 import java.util.List;
+
+import static com.oct.L3.constant.EventType.*;
+import static com.oct.L3.constant.Status.*;
+
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("${api.prefix}/event-form")
@@ -49,7 +50,7 @@ public class EventFormController {
             @RequestHeader("Authorization") String authorizationHeader,
             BindingResult result
     ) {
-        if(result.hasErrors()) {
+        if (result.hasErrors()) {
             List<String> errorMessages = result.getFieldErrors()
                     .stream()
                     .map(FieldError::getDefaultMessage)
@@ -90,7 +91,7 @@ public class EventFormController {
             @RequestHeader("Authorization") String authorizationHeader,
             BindingResult result
     ) {
-        if(result.hasErrors()) {
+        if (result.hasErrors()) {
             List<String> errorMessages = result.getFieldErrors()
                     .stream()
                     .map(FieldError::getDefaultMessage)
@@ -133,7 +134,7 @@ public class EventFormController {
             @PathVariable Integer id,
             BindingResult result
     ) {
-        if(result.hasErrors()) {
+        if (result.hasErrors()) {
             List<String> errorMessages = result.getFieldErrors()
                     .stream()
                     .map(FieldError::getDefaultMessage)
@@ -146,7 +147,7 @@ public class EventFormController {
 
         }
         try {
-            EventFormDTO empResult = eventFormService.updateEventForm(id,eventFormDTO);
+            EventFormDTO empResult = eventFormService.updateEventForm(id, eventFormDTO);
             return ResponseEntity.ok().body(ResponseObject.builder()
                     .message("Employee updated successful")
                     .status(HttpStatus.OK)
@@ -171,7 +172,7 @@ public class EventFormController {
     ) {
         try {
 
-            EventFormDTO empResult = eventFormService.sendFormToLeader(leaderId,eventFormId,managerComments,submissionDate);
+            EventFormDTO empResult = eventFormService.sendFormToLeader(leaderId, eventFormId, managerComments, submissionDate);
             return ResponseEntity.ok().body(ResponseObject.builder()
                     .message("Employee sent to leader successful")
                     .status(HttpStatus.OK)
@@ -200,7 +201,7 @@ public class EventFormController {
         }
         Integer leaderId = jwtTokenUtil.extractId(token);
         try {
-            EventFormDTO empResult = eventFormService.handleFormStatusByLeader(leaderId,eventFormId,submissionDate,leaderComments,REJECTED);
+            EventFormDTO empResult = eventFormService.handleFormStatusByLeader(leaderId, eventFormId, submissionDate, leaderComments, REJECTED);
             return ResponseEntity.ok().body(ResponseObject.builder()
                     .message("Employee rejected successful")
                     .status(HttpStatus.OK)
@@ -229,7 +230,7 @@ public class EventFormController {
         }
         Integer leaderId = jwtTokenUtil.extractId(token);
         try {
-            EventFormDTO empResult = eventFormService.handleFormStatusByLeader(eventFormId,leaderId,submissionDate,leaderComments,APPROVED);
+            EventFormDTO empResult = eventFormService.handleFormStatusByLeader(eventFormId, leaderId, submissionDate, leaderComments, APPROVED);
             return ResponseEntity.ok().body(ResponseObject.builder()
                     .message("Employee approved successful")
                     .status(HttpStatus.OK)
@@ -275,8 +276,8 @@ public class EventFormController {
                             .status(HttpStatus.OK)
                             .data(proposalResponse)
                             .build());
-                    default:
-                        EventFormResponse eventFormResponse  = eventFormMapper.toResponse(empResult);
+                default:
+                    EventFormResponse eventFormResponse = eventFormMapper.toResponse(empResult);
                     return ResponseEntity.ok().body(ResponseObject.builder()
                             .message("Employee retrieved successful")
                             .status(HttpStatus.OK)
@@ -306,7 +307,7 @@ public class EventFormController {
         }
         Integer leaderId = jwtTokenUtil.extractId(token);
         try {
-            EventFormDTO empResult = eventFormService.handleFormStatusByLeader(eventFormId,leaderId,submissionDate,leaderComments,ADDITIONAL_REQUIREMENTS);
+            EventFormDTO empResult = eventFormService.handleFormStatusByLeader(eventFormId, leaderId, submissionDate, leaderComments, ADDITIONAL_REQUIREMENTS);
             return ResponseEntity.ok().body(ResponseObject.builder()
                     .message("Employee additional requirements successful")
                     .status(HttpStatus.OK)

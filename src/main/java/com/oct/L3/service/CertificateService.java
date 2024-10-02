@@ -5,7 +5,7 @@ import com.oct.L3.entity.Employee;
 
 import java.util.List;
 
-public interface CertificateService { ;
+public interface CertificateService {
 
     void saveOrUpdateCertificates(List<CertificateDTO> certificates, Employee employee);
 }

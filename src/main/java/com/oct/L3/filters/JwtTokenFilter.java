@@ -29,13 +29,14 @@ public class JwtTokenFilter extends OncePerRequestFilter {
 
     private final UserDetailsService userDetailsService;
     private final JWTTokenUtil jwtTokenUtil;
+
     @Override
     protected void doFilterInternal(HttpServletRequest request,
                                     HttpServletResponse response,
                                     FilterChain filterChain)
             throws ServletException, IOException {
         try {
-            if(isBypassToken(request)) {
+            if (isBypassToken(request)) {
                 filterChain.doFilter(request, response); //enable bypass
                 return;
             }
@@ -51,20 +52,20 @@ public class JwtTokenFilter extends OncePerRequestFilter {
             if (phoneNumber != null
                     && SecurityContextHolder.getContext().getAuthentication() == null) {
                 User userDetails = (User) userDetailsService.loadUserByUsername(phoneNumber);
-                    UsernamePasswordAuthenticationToken authenticationToken =
-                            new UsernamePasswordAuthenticationToken(
-                                    userDetails,
-                                    null,
-                                    userDetails.getAuthorities()
-                            );
-                    authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-                    SecurityContextHolder.getContext().setAuthentication(authenticationToken);
+                UsernamePasswordAuthenticationToken authenticationToken =
+                        new UsernamePasswordAuthenticationToken(
+                                userDetails,
+                                null,
+                                userDetails.getAuthorities()
+                        );
+                authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                SecurityContextHolder.getContext().setAuthentication(authenticationToken);
             }
             filterChain.doFilter(request, response);
-        }catch (Exception e) {
+        } catch (Exception e) {
             response.sendError(
                     HttpServletResponse.SC_UNAUTHORIZED,
-                    "Error: "+e.getMessage());
+                    "Error: " + e.getMessage());
         }
     }
 

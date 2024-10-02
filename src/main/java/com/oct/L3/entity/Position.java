@@ -3,8 +3,6 @@ package com.oct.L3.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.util.Set;
-
 @Entity
 @Getter
 @Setter

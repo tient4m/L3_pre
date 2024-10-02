@@ -29,7 +29,7 @@ public class PromotionMapper {
                 .build();
     }
 
-    public  Promotion toEntity(PromotionDTO dto) {
+    public Promotion toEntity(PromotionDTO dto) {
         return Promotion.builder()
                 .Id(dto.getPromotionId())
                 .times(dto.getTimes())

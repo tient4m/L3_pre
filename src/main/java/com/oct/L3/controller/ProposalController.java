@@ -14,7 +14,6 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Locale;
 
 import static com.oct.L3.constant.EventType.PROPOSAL;
 
@@ -30,7 +29,7 @@ public class ProposalController {
     @PostMapping("/create")
     public ResponseEntity<ResponseObject> createProposal(@RequestBody @Valid ProposalDTO proposalDTO
             , @RequestHeader(name = "Authorization", required = false) String authorizationHeader
-                                                               , BindingResult result) {
+            , BindingResult result) {
         if (result.hasErrors()) {
             List<String> errorMessages = result.getFieldErrors()
                     .stream()
@@ -86,7 +85,7 @@ public class ProposalController {
                     .build());
         }
         try {
-            ProposalDTO proposalResult = proposalService.updateProposal(id,proposalDTO);
+            ProposalDTO proposalResult = proposalService.updateProposal(id, proposalDTO);
             return ResponseEntity.ok().body(ResponseObject.builder()
                     .message("Proposal updated successfully")
                     .status(HttpStatus.OK)

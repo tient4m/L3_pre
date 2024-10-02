@@ -49,7 +49,7 @@ public class EmployeeMapper {
             manager.setId(dto.getManagerId());
             employee.setManager(manager);
         }
-        if (dto.getCertificates() != null){
+        if (dto.getCertificates() != null) {
             employee.setCertificates(dto.getCertificates().stream().
                     map(certificateDTO -> {
                         Certificate certificate = modelMapper.map(certificateDTO, Certificate.class);
@@ -57,7 +57,7 @@ public class EmployeeMapper {
                         return certificate;
                     }).collect(Collectors.toList()));
         }
-        if (dto.getFamilyRelationships() != null){
+        if (dto.getFamilyRelationships() != null) {
             employee.setFamilyRelationships(dto.getFamilyRelationships().stream().
                     map(familyRelationshipDTO -> {
                         FamilyRelationship familyRelationship = modelMapper.map(familyRelationshipDTO, FamilyRelationship.class);

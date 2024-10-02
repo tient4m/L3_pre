@@ -12,7 +12,7 @@ import java.util.List;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class EventFormResponse{
+public class EventFormResponse {
     private Integer eventFormId;
     private EmployeeDTO employee;
     private String type;

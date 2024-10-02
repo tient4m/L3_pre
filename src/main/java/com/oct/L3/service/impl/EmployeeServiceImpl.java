@@ -2,7 +2,7 @@ package com.oct.L3.service.impl;
 
 import com.oct.L3.convertTo.EmployeeMapper;
 import com.oct.L3.dtos.EmployeeDTO;
-import com.oct.L3.entity.*;
+import com.oct.L3.entity.Employee;
 import com.oct.L3.repository.EmployeeRepository;
 import com.oct.L3.service.EmployeeService;
 import lombok.RequiredArgsConstructor;
@@ -34,7 +34,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     @Override
     @PostAuthorize("returnObject.managerId == principal.id")
-    public EmployeeDTO updateEmployee(Integer id,EmployeeDTO employeeDTO) {
+    public EmployeeDTO updateEmployee(Integer id, EmployeeDTO employeeDTO) {
         if (!employeeRepository.existsById(id)) {
             throw new RuntimeException("Employee not found");
         }
@@ -51,15 +51,8 @@ public class EmployeeServiceImpl implements EmployeeService {
         if (!employeeRepository.existsById(id)) {
             throw new RuntimeException("Employee not found");
         }
-            employeeRepository.deleteById(id);
+        employeeRepository.deleteById(id);
     }
-
-
-
-
-
-
-
 
 
 }

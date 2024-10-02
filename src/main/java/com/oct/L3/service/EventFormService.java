@@ -21,7 +21,7 @@ public interface EventFormService {
 
     EventFormDTO handleFormStatusByLeader(Integer eventFormId,
                                           Integer leaderId,
-                                          Date  submissionDate,
+                                          Date submissionDate,
                                           String leaderComments,
                                           String status) throws DataNotFoundException;
 }

@@ -6,20 +6,16 @@ import com.oct.L3.dtos.EmployeeDTO;
 import com.oct.L3.service.EmployeeService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 
-import static com.oct.L3.constant.Status.*;
-import static com.oct.L3.constant.EventType.*;
-
-
 import java.util.List;
+
+import static com.oct.L3.constant.Status.DRAFT;
 
 @RequiredArgsConstructor
 @RestController
@@ -40,12 +36,12 @@ public class EmployeeController {
 
     @PreAuthorize("hasRole('MANAGER')")
     @PostMapping("")
-    public ResponseEntity<ResponseObject> saveEmployee(@RequestBody @Valid  EmployeeDTO employeeDTO,
+    public ResponseEntity<ResponseObject> saveEmployee(@RequestBody @Valid EmployeeDTO employeeDTO,
                                                        BindingResult result,
                                                        @RequestHeader("Authorization") String authorizationHeader
 
     ) {
-        if(result.hasErrors()) {
+        if (result.hasErrors()) {
             List<String> errorMessages = result.getFieldErrors()
                     .stream()
                     .map(FieldError::getDefaultMessage)
@@ -85,7 +81,7 @@ public class EmployeeController {
                                                          @RequestBody @Valid EmployeeDTO employeeDTO,
                                                          BindingResult result
     ) {
-        if(result.hasErrors()) {
+        if (result.hasErrors()) {
             List<String> errorMessages = result.getFieldErrors()
                     .stream()
                     .map(FieldError::getDefaultMessage)

@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 public class PositionServiceImpl implements PositionService {
 
     private final PositionRepository positionRepository;
+
     @Override
     public void delete(Integer positionId) {
         if (!positionRepository.existsById(positionId)) {

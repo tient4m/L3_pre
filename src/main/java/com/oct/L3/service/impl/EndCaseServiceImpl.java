@@ -22,7 +22,7 @@ public class EndCaseServiceImpl implements EndCaseService {
     @Override
     public EndCaseDTO createEndCase(EndCaseDTO endCaseDTO) {
         Employee employee = employeeRepository.findById(endCaseDTO.getEmployeeId()).orElseThrow(() -> new RuntimeException("Employee not found"));
-        if (!employee.getStatus().equals(TERMINATED)){
+        if (!TERMINATED.equals(employee.getStatus())) {
             throw new IllegalStateException("Employee is not terminated");
         }
         EndCase endCase = EndCase.builder()

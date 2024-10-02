@@ -37,7 +37,7 @@ public class SalaryIncreaseServiceImpl implements SalaryIncreaseService {
         }
         return salaryIncreaseMapper.toDTO(salaryIncreaseRepository.save(salaryIncrease));
     }
- 
+
     @Transactional
     @Override
     public SalaryIncreaseDTO updateSalaryIncrease(Integer id, SalaryIncreaseDTO salaryIncreaseDTO) throws DataNotFoundException {

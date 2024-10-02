@@ -1,8 +1,5 @@
 package com.oct.L3.convertTo;
 
-import com.oct.L3.dtos.CertificateDTO;
-import com.oct.L3.entity.Certificate;
-import com.oct.L3.entity.Employee;
 import com.oct.L3.repository.EmployeeRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;

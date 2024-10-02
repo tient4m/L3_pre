@@ -9,7 +9,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
@@ -23,6 +22,7 @@ public class WebSecurityConfig {
     @Value("${jwt.secretKey}")
     private String secretKey;
     private final JwtTokenFilter jwtTokenFilter;
+
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
@@ -31,7 +31,7 @@ public class WebSecurityConfig {
                 .authorizeHttpRequests(requests -> requests
                         .requestMatchers("/api/v1/users/login").permitAll()
                         .requestMatchers("/api/v1/users/create").permitAll()
-                        .requestMatchers(HttpMethod.GET,"/api/v1/event-form**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/v1/event-form**").permitAll()
                         .anyRequest().authenticated()
                 );
         return http.build();
