@@ -1,8 +1,8 @@
 package com.oct.L3.mapper;
 
-import com.oct.L3.dtos.eventform.EventFormDTO;
 import com.oct.L3.dtos.response.SalaryIncreaseResponse;
 import com.oct.L3.dtos.SalaryIncreaseDTO;
+import com.oct.L3.entity.EventFormEntity;
 import com.oct.L3.entity.SalaryIncreaseEntity;
 import com.oct.L3.repository.EventFormRepository;
 import lombok.RequiredArgsConstructor;
@@ -16,39 +16,40 @@ public class SalaryIncreaseMapper {
     private final EventFormRepository eventFormRepository;
 
     public SalaryIncreaseDTO toDTO(SalaryIncreaseEntity salaryIncreaseEntity) {
+        EventFormEntity eventFormEntity = eventFormRepository.findById(salaryIncreaseEntity.getEventFormId())
+                .orElseThrow(() -> new RuntimeException("EventFormEntity not found"));
+
         return SalaryIncreaseDTO.builder()
-                .salaryIncreaseId(salaryIncreaseEntity.getId())
+                .id(salaryIncreaseEntity.getId())
                 .times(salaryIncreaseEntity.getTimes())
                 .reason(salaryIncreaseEntity.getReason())
                 .level(salaryIncreaseEntity.getLevel())
                 .note(salaryIncreaseEntity.getNote())
-                .eventFormId(salaryIncreaseEntity.getEventFormId())
+                .eventFormDTO(eventFormMapper.toDTO(eventFormEntity))
                 .build();
     }
 
     public SalaryIncreaseEntity toEntity(SalaryIncreaseDTO salaryIncreaseDTO) {
         return SalaryIncreaseEntity.builder()
-                .id(salaryIncreaseDTO.getSalaryIncreaseId())
+                .id(salaryIncreaseDTO.getId())
                 .times(salaryIncreaseDTO.getTimes())
                 .reason(salaryIncreaseDTO.getReason())
                 .level(salaryIncreaseDTO.getLevel())
                 .note(salaryIncreaseDTO.getNote())
-                .eventFormId(salaryIncreaseDTO.getEventFormId())
+                .eventFormId(salaryIncreaseDTO.getEventFormDTO().getId())
                 .build();
     }
 
 
     public SalaryIncreaseResponse toResponse(SalaryIncreaseDTO dto) {
 
-        EventFormDTO eventFormDTO = eventFormMapper.toDTO(eventFormRepository.findById(dto.getEventFormId()).get());
-
         return SalaryIncreaseResponse.builder()
-                .salaryIncreaseId(dto.getSalaryIncreaseId())
+                .salaryIncreaseId(dto.getId())
                 .times(dto.getTimes())
                 .reason(dto.getReason())
                 .level(dto.getLevel())
                 .note(dto.getNote())
-                .eventForm(eventFormDTO)
+                .eventForm(dto.getEventFormDTO())
                 .build();
     }
 }

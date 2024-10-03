@@ -21,8 +21,7 @@ public class EndCaseMapper {
 
         return EndCaseDTO.builder()
                 .Id(endCaseEntity.getId())
-                .eventForm(eventFormDTO)
-                .employeeId(endCaseEntity.getEmployeeId())
+                .eventFormDTO(eventFormDTO)
                 .endDate(endCaseEntity.getEndDate())
                 .archiveNumber(endCaseEntity.getArchiveNumber())
                 .reason(endCaseEntity.getReason())
@@ -32,8 +31,7 @@ public class EndCaseMapper {
     public EndCaseEntity toEntity(EndCaseDTO endCaseDTO) {
         return EndCaseEntity.builder()
                 .id(endCaseDTO.getId())
-                .eventFormId(endCaseDTO.getEventForm().getId())
-                .employeeId(endCaseDTO.getEmployeeId())
+                .eventFormId(endCaseDTO.getEventFormDTO().getId())
                 .endDate(endCaseDTO.getEndDate())
                 .archiveNumber(endCaseDTO.getArchiveNumber())
                 .reason(endCaseDTO.getReason())

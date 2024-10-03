@@ -13,7 +13,7 @@ public interface EventFormRepository extends JpaRepository<EventFormEntity, Inte
 
     List<EventFormEntity> findByStatus(String status);
 
-    @Query(value = "SELECT * FROM eventform WHERE manager_id = ?1 OR leader_id = ?1", nativeQuery = true)
+    @Query(value = "SELECT * FROM event_form WHERE manager_id = ?1 OR leader_id = ?1", nativeQuery = true)
     List<EventFormEntity> findAllByManagerIdOrLeaderId(Integer id);
 
     List<EventFormEntity> findByEmployeeId(Integer employeeId);

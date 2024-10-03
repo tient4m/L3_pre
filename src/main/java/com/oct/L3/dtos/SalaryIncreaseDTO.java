@@ -9,7 +9,7 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 public class SalaryIncreaseDTO {
-    private Integer salaryIncreaseId;
+    private Integer id;
     private EventFormDTO eventFormDTO;
     private Integer times;
     private String reason;

@@ -4,7 +4,7 @@ import com.oct.L3.dtos.ProposalDTO;
 import com.oct.L3.exceptions.DataNotFoundException;
 
 public interface ProposalService {
-    ProposalDTO createProposal(ProposalDTO proposalDTO);
+    ProposalDTO createProposal(ProposalDTO proposalDTO) throws DataNotFoundException;
 
     ProposalDTO updateProposal(Integer evenFormId, ProposalDTO proposalDTO) throws DataNotFoundException;
 

@@ -12,7 +12,7 @@ import java.util.Date;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "certificateEntities")
+@Table(name = "certificate")
 public class CertificateEntity {
 
     @Id

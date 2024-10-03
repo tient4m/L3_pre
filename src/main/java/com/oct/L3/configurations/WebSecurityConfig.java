@@ -18,7 +18,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @Configuration
 @EnableMethodSecurity
 @RequiredArgsConstructor
-@EnableWebSecurity(debug = true)
+//@EnableWebSecurity(debug = true)
 public class WebSecurityConfig {
     @Value("${jwt.secretKey}")
     private String secretKey;

@@ -9,8 +9,4 @@ import java.util.List;
 @Repository
 public interface EmployeeRepository extends JpaRepository<EmployeeEntity, Integer> {
 
-
-    // Tìm kiếm nhân viên theo trạng thái
-    List<EmployeeEntity> findByStatus(String status);
-    List<EmployeeEntity> findByStatusIn(List<String> status);
 }

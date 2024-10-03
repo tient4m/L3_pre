@@ -4,7 +4,7 @@ import com.oct.L3.dtos.response.UserLoginResponse;
 import com.oct.L3.dtos.UserDTO;
 
 public interface UserService {
-    UserDTO save(UserDTO userDTO);
+    UserDTO createUser(UserDTO userDTO);
 
     UserLoginResponse login(String userName, String password) throws Exception;
 

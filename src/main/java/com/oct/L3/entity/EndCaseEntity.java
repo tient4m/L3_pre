@@ -12,14 +12,13 @@ import java.util.Date;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@Table(name = "endcase")
+@Table(name = "end_case")
 public class EndCaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     private Integer eventFormId;
-    private Integer employeeId;
     private Date endDate;
     private String archiveNumber;
     private String reason;

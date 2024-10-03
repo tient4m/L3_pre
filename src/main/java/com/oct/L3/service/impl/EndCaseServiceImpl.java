@@ -1,9 +1,8 @@
 package com.oct.L3.service.impl;
 
 import com.oct.L3.dtos.EndCaseDTO;
-import com.oct.L3.dtos.eventform.EventFormDTO;
 import com.oct.L3.entity.EmployeeEntity;
-import com.oct.L3.entity.EndCaseEntity;
+import com.oct.L3.exceptions.InvalidStatusException;
 import com.oct.L3.mapper.EndCaseMapper;
 import com.oct.L3.repository.EmployeeRepository;
 import com.oct.L3.repository.EndCaseRepository;
@@ -25,15 +24,26 @@ public class EndCaseServiceImpl implements EndCaseService {
     @Override
     public EndCaseDTO createEndCase(EndCaseDTO endCaseDTO) {
 
-        EmployeeEntity employeeEntity = employeeRepository.findById(endCaseDTO.getEmployeeId())
+        EmployeeEntity employeeEntity = employeeRepository.findById(endCaseDTO.getEventFormDTO().getEmployeeId())
                 .orElseThrow(() -> new RuntimeException("EmployeeEntity not found"));
         if (!employeeEntity.getStatus().equals(TERMINATED)){
-            throw new IllegalStateException("EmployeeEntity is not terminated");
+            throw new InvalidStatusException("EmployeeEntity is not terminated");
         }
 
         employeeEntity.setStatus(ARCHIVED);
         employeeRepository.save(employeeEntity);
 
+        return endCaseMapper.toDTO(endCaseRepository.save(endCaseMapper.toEntity(endCaseDTO)));
+    }
+
+    @Override
+    public EndCaseDTO updateEndCase(Integer id, EndCaseDTO endCaseDTO) {
+        if (!endCaseRepository.existsById(id)) {
+            throw new RuntimeException("EndCaseEntity not found");
+        }
+        if (!endCaseDTO.getId().equals(id)) {
+            throw new RuntimeException("Id not match");
+        }
         return endCaseMapper.toDTO(endCaseRepository.save(endCaseMapper.toEntity(endCaseDTO)));
     }
 }

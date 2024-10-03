@@ -23,35 +23,11 @@ import static com.oct.L3.constant.EventType.PROPOSAL;
 public class ProposalController {
 
     private final ProposalService proposalService;
-    private final JWTTokenUtil jwtTokenUtil;
 
     @PreAuthorize("hasRole('MANAGER')")
     @PostMapping("/create")
-    public ResponseEntity<ResponseObject> createProposal(@RequestBody @Valid ProposalDTO proposalDTO
-            , @RequestHeader(name = "Authorization", required = false) String authorizationHeader
-                                                               , BindingResult result) {
-        if (result.hasErrors()) {
-            List<String> errorMessages = result.getFieldErrors()
-                    .stream()
-                    .map(FieldError::getDefaultMessage)
-                    .toList();
-            return ResponseEntity.ok().body(ResponseObject.builder()
-                    .message(errorMessages.toString())
-                    .status(HttpStatus.BAD_REQUEST)
-                    .data(null)
-                    .build());
-        }
+    public ResponseEntity<ResponseObject> createProposal(@RequestBody @Valid ProposalDTO proposalDTO) {
         try {
-
-            String token = null;
-            if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
-                token = authorizationHeader.substring(7);
-            }
-            proposalDTO.getEventForm().setStatus("PENDING");
-            proposalDTO.getEventForm().setManagerId(jwtTokenUtil.extractId(token));
-//            String type = proposalDTO.getType();
-//            type.toUpperCase();
-            proposalDTO.getEventForm().setType(PROPOSAL);
             ProposalDTO proposalResult = proposalService.createProposal(proposalDTO);
             return ResponseEntity.ok().body(ResponseObject.builder()
                     .message("ProposalEntity created successfully")
@@ -71,19 +47,7 @@ public class ProposalController {
     @PutMapping("/update/{id}")
     public ResponseEntity<ResponseObject> updateProposal(
             @PathVariable Integer id,
-            @RequestBody @Valid ProposalDTO proposalDTO,
-            BindingResult result) {
-        if (result.hasErrors()) {
-            List<String> errorMessages = result.getFieldErrors()
-                    .stream()
-                    .map(FieldError::getDefaultMessage)
-                    .toList();
-            return ResponseEntity.ok().body(ResponseObject.builder()
-                    .message(errorMessages.toString())
-                    .status(HttpStatus.BAD_REQUEST)
-                    .data(null)
-                    .build());
-        }
+            @RequestBody @Valid ProposalDTO proposalDTO) {
         try {
             ProposalDTO proposalResult = proposalService.updateProposal(id,proposalDTO);
             return ResponseEntity.ok().body(ResponseObject.builder()

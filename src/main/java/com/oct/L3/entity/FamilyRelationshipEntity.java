@@ -11,7 +11,7 @@ import java.util.Date;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "familyrelationship")
+@Table(name = "family_relationship")
 public class FamilyRelationshipEntity {
 
     @Id

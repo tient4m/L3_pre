@@ -27,12 +27,10 @@ public class EmployeeServiceImpl implements EmployeeService {
                 .toList();
     }
 
-
     @Override
     public EmployeeDTO createEmployee(EmployeeDTO employeeDTO) {
         employeeDTO.setStatus(DRAFT);
-        EmployeeEntity employeeEntity = employeeMapper.toEntity(employeeDTO);
-        return employeeMapper.toDTO(employeeRepository.save(employeeEntity));
+        return employeeMapper.toDTO(employeeRepository.save(employeeMapper.toEntity(employeeDTO)));
     }
 
     @Override

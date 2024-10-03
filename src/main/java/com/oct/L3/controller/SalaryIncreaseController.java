@@ -28,27 +28,8 @@ public class SalaryIncreaseController {
 
     @PreAuthorize("hasRole('MANAGER')")
     @PostMapping("/create")
-    public ResponseEntity<ResponseObject> createSalaryIncrease(@RequestBody @Valid SalaryIncreaseDTO salaryIncreaseDTO
-                                                               ,@RequestHeader("Authorization") String authorizationHeader
-                                                               , BindingResult result) {
-        if (result.hasErrors()) {
-            List<String> errorMessages = result.getFieldErrors()
-                    .stream()
-                    .map(FieldError::getDefaultMessage)
-                    .toList();
-            return ResponseEntity.ok().body(ResponseObject.builder()
-                    .message(errorMessages.toString())
-                    .status(HttpStatus.BAD_REQUEST)
-                    .data(null)
-                    .build());
-        }
-        String token = null;
-        if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
-            token = authorizationHeader.substring(7);
-        }
-        salaryIncreaseDTO.getEventForm().setManagerId(jwtTokenUtil.extractId(token));
+    public ResponseEntity<ResponseObject> createSalaryIncrease(@RequestBody @Valid SalaryIncreaseDTO salaryIncreaseDTO) {
         try {
-            salaryIncreaseDTO.getEventForm().setType(SALARYINCREASE);
             SalaryIncreaseDTO salaryIncreaseResult = salaryIncreaseService.createSalaryIncrease(salaryIncreaseDTO);
             return ResponseEntity.ok().body(ResponseObject.builder()
                     .message("Salary increase created successfully")
@@ -67,18 +48,7 @@ public class SalaryIncreaseController {
     @PreAuthorize("hasRole('MANAGER')")
     @PutMapping("/update/{id}")
     public ResponseEntity<ResponseObject> updateSalaryIncrease(@PathVariable Integer id, @RequestBody @Valid SalaryIncreaseDTO salaryIncreaseDTO
-                                                               , BindingResult result) {
-        if (result.hasErrors()) {
-            List<String> errorMessages = result.getFieldErrors()
-                    .stream()
-                    .map(FieldError::getDefaultMessage)
-                    .toList();
-            return ResponseEntity.ok().body(ResponseObject.builder()
-                    .message(errorMessages.toString())
-                    .status(HttpStatus.BAD_REQUEST)
-                    .data(null)
-                    .build());
-        }
+                                                               ) {
         try {
             SalaryIncreaseDTO salaryIncreaseResult = salaryIncreaseService.updateSalaryIncrease(id, salaryIncreaseDTO);
             return ResponseEntity.ok().body(ResponseObject.builder()

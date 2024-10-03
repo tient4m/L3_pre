@@ -8,6 +8,4 @@ import java.util.List;
 
 @Repository
 public interface CertificateRepository extends JpaRepository<CertificateEntity, Integer> {
-    // Tìm kiếm chứng chỉ của một nhân viên cụ thể
-    List<CertificateEntity> findByEmployee_Id(Integer Id);
 }

@@ -4,6 +4,7 @@ import com.oct.L3.dtos.EventFormHistoryDTO;
 import com.oct.L3.entity.EmployeeEntity;
 import com.oct.L3.entity.EventFormEntity;
 import com.oct.L3.entity.UserEntity;
+import com.oct.L3.exceptions.InvalidStatusException;
 import com.oct.L3.mapper.EventFormHistoryMapper;
 import com.oct.L3.dtos.eventform.EventFormDTO;
 import com.oct.L3.entity.EventFormHistoryEntity;
@@ -16,7 +17,6 @@ import com.oct.L3.service.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
@@ -39,6 +39,7 @@ public class EventFormServiceImpl implements EventFormService {
 
     @Override
     public EventFormDTO createEventForm(EventFormDTO eventFormDTO) {
+
         if (eventFormDTO.getType().equals(TERMINATION_REQUEST)){
             if (hasIncompleteEventForms(eventFormDTO.getEmployeeId())) {
                 throw new RuntimeException("EmployeeEntity has incomplete event forms");
@@ -79,8 +80,13 @@ public class EventFormServiceImpl implements EventFormService {
     public EventFormDTO sendFormToLeader(Integer leaderId,
                                          Integer eventFormId,
                                          String managerComments) throws DataNotFoundException {
+
         EventFormEntity eventFormEntity = eventFormRepository.findById(eventFormId)
                 .orElseThrow(()-> new DataNotFoundException("EventFormEntity not found"));
+
+        if (!DRAFT.equals(eventFormEntity.getStatus()) && !ADDITIONAL_REQUIREMENTS.equals(eventFormEntity.getStatus())) {
+            throw new InvalidStatusException("EventFormEntity is not in draft or additional requirements status");
+        }
 
         eventFormEntity.setLeaderId(leaderId);
         eventFormEntity.setStatus(PENDING);
@@ -132,7 +138,7 @@ public class EventFormServiceImpl implements EventFormService {
                 .orElseThrow(() -> new DataNotFoundException("EmployeeEntity not found"));
 
         if(!PENDING.equals(eventFormEntity.getStatus())){
-            throw new DataNotFoundException("EventFormEntity is not in pending status");
+            throw new InvalidStatusException("EventFormEntity is not in pending status");
         }
 
         if (leaderComments != null) {

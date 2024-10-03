@@ -28,15 +28,8 @@ public class UserServiceImpl implements UserService {
     private final UserMapper userMapper;
 
     @Override
-    public UserDTO save(UserDTO userDTO) {
-        UserEntity userEntity = UserEntity.builder()
-                .userName(userDTO.getUserName())
-                .password(passwordEncoder.encode(userDTO.getPassword()))
-                .fullName(userDTO.getFullName())
-                .positionId(positionRepository.findById(userDTO.getPosition()).orElseThrow(() -> new RuntimeException("PositionEntity not found")))
-                .role(userDTO.getRole())
-                .build();
-        return userMapper.toDTO(userRepository.save(userEntity));
+    public UserDTO createUser(UserDTO userDTO) {
+        return userMapper.toDTO(userRepository.save(userMapper.toEntity(userDTO)));
     }
 
     @Override

@@ -9,7 +9,7 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@Table(name = "positions")
+@Table(name = "position")
 public class PositionEntity {
 
     @Id
@@ -17,4 +17,5 @@ public class PositionEntity {
     private Integer id;
     private String name;
     private String description;
+    private String level;
 }

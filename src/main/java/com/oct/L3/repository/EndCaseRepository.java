@@ -6,5 +6,4 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface EndCaseRepository extends JpaRepository<EndCaseEntity, Integer> {
-    // Tìm kiếm hồ sơ kết thúc theo event form I
 }

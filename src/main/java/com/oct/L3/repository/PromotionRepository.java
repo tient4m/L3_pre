@@ -9,8 +9,7 @@ import java.util.List;
 
 @Repository
 public interface PromotionRepository extends JpaRepository<PromotionEntity, Integer> {
-    // Tìm kiếm lần thăng chức theo event form ID
-    List<PromotionEntity> findByEventForm_Id(Integer eventFormId);
+
     @Query(value = "SELECT * FROM promotion WHERE event_form_id = :id", nativeQuery = true)
     PromotionEntity findByEventForm(Integer id);
 }

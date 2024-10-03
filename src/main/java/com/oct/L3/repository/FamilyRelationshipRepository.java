@@ -8,7 +8,6 @@ import java.util.List;
 
 @Repository
 public interface FamilyRelationshipRepository extends JpaRepository<FamilyRelationshipEntity, Integer> {
-    // Tìm kiếm mối quan hệ gia đình của một nhân viên cụ thể
-    List<FamilyRelationshipEntity> findByEmployee_Id(Integer employeeId);
+
 
 }

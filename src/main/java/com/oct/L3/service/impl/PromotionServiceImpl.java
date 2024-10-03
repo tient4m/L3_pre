@@ -1,9 +1,8 @@
 package com.oct.L3.service.impl;
 
 import com.oct.L3.entity.EmployeeEntity;
-import com.oct.L3.entity.EventFormEntity;
-import com.oct.L3.entity.PositionEntity;
 import com.oct.L3.entity.PromotionEntity;
+import com.oct.L3.exceptions.InvalidStatusException;
 import com.oct.L3.mapper.EventFormMapper;
 import com.oct.L3.mapper.PromotionMapper;
 import com.oct.L3.dtos.PromotionDTO;
@@ -37,11 +36,13 @@ public class PromotionServiceImpl implements PromotionService {
         validatePositionIds(promotionDTO.getOldPositionId(), promotionDTO.getNewPositionId());
 
         if (!employeeEntity.getStatus().equals("ACTIVE")) {
-            throw new RuntimeException("EmployeeEntity is not active");
+            throw new InvalidStatusException("EmployeeEntity is not active");
         }
         if (promotionDTO.getEventFormDTO() == null) {
             throw new RuntimeException("EventFormEntity is null");
         }
+        promotionDTO.getEventFormDTO().setStatus("DRAFT");
+        promotionDTO.getEventFormDTO().setType("PROMOTION");
 
         PromotionEntity promotionEntity = promotionMapper.toEntity(promotionDTO);
         return promotionMapper.toDTO(promotionRepository.save(promotionEntity));

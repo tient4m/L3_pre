@@ -1,7 +1,6 @@
 package com.oct.L3.controller;
 
 import com.oct.L3.dtos.response.*;
-import com.oct.L3.configurations.JWTTokenUtil;
 import com.oct.L3.mapper.EventFormMapper;
 import com.oct.L3.mapper.PromotionMapper;
 import com.oct.L3.mapper.ProposalMapper;
@@ -13,19 +12,14 @@ import com.oct.L3.service.ProposalService;
 import com.oct.L3.service.SalaryIncreaseService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.validation.BindingResult;
-import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 
 import static com.oct.L3.constant.Status.*;
 import static com.oct.L3.constant.EventType.*;
 
-import java.util.Date;
-import java.util.List;
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("${api.prefix}/event-form")
@@ -38,7 +32,6 @@ public class EventFormController {
     private final PromotionService promotionService;
     private final ProposalMapper proposalMapper;
     private final ProposalService proposalService;
-    private final JWTTokenUtil jwtTokenUtil;
     private final EventFormMapper eventFormMapper;
 
     @PreAuthorize("hasRole('ROLE_MANAGER')")
@@ -173,7 +166,7 @@ public class EventFormController {
         }
     }
 
-    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_MANAGER') or hasRole('ROLE_LEADER')")
+    @PreAuthorize("hasRole('ROLE_MANAGER') or hasRole('ROLE_LEADER')")
     @GetMapping("{id}")
     public ResponseEntity<ResponseObject> getEmployee(@PathVariable Integer id) {
         try {

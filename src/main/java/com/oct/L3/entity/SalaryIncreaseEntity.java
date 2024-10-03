@@ -9,7 +9,7 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@Table(name = "salaryincrease")
+@Table(name = "salary_increase")
 public class SalaryIncreaseEntity {
 
     @Id

@@ -25,13 +25,7 @@ public class PositionServiceImpl implements PositionService {
 
     @Override
     public PositionDTO save(PositionDTO positionDTO) {
-
-        PositionEntity positionEntity = PositionEntity.builder()
-                .id(positionDTO.getPositionId())
-                .name(positionDTO.getName())
-                .description(positionDTO.getDescription())
-                .build();
-
+        PositionEntity positionEntity = modelMapper.map(positionDTO, PositionEntity.class);
         return modelMapper.map( positionRepository.save(positionEntity), PositionDTO.class);
     }
 

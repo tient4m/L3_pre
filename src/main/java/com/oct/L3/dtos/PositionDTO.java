@@ -11,4 +11,5 @@ public class PositionDTO {
     private Integer positionId;
     private String name;
     private String description;
+    private String level;
 }
