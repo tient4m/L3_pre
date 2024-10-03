@@ -11,12 +11,12 @@ import java.util.Date;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "eventform")
+@Table(name = "event_form")
 public class EventFormEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer Id;
+    private Integer id;
     private Integer employeeId;
     private String managerComments;
     private String leaderComments;

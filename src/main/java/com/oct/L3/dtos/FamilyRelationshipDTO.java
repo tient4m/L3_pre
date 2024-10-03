@@ -19,6 +19,8 @@ public class FamilyRelationshipDTO {
     @Pattern(regexp = "^[a-zA-Z\\s]+$", message = "Full name must not contain numbers or special characters")
     private String fullName;
 
+    private Integer employeeId;
+
     @NotBlank(message = "Gender is required")
     @Pattern(regexp = "^(Male|Female|Other)$", message = "Gender must be either Male, Female, or Other")
     private String gender;

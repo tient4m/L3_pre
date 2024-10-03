@@ -11,12 +11,8 @@ import java.util.Date;
 @NoArgsConstructor
 public class EventFormHistoryDTO {
     private Integer id;
-
     private Integer eventFormId;
-
     private String status;
-
-    private Date date;
-
-    private String note;
+    private Date requestDate;
+    private String comments;
 }

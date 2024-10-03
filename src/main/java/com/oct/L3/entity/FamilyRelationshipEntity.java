@@ -17,7 +17,7 @@ public class FamilyRelationshipEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "relationship_id")
-    private Integer Id;
+    private Integer id;
     private Integer employeeId;
     private String fullName;
     private String gender;

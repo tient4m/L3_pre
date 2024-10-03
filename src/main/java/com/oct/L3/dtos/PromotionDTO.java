@@ -9,11 +9,11 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 public class PromotionDTO {
-    private Integer promotionId;
-    private EventFormDTO eventForm;
+    private Integer id;
+    private Integer eventFormId;
     private Integer times;
     private String reason;
-    private Integer oldPosition;
-    private Integer newPosition;
+    private Integer oldPositionId;
+    private Integer newPositionId;
     private String note;
 }

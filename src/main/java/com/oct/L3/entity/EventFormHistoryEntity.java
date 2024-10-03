@@ -16,9 +16,9 @@ public class EventFormHistoryEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer Id;
+    private Integer id;
     private Integer eventFormId;
-    private Date actionDate;
+    private Date requestDate;
     private String status;
     private String comments;
 

@@ -7,7 +7,7 @@ import java.util.List;
 public interface EmployeeService {
     List<EmployeeDTO> getAll();
 
-    EmployeeDTO saveEmployee(EmployeeDTO employeeDTO);
+    EmployeeDTO createEmployee(EmployeeDTO employeeDTO);
 
     EmployeeDTO updateEmployee(Integer id, EmployeeDTO employeeDTO);
 }

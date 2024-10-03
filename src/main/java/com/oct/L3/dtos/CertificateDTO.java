@@ -17,6 +17,8 @@ public class CertificateDTO {
 
     private Integer id;
 
+    private Integer employeeId;
+
     @NotBlank(message = "CertificateEntity name is required")
     private String name;
 

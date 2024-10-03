@@ -10,12 +10,14 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+import static com.oct.L3.constant.Status.DRAFT;
+
 @RequiredArgsConstructor
 @Service
 public class EmployeeServiceImpl implements EmployeeService {
 
     private final EmployeeRepository employeeRepository;
-    private final EmployeeMapper employeeMapper = new EmployeeMapper();
+    private final EmployeeMapper employeeMapper;
 
     @Override
     public List<EmployeeDTO> getAll() {
@@ -26,7 +28,8 @@ public class EmployeeServiceImpl implements EmployeeService {
 
 
     @Override
-    public EmployeeDTO saveEmployee(EmployeeDTO employeeDTO) {
+    public EmployeeDTO createEmployee(EmployeeDTO employeeDTO) {
+        employeeDTO.setStatus(DRAFT);
         EmployeeEntity employeeEntity = employeeMapper.toEntity(employeeDTO);
         return employeeMapper.toDTO(employeeRepository.save(employeeEntity));
     }

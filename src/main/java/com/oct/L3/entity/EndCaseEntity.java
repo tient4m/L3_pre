@@ -16,10 +16,10 @@ public class EndCaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer Id;
+    private Integer id;
     private Integer employeeId;
-    private Date decisionDate;
+    private Date endDate;
     private String archiveNumber;
-    private String status;
+    private String reason;
 
 }

@@ -20,76 +20,42 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class EventFormMapper {
 
-    private final ModelMapper modelMapper = new ModelMapper();
-    private final ObjectMapper objectMapper = new ObjectMapper();
+
     private final EmployeeRepository employeeRepository;
     private final EmployeeMapper employeeMapper;
 
-    public EventFormDTO toDTO(EventFormEntity eventFormEntity) {
-        EventFormDTO eventFormDTO = EventFormDTO.builder()
-                .Id(eventFormEntity.getId())
-                .leaderComments(eventFormEntity.getLeaderComments())
-                .managerComments(eventFormEntity.getManagerComments())
-                .type(eventFormEntity.getType())
-                .date(eventFormEntity.getDate())
-                .submissionDate(eventFormEntity.getSubmissionDate())
-                .content(eventFormEntity.getContent())
-                .status(eventFormEntity.getStatus())
+    public EventFormDTO toDTO(EventFormEntity entity) {
+        return EventFormDTO.builder()
+                .id(entity.getId())
+                .employeeId(entity.getEmployeeId())
+                .managerComments(entity.getManagerComments())
+                .leaderComments(entity.getLeaderComments())
+                .type(entity.getType())
+                .date(entity.getDate())
+                .submissionDate(entity.getSubmissionDate())
+                .content(entity.getContent())
+                .status(entity.getStatus())
+                .note(entity.getNote())
+                .leaderId(entity.getLeaderId())
+                .managerId(entity.getManagerId())
                 .build();
-        if (eventFormEntity.getEmployeeId() != null) {
-            eventFormDTO.setEmployeeId(eventFormEntity.getEmployeeId().getId());
-        }else {
-            eventFormDTO.setEmployeeId(null);
-        }
-
-        if (eventFormEntity.getEmployeeId() != null) {
-            eventFormDTO.setEmployeeId(eventFormEntity.getEmployeeId().getId());
-        }
-        if (eventFormEntity.getManagerId() != null) {
-            eventFormDTO.setManagerId(eventFormEntity.getManagerId().getId());
-        }
-        if (eventFormEntity.getLeaderId() != null) {
-            eventFormDTO.setLeaderId(eventFormEntity.getLeaderId().getId());
-        }
-        if (eventFormEntity.getHistories() != null) {
-            eventFormDTO.setHistories(eventFormEntity.getHistories().stream()
-                    .map(eventFormHistory -> modelMapper.map(eventFormHistory, EventFormHistoryDTO.class))
-                    .collect(Collectors.toList()));
-        }
-        return eventFormDTO;
     }
 
     public EventFormEntity toEntity(EventFormDTO dto) {
-
-        EventFormEntity eventFormEntity = EventFormEntity.builder()
-                .Id(dto.getId())
-                .leaderComments(dto.getLeaderComments())
+        return EventFormEntity.builder()
+                .id(dto.getId())
+                .employeeId(dto.getEmployeeId())
                 .managerComments(dto.getManagerComments())
+                .leaderComments(dto.getLeaderComments())
                 .type(dto.getType())
                 .date(dto.getDate())
                 .submissionDate(dto.getSubmissionDate())
                 .content(dto.getContent())
                 .status(dto.getStatus())
-//                .employeeId(employeeRepository.findById(dto.getEmployeeId()).orElse(null))
+                .note(dto.getNote())
+                .leaderId(dto.getLeaderId())
+                .managerId(dto.getManagerId())
                 .build();
-        if (dto.getEmployeeId() != null) {
-            EmployeeEntity employeeEntity = employeeRepository.findById(dto.getEmployeeId()).orElse(null);
-            eventFormEntity.setEmployeeId(employeeEntity);
-        }else {
-            eventFormEntity.setEmployeeId(null);
-        }
-
-        if (dto.getLeaderId() != null) {
-            UserEntity leader = new UserEntity();
-            leader.setId(dto.getLeaderId());
-            eventFormEntity.setLeaderId(leader);
-        }
-        if (dto.getManagerId() != null) {
-            UserEntity manager = new UserEntity();
-            manager.setId(dto.getManagerId());
-            eventFormEntity.setManagerId(manager);
-        }
-        return eventFormEntity;
     }
 
     public  EventFormResponse toResponse(EventFormDTO dto) {

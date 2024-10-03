@@ -12,7 +12,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class EventFormDTO {
-    private Integer Id;
+    private Integer id;
     private Integer employeeId;
     private String managerComments;
     private String leaderComments;

@@ -4,35 +4,26 @@ import com.oct.L3.dtos.response.SalaryIncreaseResponse;
 import com.oct.L3.dtos.SalaryIncreaseDTO;
 import com.oct.L3.entity.SalaryIncreaseEntity;
 import lombok.RequiredArgsConstructor;
+import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
 public class SalaryIncreaseMapper {
 
-    private final EventFormMapper EventFormMapper;
+  private final ModelMapper modelMapper;
 
-    public SalaryIncreaseDTO toDTO(SalaryIncreaseEntity entity) {
-        return SalaryIncreaseDTO.builder()
-                .salaryIncreaseId(entity.getId())
-                .times(entity.getTimes())
-                .reason(entity.getReason())
-                .level(entity.getLevel())
-                .note(entity.getNote())
-                .eventForm(entity.getEventFormId() == null ? null : EventFormMapper.toDTO(entity.getEventFormId()))
-                .build();
+    public SalaryIncreaseDTO toDTO(SalaryIncreaseEntity salaryIncreaseEntity) {
+        return modelMapper.map(salaryIncreaseEntity, SalaryIncreaseDTO.class);
     }
 
-    public SalaryIncreaseEntity toEntity(SalaryIncreaseDTO dto) {
-        return SalaryIncreaseEntity.builder()
-                .Id(dto.getSalaryIncreaseId())
-                .times(dto.getTimes())
-                .reason(dto.getReason())
-                .level(dto.getLevel())
-                .note(dto.getNote())
-                .eventFormId(dto.getEventForm() == null ? null : EventFormMapper.toEntity(dto.getEventForm()))
-                .build();
+    public SalaryIncreaseEntity toEntity(SalaryIncreaseDTO salaryIncreaseDTO) {
+        return modelMapper.map(salaryIncreaseDTO, SalaryIncreaseEntity.class);
     }
+
+
+
+
     public SalaryIncreaseResponse toResponse(SalaryIncreaseDTO dto) {
         return SalaryIncreaseResponse.builder()
                 .salaryIncreaseId(dto.getSalaryIncreaseId())

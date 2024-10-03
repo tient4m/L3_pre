@@ -43,25 +43,10 @@ public class EventFormController {
 
     @PreAuthorize("hasRole('ROLE_MANAGER')")
     @PostMapping("termination-request")
-    public ResponseEntity<ResponseObject> createTerminationRequest(
-            @Valid @RequestBody EventFormDTO eventFormDTO,
-            BindingResult result
-    ) {
-        if(result.hasErrors()) {
-            List<String> errorMessages = result.getFieldErrors()
-                    .stream()
-                    .map(FieldError::getDefaultMessage)
-                    .toList();
-            return ResponseEntity.ok().body(ResponseObject.builder()
-                    .message(errorMessages.toString())
-                    .status(HttpStatus.BAD_REQUEST)
-                    .data(null)
-                    .build());
-        }
+    public ResponseEntity<ResponseObject> createTerminationRequest(@Valid @RequestBody EventFormDTO eventFormDTO) {
         eventFormDTO.setType(TERMINATION_REQUEST);
-        eventFormDTO.setStatus(DRAFT);
         try {
-            EventFormDTO empResult = eventFormService.saveEventForm(eventFormDTO);
+            EventFormDTO empResult = eventFormService.createEventForm(eventFormDTO);
             return ResponseEntity.ok().body(ResponseObject.builder()
                     .message("EmployeeEntity termination request successful")
                     .status(HttpStatus.CREATED)
@@ -79,31 +64,11 @@ public class EventFormController {
     @PreAuthorize("hasRole('ROLE_MANAGER')")
     @PostMapping("register")
     public ResponseEntity<ResponseObject> registerEmployee(
-            @Valid @RequestBody EventFormDTO eventFormDTO,
-            @RequestHeader("Authorization") String authorizationHeader,
-            BindingResult result
+            @Valid @RequestBody EventFormDTO eventFormDTO
     ) {
-        if(result.hasErrors()) {
-            List<String> errorMessages = result.getFieldErrors()
-                    .stream()
-                    .map(FieldError::getDefaultMessage)
-                    .toList();
-            return ResponseEntity.ok().body(ResponseObject.builder()
-                    .message(errorMessages.toString())
-                    .status(HttpStatus.BAD_REQUEST)
-                    .data(null)
-                    .build());
-
-        }
-        String token = null;
-        if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
-            token = authorizationHeader.substring(7);
-        }
-        eventFormDTO.setManagerId(jwtTokenUtil.extractId(token));
         eventFormDTO.setType(REGISTRATION);
-        eventFormDTO.setStatus(DRAFT);
         try {
-            EventFormDTO empResult = eventFormService.saveEventForm(eventFormDTO);
+            EventFormDTO empResult = eventFormService.createEventForm(eventFormDTO);
             return ResponseEntity.ok().body(ResponseObject.builder()
                     .message("EmployeeEntity registration successful")
                     .status(HttpStatus.CREATED)
@@ -122,21 +87,8 @@ public class EventFormController {
     @PutMapping("update/{id}")
     public ResponseEntity<ResponseObject> updateEmployee(
             @Valid @RequestBody EventFormDTO eventFormDTO,
-            @PathVariable Integer id,
-            BindingResult result
+            @PathVariable Integer id
     ) {
-        if(result.hasErrors()) {
-            List<String> errorMessages = result.getFieldErrors()
-                    .stream()
-                    .map(FieldError::getDefaultMessage)
-                    .toList();
-            return ResponseEntity.ok().body(ResponseObject.builder()
-                    .message(errorMessages.toString())
-                    .status(HttpStatus.BAD_REQUEST)
-                    .data(null)
-                    .build());
-
-        }
         try {
 
             EventFormDTO empResult = eventFormService.updateEventForm(id,eventFormDTO);
@@ -155,16 +107,14 @@ public class EventFormController {
     }
 
     @PreAuthorize("hasRole('ROLE_MANAGER')")
-    @PatchMapping("send/{leaderId}/{eventFormId}")
+    @PostMapping ("send-to-leader")
     public ResponseEntity<ResponseObject> sendToLeader(
-            @PathVariable Integer leaderId,
-            @PathVariable Integer eventFormId,
-            @RequestParam String managerComments,
-            @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") Date submissionDate
+            @RequestBody Integer leaderId,
+            @RequestBody Integer eventFormId,
+            @RequestBody String managerComments
     ) {
         try {
-
-            EventFormDTO empResult = eventFormService.sendFormToLeader(leaderId,eventFormId,managerComments,submissionDate);
+            EventFormDTO empResult = eventFormService.sendFormToLeader(leaderId,eventFormId,managerComments);
             return ResponseEntity.ok().body(ResponseObject.builder()
                     .message("EmployeeEntity sent to leaderId successful")
                     .status(HttpStatus.OK)
@@ -180,20 +130,13 @@ public class EventFormController {
     }
 
     @PreAuthorize("hasRole('ROLE_LEADER')")
-    @PatchMapping("rejected/{eventFormId}")
+    @PostMapping("rejected")
     public ResponseEntity<ResponseObject> rejectEmployee(
-            @PathVariable Integer eventFormId,
-            @RequestParam String leaderComments,
-            @RequestHeader("Authorization") String authorizationHeader,
-            @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") Date submissionDate
+            @RequestBody Integer eventFormId,
+            @RequestBody String leaderComments
     ) {
-        String token = null;
-        if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
-            token = authorizationHeader.substring(7);
-        }
-        Integer leaderId = jwtTokenUtil.extractId(token);
         try {
-            EventFormDTO empResult = eventFormService.updateEventFormStatus(leaderId,eventFormId,submissionDate,leaderComments,REJECTED);
+            EventFormDTO empResult = eventFormService.updateEventFormStatus(eventFormId,leaderComments,REJECTED);
             return ResponseEntity.ok().body(ResponseObject.builder()
                     .message("EmployeeEntity rejected successful")
                     .status(HttpStatus.OK)
@@ -209,20 +152,13 @@ public class EventFormController {
     }
 
     @PreAuthorize("hasRole('ROLE_LEADER')")
-    @PatchMapping("approve/{eventFormId}")
+    @PostMapping("approve")
     public ResponseEntity<ResponseObject> approveEmployee(
-            @PathVariable Integer eventFormId,
-            @RequestHeader("Authorization") String authorizationHeader,
-            @RequestParam String leaderComments,
-            @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") Date submissionDate
+            @RequestBody Integer eventFormId,
+            @RequestBody String leaderComments
     ) {
-        String token = null;
-        if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
-            token = authorizationHeader.substring(7);
-        }
-        Integer leaderId = jwtTokenUtil.extractId(token);
         try {
-            EventFormDTO empResult = eventFormService.updateEventFormStatus(eventFormId,leaderId,submissionDate,leaderComments,APPROVED);
+            EventFormDTO empResult = eventFormService.updateEventFormStatus(eventFormId,leaderComments,APPROVED);
             return ResponseEntity.ok().body(ResponseObject.builder()
                     .message("EmployeeEntity approved successful")
                     .status(HttpStatus.OK)
@@ -285,20 +221,13 @@ public class EventFormController {
     }
 
     @PreAuthorize("hasRole('ROLE_LEADER')")
-    @PatchMapping("additional-requirements/{eventFormId}")
+    @PostMapping("additional-requirements")
     public ResponseEntity<ResponseObject> additionalRequirements(
-            @RequestHeader("Authorization") String authorizationHeader,
-            @PathVariable Integer eventFormId,
-            @RequestParam String leaderComments,
-            @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") Date submissionDate
+            @RequestBody Integer eventFormId,
+            @RequestBody String leaderComments
     ) {
-        String token = null;
-        if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
-            token = authorizationHeader.substring(7);
-        }
-        Integer leaderId = jwtTokenUtil.extractId(token);
         try {
-            EventFormDTO empResult = eventFormService.updateEventFormStatus(eventFormId,leaderId,submissionDate,leaderComments,ADDITIONAL_REQUIREMENTS);
+            EventFormDTO empResult = eventFormService.updateEventFormStatus(eventFormId,leaderComments,ADDITIONAL_REQUIREMENTS);
             return ResponseEntity.ok().body(ResponseObject.builder()
                     .message("EmployeeEntity additional requirements successful")
                     .status(HttpStatus.OK)

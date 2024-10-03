@@ -15,57 +15,46 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class EmployeeMapper {
 
-    private final ModelMapper modelMapper = new ModelMapper();
 
     public EmployeeDTO toDTO(EmployeeEntity employeeEntity) {
-        EmployeeDTO employeeDTO = modelMapper.map(employeeEntity, EmployeeDTO.class);
-        if (employeeEntity.getManagerId() != null) {
-            employeeDTO.setManagerId(employeeEntity.getManagerId().getId());
-        }
-        if (employeeEntity.getPositionId() != null) {
-            employeeDTO.setPositionId(employeeEntity.getPositionId().getId());
-        }
-        List<CertificateDTO> certificateDTOs = employeeEntity.getCertificateEntities().stream()
-                .map(certificateEntity -> modelMapper.map(certificateEntity, CertificateDTO.class))
-                .collect(Collectors.toList());
-        employeeDTO.setCertificates(certificateDTOs);
-        List<FamilyRelationshipDTO> familyRelationshipDTOs = employeeEntity.getFamilyRelationshipEntities().stream()
-                .map(familyRelationshipEntity -> modelMapper.map(familyRelationshipEntity, FamilyRelationshipDTO.class))
-                .collect(Collectors.toList());
-        employeeDTO.setFamilyRelationships(familyRelationshipDTOs);
-        return employeeDTO;
+        return EmployeeDTO.builder()
+                .id(employeeEntity.getId())
+                .name(employeeEntity.getName())
+                .code(employeeEntity.getCode())
+                .gender(employeeEntity.getGender())
+                .dateOfBirth(employeeEntity.getDateOfBirth())
+                .address(employeeEntity.getAddress())
+                .identityCard(employeeEntity.getIdentityCard())
+                .phoneNumber(employeeEntity.getPhoneNumber())
+                .email(employeeEntity.getEmail())
+                .positionId(employeeEntity.getPositionId())
+                .managerId(employeeEntity.getManagerId())
+                .status(employeeEntity.getStatus())
+                .hometown(employeeEntity.getHometown())
+                .ethnicity(employeeEntity.getEthnicity())
+                .educationLevel(employeeEntity.getEducationLevel())
+                .build();
     }
 
-    public EmployeeEntity toEntity(EmployeeDTO dto) {
-        EmployeeEntity employeeEntity = modelMapper.map(dto, EmployeeEntity.class);
-
-        if (dto.getPositionId() != null) {
-            PositionEntity positionEntity = new PositionEntity();
-            positionEntity.setId(dto.getPositionId());
-            employeeEntity.setPositionId(positionEntity);
-        }
-        if (dto.getManagerId() != null) {
-            UserEntity manager = new UserEntity();
-            manager.setId(dto.getManagerId());
-            employeeEntity.setManagerId(manager);
-        }
-        if (dto.getCertificates() != null){
-            employeeEntity.setCertificateEntities(dto.getCertificates().stream().
-                    map(certificateDTO -> {
-                        CertificateEntity certificateEntity = modelMapper.map(certificateDTO, CertificateEntity.class);
-                        certificateEntity.setEmployeeId(employeeEntity);
-                        return certificateEntity;
-                    }).collect(Collectors.toList()));
-        }
-        if (dto.getFamilyRelationships() != null){
-            employeeEntity.setFamilyRelationshipEntities(dto.getFamilyRelationships().stream().
-                    map(familyRelationshipDTO -> {
-                        FamilyRelationshipEntity familyRelationshipEntity = modelMapper.map(familyRelationshipDTO, FamilyRelationshipEntity.class);
-                        familyRelationshipEntity.setEmployeeId(employeeEntity);
-                        return familyRelationshipEntity;
-                    }).collect(Collectors.toList()));
-        }
-        return employeeEntity;
+    public EmployeeEntity toEntity(EmployeeDTO employeeDTO) {
+        return EmployeeEntity.builder()
+                .id(employeeDTO.getId())
+                .name(employeeDTO.getName())
+                .code(employeeDTO.getCode())
+                .gender(employeeDTO.getGender())
+                .dateOfBirth(employeeDTO.getDateOfBirth())
+                .address(employeeDTO.getAddress())
+                .identityCard(employeeDTO.getIdentityCard())
+                .phoneNumber(employeeDTO.getPhoneNumber())
+                .email(employeeDTO.getEmail())
+                .positionId(employeeDTO.getPositionId())
+                .managerId(employeeDTO.getManagerId())
+                .status(employeeDTO.getStatus())
+                .hometown(employeeDTO.getHometown())
+                .ethnicity(employeeDTO.getEthnicity())
+                .educationLevel(employeeDTO.getEducationLevel())
+                .build();
     }
+
 }
 

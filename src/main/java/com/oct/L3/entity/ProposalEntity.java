@@ -14,7 +14,7 @@ public class ProposalEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer Id;
+    private Integer id;
     private Integer eventFormId;
     private String content;
     private String type;

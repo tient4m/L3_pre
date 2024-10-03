@@ -14,7 +14,7 @@ public class PromotionEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer Id;
+    private Integer id;
     private Integer eventFormId;
     private Integer times;
     private String reason;

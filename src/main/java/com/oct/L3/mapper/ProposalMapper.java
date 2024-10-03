@@ -4,33 +4,21 @@ import com.oct.L3.dtos.response.ProposalResponse;
 import com.oct.L3.dtos.ProposalDTO;
 import com.oct.L3.entity.ProposalEntity;
 import lombok.RequiredArgsConstructor;
+import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
 public class ProposalMapper {
     private final EventFormMapper eventFormMapper;
+    private final ModelMapper modelMapper;
 
-    public ProposalDTO toDTO(ProposalEntity entity) {
-        return ProposalDTO.builder()
-                .proposalId(entity.getId())
-                .eventForm(entity.getEventFormId() == null ? null : eventFormMapper.toDTO(entity.getEventFormId()))
-                .content(entity.getContent())
-                .type(entity.getType())
-                .description(entity.getDescription())
-                .note(entity.getNote())
-                .build();
+    public ProposalDTO toDTO(ProposalEntity proposalEntity) {
+        return modelMapper.map(proposalEntity, ProposalDTO.class);
     }
 
-    public ProposalEntity toEntity(ProposalDTO dto) {
-        return ProposalEntity.builder()
-                .Id(dto.getProposalId())
-                .eventFormId(dto.getEventForm() == null ? null : eventFormMapper.toEntity(dto.getEventForm()))
-                .content(dto.getContent())
-                .type(dto.getType())
-                .description(dto.getDescription())
-                .note(dto.getNote())
-                .build();
+    public ProposalEntity toEntity(ProposalDTO proposalDTO) {
+        return modelMapper.map(proposalDTO, ProposalEntity.class);
     }
 
     public ProposalResponse toResponse(ProposalDTO dto) {
