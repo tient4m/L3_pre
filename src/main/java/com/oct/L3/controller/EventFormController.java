@@ -5,7 +5,7 @@ import com.oct.L3.mapper.EventFormMapper;
 import com.oct.L3.mapper.PromotionMapper;
 import com.oct.L3.mapper.ProposalMapper;
 import com.oct.L3.mapper.SalaryIncreaseMapper;
-import com.oct.L3.dtos.eventform.EventFormDTO;
+import com.oct.L3.dtos.EventFormDTO;
 import com.oct.L3.service.EventFormService;
 import com.oct.L3.service.PromotionService;
 import com.oct.L3.service.ProposalService;

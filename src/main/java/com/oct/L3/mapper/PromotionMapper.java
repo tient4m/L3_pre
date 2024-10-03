@@ -1,14 +1,12 @@
 package com.oct.L3.mapper;
 
 import com.oct.L3.dtos.PositionDTO;
-import com.oct.L3.dtos.eventform.EventFormDTO;
 import com.oct.L3.dtos.response.PromotionResponse;
 import com.oct.L3.dtos.PromotionDTO;
 import com.oct.L3.entity.EventFormEntity;
 import com.oct.L3.entity.PromotionEntity;
 import com.oct.L3.repository.EventFormRepository;
 import com.oct.L3.repository.PositionRepository;
-import com.oct.L3.repository.PromotionRepository;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;

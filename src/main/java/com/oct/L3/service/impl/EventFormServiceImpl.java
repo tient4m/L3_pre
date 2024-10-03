@@ -6,7 +6,7 @@ import com.oct.L3.entity.EventFormEntity;
 import com.oct.L3.entity.UserEntity;
 import com.oct.L3.exceptions.InvalidStatusException;
 import com.oct.L3.mapper.EventFormHistoryMapper;
-import com.oct.L3.dtos.eventform.EventFormDTO;
+import com.oct.L3.dtos.EventFormDTO;
 import com.oct.L3.entity.EventFormHistoryEntity;
 import com.oct.L3.exceptions.DataNotFoundException;
 import com.oct.L3.mapper.EventFormMapper;
@@ -62,7 +62,7 @@ public class EventFormServiceImpl implements EventFormService {
                 !REJECTED.equals(eventFormEntity.getStatus()) &&
                 !ADDITIONAL_REQUIREMENTS.equals(eventFormEntity.getStatus())
         ) {
-            throw new RuntimeException("EventFormEntity is not in draft,rejected and additional requirements status");
+            throw new RuntimeException("EventForm is not in draft,rejected and additional requirements status");
         }
 
         if (eventFormDTO.getEmployeeId() != null) {

@@ -2,7 +2,7 @@ package com.oct.L3.mapper;
 
 
 import com.oct.L3.dtos.response.EventFormResponse;
-import com.oct.L3.dtos.eventform.EventFormDTO;
+import com.oct.L3.dtos.EventFormDTO;
 import com.oct.L3.dtos.EventFormHistoryDTO;
 import com.oct.L3.entity.EmployeeEntity;
 import com.oct.L3.entity.EventFormEntity;

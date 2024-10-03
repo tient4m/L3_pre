@@ -1,6 +1,5 @@
-package com.oct.L3.dtos.eventform;
+package com.oct.L3.dtos;
 
-import com.oct.L3.dtos.EventFormHistoryDTO;
 import lombok.*;
 
 import java.util.Date;
