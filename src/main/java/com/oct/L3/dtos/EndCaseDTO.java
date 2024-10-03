@@ -1,5 +1,6 @@
 package com.oct.L3.dtos;
 
+import com.oct.L3.dtos.eventform.EventFormDTO;
 import lombok.*;
 
 import java.util.Date;
@@ -10,9 +11,10 @@ import java.util.Date;
 @AllArgsConstructor
 @NoArgsConstructor
 public class EndCaseDTO {
-    private Integer endCaseId;
+    private Integer Id;
+    private EventFormDTO eventFormDTO;
     private Integer employeeId;
-    private Date decisionDate;
+    private Date endDate;
     private String archiveNumber;
-    private String status;
+    private String reason;
 }

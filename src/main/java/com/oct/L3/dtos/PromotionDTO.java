@@ -10,7 +10,7 @@ import lombok.*;
 @NoArgsConstructor
 public class PromotionDTO {
     private Integer id;
-    private Integer eventFormId;
+    private EventFormDTO eventFormDTO;
     private Integer times;
     private String reason;
     private Integer oldPositionId;

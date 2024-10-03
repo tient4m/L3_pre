@@ -1,5 +1,6 @@
 package com.oct.L3.entity;
 
+import com.oct.L3.dtos.eventform.EventFormDTO;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -17,6 +18,7 @@ public class EndCaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
+    private Integer eventFormId;
     private Integer employeeId;
     private Date endDate;
     private String archiveNumber;

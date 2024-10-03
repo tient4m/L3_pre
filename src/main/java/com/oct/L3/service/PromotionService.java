@@ -4,7 +4,7 @@ import com.oct.L3.dtos.PromotionDTO;
 import com.oct.L3.exceptions.DataNotFoundException;
 
 public interface PromotionService {
-    PromotionDTO createPromotion(PromotionDTO promotionDTO);
+    PromotionDTO createPromotion(PromotionDTO promotionDTO) throws DataNotFoundException;
 
     PromotionDTO updatePromotion(Integer id, PromotionDTO promotionDTO) throws DataNotFoundException;
 

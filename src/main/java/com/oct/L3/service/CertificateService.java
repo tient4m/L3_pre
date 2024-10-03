@@ -7,5 +7,4 @@ import java.util.List;
 
 public interface CertificateService {
 
-    void saveOrUpdateCertificates(List<CertificateDTO> certificates, EmployeeEntity employeeEntity);
 }

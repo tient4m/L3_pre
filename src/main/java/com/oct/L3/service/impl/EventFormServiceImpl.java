@@ -3,15 +3,20 @@ package com.oct.L3.service.impl;
 import com.oct.L3.dtos.EventFormHistoryDTO;
 import com.oct.L3.entity.EmployeeEntity;
 import com.oct.L3.entity.EventFormEntity;
+import com.oct.L3.entity.UserEntity;
 import com.oct.L3.mapper.EventFormHistoryMapper;
 import com.oct.L3.dtos.eventform.EventFormDTO;
 import com.oct.L3.entity.EventFormHistoryEntity;
 import com.oct.L3.exceptions.DataNotFoundException;
+import com.oct.L3.mapper.EventFormMapper;
 import com.oct.L3.repository.EmployeeRepository;
 import com.oct.L3.repository.EventFormHistoryRepository;
 import com.oct.L3.repository.EventFormRepository;
 import com.oct.L3.service.*;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
@@ -39,11 +44,11 @@ public class EventFormServiceImpl implements EventFormService {
                 throw new RuntimeException("EmployeeEntity has incomplete event forms");
             }
         }
+
         eventFormDTO.setStatus(DRAFT);
         eventFormDTO.setDate(new Date());
-        EventFormEntity eventFormEntity = eventFormMapper.toEntity(eventFormDTO);
-        eventFormRepository.save(eventFormEntity);
-        return eventFormMapper.toDTO(eventFormEntity);
+
+        return eventFormMapper.toDTO(eventFormRepository.save(eventFormMapper.toEntity(eventFormDTO)));
     }
 
     @Override
@@ -58,13 +63,15 @@ public class EventFormServiceImpl implements EventFormService {
         ) {
             throw new RuntimeException("EventFormEntity is not in draft,rejected and additional requirements status");
         }
+
         if (eventFormDTO.getEmployeeId() != null) {
             eventFormEntity.setEmployeeId(eventFormDTO.getEmployeeId());
         }
+
         eventFormEntity.setNote(eventFormDTO.getNote());
         eventFormEntity.setContent(eventFormDTO.getContent());
-        EventFormEntity savedEventFormEntity = eventFormRepository.save(eventFormEntity);
-        return eventFormMapper.toDTO(savedEventFormEntity);
+
+        return eventFormMapper.toDTO(eventFormRepository.save(eventFormEntity));
     }
 
 
@@ -85,15 +92,17 @@ public class EventFormServiceImpl implements EventFormService {
                 .status(PENDING)
                 .requestDate(new Date())
                 .build();
+
         eventFormHistoryRepository.save(eventFormHistoryEntity);
 
-        EventFormEntity savedEventFormEntity = eventFormRepository.save(eventFormEntity);
-        return eventFormMapper.toDTO(savedEventFormEntity);
+        return eventFormMapper.toDTO(eventFormRepository.save(eventFormEntity));
     }
 
     @Override
     public EventFormDTO getEventFormById(Integer id) throws DataNotFoundException {
-        EventFormEntity eventFormEntity = eventFormRepository.findById(id).orElseThrow(()-> new DataNotFoundException("EventFormEntity not found"));
+        EventFormEntity eventFormEntity = eventFormRepository.findById(id)
+                .orElseThrow(()-> new DataNotFoundException("EventFormEntity not found"));
+
         return eventFormMapper.toDTO(eventFormEntity);
     }
 
@@ -108,6 +117,13 @@ public class EventFormServiceImpl implements EventFormService {
     public EventFormDTO updateEventFormStatus(Integer eventFormId,
                                               String leaderComments,
                                               String status) throws DataNotFoundException {
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication != null && authentication.getPrincipal() instanceof UserEntity userEntity) {
+            String userName = userEntity.getUsername();
+        }
+
+
 
         EventFormEntity eventFormEntity = eventFormRepository.findById(eventFormId)
                 .orElseThrow(()-> new DataNotFoundException("EventFormEntity not found"));

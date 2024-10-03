@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Objects;
 
 import static com.oct.L3.constant.Status.DRAFT;
 
@@ -39,7 +40,7 @@ public class EmployeeServiceImpl implements EmployeeService {
         if (!employeeRepository.existsById(id)) {
             throw new RuntimeException("EmployeeEntity not found");
         }
-        if (employeeDTO.getId() != id) {
+        if (!Objects.equals(employeeDTO.getId(), id)) {
             throw new RuntimeException("Id not match");
         }
         EmployeeEntity employeeEntity = employeeMapper.toEntity(employeeDTO);

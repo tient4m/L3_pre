@@ -1,8 +1,12 @@
 package com.oct.L3.mapper;
 
+import com.oct.L3.dtos.PositionDTO;
+import com.oct.L3.dtos.eventform.EventFormDTO;
 import com.oct.L3.dtos.response.PromotionResponse;
 import com.oct.L3.dtos.PromotionDTO;
+import com.oct.L3.entity.EventFormEntity;
 import com.oct.L3.entity.PromotionEntity;
+import com.oct.L3.repository.EventFormRepository;
 import com.oct.L3.repository.PositionRepository;
 import com.oct.L3.repository.PromotionRepository;
 import lombok.RequiredArgsConstructor;
@@ -13,11 +17,19 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class PromotionMapper {
 
+    private final EventFormMapper eventFormMapper;
+    private final EventFormRepository eventFormRepository;
+    private final PositionRepository positionRepository;
+    private final ModelMapper modelMapper;
 
    public PromotionDTO toDTO(PromotionEntity promotionEntity) {
+
+       EventFormEntity eventFormEntity = eventFormRepository.findById(promotionEntity.getEventFormId())
+               .orElseThrow(() -> new RuntimeException("EventFormEntity not found"));
+
         return PromotionDTO.builder()
                 .id(promotionEntity.getId())
-                .eventFormId(promotionEntity.getEventFormId())
+                .eventForm(eventFormMapper.toDTO(eventFormEntity))
                 .times(promotionEntity.getTimes())
                 .reason(promotionEntity.getReason())
                 .note(promotionEntity.getNote())
@@ -29,7 +41,7 @@ public class PromotionMapper {
     public PromotionEntity toEntity(PromotionDTO promotionDTO) {
         return PromotionEntity.builder()
                 .id(promotionDTO.getId())
-                .eventFormId(promotionDTO.getEventFormId())
+                .eventFormId(promotionDTO.getEventForm().getId())
                 .times(promotionDTO.getTimes())
                 .reason(promotionDTO.getReason())
                 .note(promotionDTO.getNote())
@@ -39,13 +51,19 @@ public class PromotionMapper {
     }
 
     public PromotionResponse toResponse(PromotionDTO dto) {
-        PromotionResponse promotionResponse = PromotionResponse.builder()
-                .promotionId(dto.getPromotionId())
+
+
+        PositionDTO oldPosition = modelMapper.map(positionRepository.findById(dto.getOldPositionId()).get(), PositionDTO.class);
+        PositionDTO newPosition = modelMapper.map(positionRepository.findById(dto.getNewPositionId()).get(), PositionDTO.class);
+
+        return PromotionResponse.builder()
+                .promotionId(dto.getId())
                 .times(dto.getTimes())
+                .newPosition(newPosition)
+                .oldPosition(oldPosition)
                 .reason(dto.getReason())
                 .note(dto.getNote())
                 .eventForm(dto.getEventForm())
                 .build();
-        return promotionResponse;
     }
 }

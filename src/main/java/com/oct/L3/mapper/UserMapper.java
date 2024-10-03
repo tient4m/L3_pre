@@ -10,13 +10,28 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class UserMapper {
 
-    private final ModelMapper modelMapper;
 
     public UserEntity toEntity(UserDTO userDTO) {
-        return modelMapper.map(userDTO, UserEntity.class);
+
+        ;return UserEntity.builder()
+                .id(userDTO.getId())
+                .userName(userDTO.getUserName())
+                .password(userDTO.getPassword())
+                .fullName(userDTO.getFullName())
+                .role(userDTO.getRole())
+                .positionId(userDTO.getPositionId())
+                .build();
     }
 
     public UserDTO toDTO(UserEntity userEntity) {
-        return modelMapper.map(userEntity, UserDTO.class);
+
+        return UserDTO.builder()
+                .id(userEntity.getId())
+                .userName(userEntity.getUsername())
+                .password(userEntity.getPassword())
+                .fullName(userEntity.getFullName())
+                .role(userEntity.getRole())
+                .positionId(userEntity.getPositionId())
+                .build();
     }
 }

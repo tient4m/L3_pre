@@ -14,9 +14,5 @@ import java.util.List;
 public class CertificateServiceImpl implements CertificateService {
     private final CertificateRepository certificateRepository;
 
-    @Override
-    public void saveOrUpdateCertificates(List<CertificateDTO> certificates, EmployeeEntity employeeEntity) {
-
-    }
 
 }

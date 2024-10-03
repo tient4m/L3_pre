@@ -2,6 +2,7 @@ package com.oct.L3.mapper;
 
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.oct.L3.dtos.EmployeeDTO;
 import com.oct.L3.dtos.response.EventFormResponse;
 import com.oct.L3.dtos.eventform.EventFormDTO;
 import com.oct.L3.dtos.EventFormHistoryDTO;
@@ -9,11 +10,13 @@ import com.oct.L3.entity.EmployeeEntity;
 import com.oct.L3.entity.EventFormEntity;
 import com.oct.L3.entity.UserEntity;
 import com.oct.L3.repository.EmployeeRepository;
+import com.oct.L3.repository.EventFormHistoryRepository;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;
 
 
+import java.util.List;
 import java.util.stream.Collectors;
 
 @Component
@@ -23,6 +26,8 @@ public class EventFormMapper {
 
     private final EmployeeRepository employeeRepository;
     private final EmployeeMapper employeeMapper;
+    private final EventFormHistoryMapper eventFormHistoryMapper;
+    private final EventFormHistoryRepository eventFormHistoryRepository;
 
     public EventFormDTO toDTO(EventFormEntity entity) {
         return EventFormDTO.builder()
@@ -59,21 +64,26 @@ public class EventFormMapper {
     }
 
     public  EventFormResponse toResponse(EventFormDTO dto) {
+
+        List<EventFormHistoryDTO> histories = eventFormHistoryRepository
+                .findByEventFormId(dto.getId())
+                .stream()
+                .map(eventFormHistoryMapper::toDTO)
+                .toList();
+
+        EmployeeEntity entity = employeeRepository.findById(dto.getEmployeeId()).get();
+
         return EventFormResponse.builder()
-                .eventFormId(dto.getId())
-                .employee(employeeMapper.toDTO(
-                        employeeRepository
-                                .findById(dto.getEmployeeId())
-                                .orElse(null)
-                        )
-                )
-                .type(dto.getType())
-                .date(dto.getDate())
-                .submissionDate(dto.getSubmissionDate())
-                .content(dto.getContent())
-                .status(dto.getStatus())
-                .note(dto.getNote())
-                .build();
+                    .eventFormId(dto.getId())
+                    .employee(employeeMapper.toDTO(entity))
+                    .type(dto.getType())
+                    .date(dto.getDate())
+                    .submissionDate(dto.getSubmissionDate())
+                    .content(dto.getContent())
+                    .status(dto.getStatus())
+                    .note(dto.getNote())
+                    .histories(histories)
+                    .build();
     }
 }
 

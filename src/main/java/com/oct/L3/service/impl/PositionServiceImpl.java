@@ -5,6 +5,7 @@ import com.oct.L3.entity.PositionEntity;
 import com.oct.L3.repository.PositionRepository;
 import com.oct.L3.service.PositionService;
 import lombok.RequiredArgsConstructor;
+import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -12,6 +13,8 @@ import org.springframework.stereotype.Service;
 public class PositionServiceImpl implements PositionService {
 
     private final PositionRepository positionRepository;
+    private final ModelMapper modelMapper;
+
     @Override
     public void delete(Integer positionId) {
         if (!positionRepository.existsById(positionId)) {
@@ -22,12 +25,15 @@ public class PositionServiceImpl implements PositionService {
 
     @Override
     public PositionDTO save(PositionDTO positionDTO) {
+
         PositionEntity positionEntity = PositionEntity.builder()
-                .Id(positionDTO.getPositionId())
+                .id(positionDTO.getPositionId())
                 .name(positionDTO.getName())
                 .description(positionDTO.getDescription())
                 .build();
-        positionRepository.save(positionEntity);
-        return positionDTO;
+
+        return modelMapper.map( positionRepository.save(positionEntity), PositionDTO.class);
     }
+
+
 }

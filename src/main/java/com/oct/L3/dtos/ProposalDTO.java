@@ -10,7 +10,7 @@ import lombok.*;
 @NoArgsConstructor
 public class ProposalDTO {
     private Integer proposalId;
-    private EventFormDTO eventForm;
+    private EventFormDTO eventFormDTO;
     private String content;
     private String type;
     private String description;
