@@ -1,9 +1,7 @@
 package com.oct.L3.service.impl;
 
 import com.oct.L3.dtos.EndCaseDTO;
-import com.oct.L3.dtos.eventform.EventFormDTO;
 import com.oct.L3.entity.EmployeeEntity;
-import com.oct.L3.entity.EndCaseEntity;
 import com.oct.L3.mapper.EndCaseMapper;
 import com.oct.L3.repository.EmployeeRepository;
 import com.oct.L3.repository.EndCaseRepository;

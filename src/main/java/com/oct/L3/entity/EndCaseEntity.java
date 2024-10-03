@@ -1,6 +1,5 @@
 package com.oct.L3.entity;
 
-import com.oct.L3.dtos.eventform.EventFormDTO;
 import jakarta.persistence.*;
 import lombok.*;
 

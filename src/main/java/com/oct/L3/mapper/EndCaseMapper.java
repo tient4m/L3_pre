@@ -1,7 +1,7 @@
 package com.oct.L3.mapper;
 
 import com.oct.L3.dtos.EndCaseDTO;
-import com.oct.L3.dtos.eventform.EventFormDTO;
+import com.oct.L3.dtos.EventFormDTO;
 import com.oct.L3.entity.EndCaseEntity;
 import com.oct.L3.repository.EventFormRepository;
 import lombok.RequiredArgsConstructor;
@@ -21,7 +21,7 @@ public class EndCaseMapper {
 
         return EndCaseDTO.builder()
                 .Id(endCaseEntity.getId())
-                .eventForm(eventFormDTO)
+                .eventFormDTO(eventFormDTO)
                 .employeeId(endCaseEntity.getEmployeeId())
                 .endDate(endCaseEntity.getEndDate())
                 .archiveNumber(endCaseEntity.getArchiveNumber())
@@ -32,7 +32,7 @@ public class EndCaseMapper {
     public EndCaseEntity toEntity(EndCaseDTO endCaseDTO) {
         return EndCaseEntity.builder()
                 .id(endCaseDTO.getId())
-                .eventFormId(endCaseDTO.getEventForm().getId())
+                .eventFormId(endCaseDTO.getEventFormDTO().getId())
                 .employeeId(endCaseDTO.getEmployeeId())
                 .endDate(endCaseDTO.getEndDate())
                 .archiveNumber(endCaseDTO.getArchiveNumber())

@@ -27,31 +27,9 @@ public class ProposalController {
 
     @PreAuthorize("hasRole('MANAGER')")
     @PostMapping("/create")
-    public ResponseEntity<ResponseObject> createProposal(@RequestBody @Valid ProposalDTO proposalDTO
-            , @RequestHeader(name = "Authorization", required = false) String authorizationHeader
-                                                               , BindingResult result) {
-        if (result.hasErrors()) {
-            List<String> errorMessages = result.getFieldErrors()
-                    .stream()
-                    .map(FieldError::getDefaultMessage)
-                    .toList();
-            return ResponseEntity.ok().body(ResponseObject.builder()
-                    .message(errorMessages.toString())
-                    .status(HttpStatus.BAD_REQUEST)
-                    .data(null)
-                    .build());
-        }
-        try {
+    public ResponseEntity<ResponseObject> createProposal(@RequestBody @Valid ProposalDTO proposalDTO) {
 
-            String token = null;
-            if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
-                token = authorizationHeader.substring(7);
-            }
-            proposalDTO.getEventForm().setStatus("PENDING");
-            proposalDTO.getEventForm().setManagerId(jwtTokenUtil.extractId(token));
-//            String type = proposalDTO.getType();
-//            type.toUpperCase();
-            proposalDTO.getEventForm().setType(PROPOSAL);
+        try {
             ProposalDTO proposalResult = proposalService.createProposal(proposalDTO);
             return ResponseEntity.ok().body(ResponseObject.builder()
                     .message("ProposalEntity created successfully")

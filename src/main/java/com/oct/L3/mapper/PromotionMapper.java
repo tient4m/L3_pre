@@ -1,14 +1,12 @@
 package com.oct.L3.mapper;
 
 import com.oct.L3.dtos.PositionDTO;
-import com.oct.L3.dtos.eventform.EventFormDTO;
 import com.oct.L3.dtos.response.PromotionResponse;
 import com.oct.L3.dtos.PromotionDTO;
 import com.oct.L3.entity.EventFormEntity;
 import com.oct.L3.entity.PromotionEntity;
 import com.oct.L3.repository.EventFormRepository;
 import com.oct.L3.repository.PositionRepository;
-import com.oct.L3.repository.PromotionRepository;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;
@@ -29,7 +27,7 @@ public class PromotionMapper {
 
         return PromotionDTO.builder()
                 .id(promotionEntity.getId())
-                .eventForm(eventFormMapper.toDTO(eventFormEntity))
+                .eventFormDTO(eventFormMapper.toDTO(eventFormEntity))
                 .times(promotionEntity.getTimes())
                 .reason(promotionEntity.getReason())
                 .note(promotionEntity.getNote())
@@ -41,7 +39,7 @@ public class PromotionMapper {
     public PromotionEntity toEntity(PromotionDTO promotionDTO) {
         return PromotionEntity.builder()
                 .id(promotionDTO.getId())
-                .eventFormId(promotionDTO.getEventForm().getId())
+                .eventFormId(promotionDTO.getEventFormDTO().getId())
                 .times(promotionDTO.getTimes())
                 .reason(promotionDTO.getReason())
                 .note(promotionDTO.getNote())
@@ -63,7 +61,7 @@ public class PromotionMapper {
                 .oldPosition(oldPosition)
                 .reason(dto.getReason())
                 .note(dto.getNote())
-                .eventForm(dto.getEventForm())
+                .eventForm(dto.getEventFormDTO())
                 .build();
     }
 }

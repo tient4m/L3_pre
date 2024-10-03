@@ -1,6 +1,6 @@
 package com.oct.L3.mapper;
 
-import com.oct.L3.dtos.eventform.EventFormDTO;
+import com.oct.L3.dtos.EventFormDTO;
 import com.oct.L3.dtos.response.SalaryIncreaseResponse;
 import com.oct.L3.dtos.SalaryIncreaseDTO;
 import com.oct.L3.entity.SalaryIncreaseEntity;
@@ -16,13 +16,16 @@ public class SalaryIncreaseMapper {
     private final EventFormRepository eventFormRepository;
 
     public SalaryIncreaseDTO toDTO(SalaryIncreaseEntity salaryIncreaseEntity) {
+
+        EventFormDTO eventFormDTO = eventFormMapper.toDTO(eventFormRepository.findById(salaryIncreaseEntity.getEventFormId()).get());
+
         return SalaryIncreaseDTO.builder()
                 .salaryIncreaseId(salaryIncreaseEntity.getId())
                 .times(salaryIncreaseEntity.getTimes())
                 .reason(salaryIncreaseEntity.getReason())
                 .level(salaryIncreaseEntity.getLevel())
                 .note(salaryIncreaseEntity.getNote())
-                .eventFormId(salaryIncreaseEntity.getEventFormId())
+                .eventFormDTO(eventFormDTO)
                 .build();
     }
 
@@ -33,14 +36,13 @@ public class SalaryIncreaseMapper {
                 .reason(salaryIncreaseDTO.getReason())
                 .level(salaryIncreaseDTO.getLevel())
                 .note(salaryIncreaseDTO.getNote())
-                .eventFormId(salaryIncreaseDTO.getEventFormId())
+                .eventFormId(salaryIncreaseDTO.getEventFormDTO().getId())
                 .build();
     }
 
 
     public SalaryIncreaseResponse toResponse(SalaryIncreaseDTO dto) {
 
-        EventFormDTO eventFormDTO = eventFormMapper.toDTO(eventFormRepository.findById(dto.getEventFormId()).get());
 
         return SalaryIncreaseResponse.builder()
                 .salaryIncreaseId(dto.getSalaryIncreaseId())
@@ -48,7 +50,7 @@ public class SalaryIncreaseMapper {
                 .reason(dto.getReason())
                 .level(dto.getLevel())
                 .note(dto.getNote())
-                .eventForm(eventFormDTO)
+                .eventForm(dto.getEventFormDTO())
                 .build();
     }
 }

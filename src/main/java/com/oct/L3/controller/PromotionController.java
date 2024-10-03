@@ -25,20 +25,8 @@ public class PromotionController {
 
     @PreAuthorize("hasRole('MANAGER')")
     @PostMapping("/create")
-    public ResponseEntity<ResponseObject> createPromotion(@RequestBody @Valid PromotionDTO promotionDTO, BindingResult result) {
-        if (result.hasErrors()) {
-            List<String> errorMessages = result.getFieldErrors()
-                    .stream()
-                    .map(FieldError::getDefaultMessage)
-                    .toList();
-            return ResponseEntity.ok().body(ResponseObject.builder()
-                    .message(errorMessages.toString())
-                    .status(HttpStatus.BAD_REQUEST)
-                    .data(null)
-                    .build());
-        }
+    public ResponseEntity<ResponseObject> createPromotion(@RequestBody @Valid PromotionDTO promotionDTO) {
         try {
-            promotionDTO.getEventForm().setType(PROMOTION);
             PromotionDTO promotionResult = promotionService.createPromotion(promotionDTO);
             return ResponseEntity.ok().body(ResponseObject.builder()
                     .message("PromotionEntity created successfully")
@@ -56,20 +44,10 @@ public class PromotionController {
 
     @PreAuthorize("hasRole('MANAGER')")
     @PutMapping("/update/{id}")
-    public ResponseEntity<ResponseObject> updatePromotion(@PathVariable Integer evenFormId, @RequestBody @Valid PromotionDTO promotionDTO, BindingResult result) {
-        if (result.hasErrors()) {
-            List<String> errorMessages = result.getFieldErrors()
-                    .stream()
-                    .map(FieldError::getDefaultMessage)
-                    .toList();
-            return ResponseEntity.ok().body(ResponseObject.builder()
-                    .message(errorMessages.toString())
-                    .status(HttpStatus.BAD_REQUEST)
-                    .data(null)
-                    .build());
-        }
+    public ResponseEntity<ResponseObject> updatePromotion(@PathVariable Integer id,
+                                                          @RequestBody @Valid PromotionDTO promotionDTO) {
         try {
-            PromotionDTO promotionResult = promotionService.updatePromotion(evenFormId, promotionDTO);
+            PromotionDTO promotionResult = promotionService.updatePromotion(id, promotionDTO);
             return ResponseEntity.ok().body(ResponseObject.builder()
                     .message("PromotionEntity updated successfully")
                     .status(HttpStatus.OK)
