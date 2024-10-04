@@ -12,7 +12,7 @@ import org.springframework.http.HttpStatus;
 @Builder
 public class ResponseObject {
     @JsonProperty("message")
-    private String message;
+    private Object message;
 
     @JsonProperty("status")
     private HttpStatus status;

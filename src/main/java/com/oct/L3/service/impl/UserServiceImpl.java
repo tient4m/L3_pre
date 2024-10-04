@@ -29,6 +29,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDTO createUser(UserDTO userDTO) {
+        userDTO.setPassword(passwordEncoder.encode(userDTO.getPassword()));
         return userMapper.toDTO(userRepository.save(userMapper.toEntity(userDTO)));
     }
 
@@ -61,5 +62,21 @@ public class UserServiceImpl implements UserService {
             throw new RuntimeException("UserEntity not found");
         }
         userRepository.deleteById(userId);
+    }
+
+    @Override
+    public UserDTO updateUser(Integer userId, UserDTO userDTO) {
+        UserEntity existingUser = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("UserEntity not found"));
+
+        existingUser.setFullName(userDTO.getFullName());
+        existingUser.setRole(userDTO.getRole());
+        existingUser.setPositionId(userDTO.getPositionId());
+
+        if (userDTO.getPassword() != null && !userDTO.getPassword().isEmpty()) {
+            existingUser.setPassword(passwordEncoder.encode(userDTO.getPassword()));
+        }
+
+        return userMapper.toDTO(userRepository.save(existingUser));
     }
 }

@@ -23,18 +23,11 @@ public class EndCaseController {
     @PreAuthorize("hasRole('MANAGER')")
     @PostMapping("")
     public ResponseEntity<ResponseObject> createEndCase(@RequestBody @Valid EndCaseDTO endCaseDTO){
-        try {
             EndCaseDTO endCase = endCaseService.createEndCase(endCaseDTO);
             return ResponseEntity.ok().body(ResponseObject.builder()
                     .message("End case created successfully")
                     .status(HttpStatus.CREATED)
                     .data(endCase)
                     .build());
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().body(ResponseObject.builder()
-                            .message(e.getMessage())
-                            .status(HttpStatus.BAD_REQUEST)
-                            .build());
-        }
     }
 }

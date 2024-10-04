@@ -20,7 +20,7 @@ public class EmployeeDTO {
     private String name;
 
     @NotBlank(message = "EmployeeEntity code is required")
-    @Pattern(regexp = "^(?!.*(.).*\\1)[A-Za-z0-9]+$", message = "Code must not have repeated characters")
+    @Pattern(regexp = "^[A-Za-z0-9]{5,10}$", message = "Code must be 5-10 characters long and contain only letters and numbers")
     private String code;
 
     @NotBlank(message = "Gender is required")

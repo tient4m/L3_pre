@@ -27,20 +27,12 @@ public class ProposalController {
     @PreAuthorize("hasRole('MANAGER')")
     @PostMapping("/create")
     public ResponseEntity<ResponseObject> createProposal(@RequestBody @Valid ProposalDTO proposalDTO) {
-        try {
             ProposalDTO proposalResult = proposalService.createProposal(proposalDTO);
             return ResponseEntity.ok().body(ResponseObject.builder()
                     .message("ProposalEntity created successfully")
                     .status(HttpStatus.CREATED)
                     .data(proposalResult)
                     .build());
-        } catch (Exception e) {
-            return ResponseEntity.ok().body(ResponseObject.builder()
-                    .message("ProposalEntity creation failed" + e)
-                    .status(HttpStatus.BAD_REQUEST)
-                    .data(null)
-                    .build());
-        }
     }
 
     @PreAuthorize("hasRole('MANAGER')")
@@ -48,19 +40,11 @@ public class ProposalController {
     public ResponseEntity<ResponseObject> updateProposal(
             @PathVariable Integer id,
             @RequestBody @Valid ProposalDTO proposalDTO) {
-        try {
             ProposalDTO proposalResult = proposalService.updateProposal(id,proposalDTO);
             return ResponseEntity.ok().body(ResponseObject.builder()
                     .message("ProposalEntity updated successfully")
                     .status(HttpStatus.OK)
                     .data(proposalResult)
                     .build());
-        } catch (Exception e) {
-            return ResponseEntity.ok().body(ResponseObject.builder()
-                    .message("ProposalEntity update failed" + e)
-                    .status(HttpStatus.BAD_REQUEST)
-                    .data(null)
-                    .build());
-        }
     }
 }

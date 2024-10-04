@@ -8,5 +8,5 @@ import java.util.List;
 public interface FamilyRelationshipService {
 
 
-    void saveOrUpdateFamilyRelationships(List<FamilyRelationshipDTO> familyRelationships, EmployeeEntity employeeEntity);
+    List<FamilyRelationshipDTO> saveAllFamilyRelationship(List<FamilyRelationshipDTO> familyRelationshipDTOs, Integer employeeId);
 }

@@ -21,7 +21,7 @@ import java.util.List;
 public class EmployeeController {
 
 
-    private EmployeeService employeeService;
+    private final EmployeeService employeeService;
 
     @GetMapping("")
     public ResponseEntity<ResponseObject> getAllEmployees() {
@@ -35,52 +35,24 @@ public class EmployeeController {
     @PreAuthorize("hasRole('MANAGER')")
     @PostMapping("")
     public ResponseEntity<ResponseObject> createEmployee(@RequestBody @Valid EmployeeDTO employeeDTO) {
-        try {
+
             return ResponseEntity.ok().body(ResponseObject.builder()
                     .message("EmployeeEntity saved successfully")
                     .status(HttpStatus.OK)
                     .data(employeeService.createEmployee(employeeDTO))
                     .build());
-        } catch (Exception e) {
-            return ResponseEntity.ok().body(ResponseObject.builder()
-                    .message(e.getMessage())
-                    .status(HttpStatus.BAD_REQUEST)
-                    .data(null)
-                    .build());
-        }
-
     }
 
     @PreAuthorize("hasRole('MANAGER')")
     @PutMapping("/{id}")
     public ResponseEntity<ResponseObject> updateEmployee(@PathVariable Integer id,
-                                                         @RequestBody @Valid EmployeeDTO employeeDTO,
-                                                         BindingResult result
+                                                         @RequestBody @Valid EmployeeDTO employeeDTO
     ) {
-        if(result.hasErrors()) {
-            List<String> errorMessages = result.getFieldErrors()
-                    .stream()
-                    .map(FieldError::getDefaultMessage)
-                    .toList();
-            return ResponseEntity.ok().body(ResponseObject.builder()
-                    .message(errorMessages.toString())
-                    .status(HttpStatus.BAD_REQUEST)
-                    .data(null)
-                    .build());
-        }
-        try {
             return ResponseEntity.ok().body(ResponseObject.builder()
                     .message("EmployeeEntity updated successfully")
                     .status(HttpStatus.OK)
                     .data(employeeService.updateEmployee(id, employeeDTO))
                     .build());
-        } catch (Exception e) {
-            return ResponseEntity.ok().body(ResponseObject.builder()
-                    .message(e.getMessage())
-                    .status(HttpStatus.BAD_REQUEST)
-                    .data(null)
-                    .build());
-        }
     }
 
 }

@@ -1,6 +1,6 @@
 package com.oct.L3.mapper;
 
-import com.oct.L3.dtos.eventform.EventFormDTO;
+import com.oct.L3.dtos.EventFormDTO;
 import com.oct.L3.dtos.response.ProposalResponse;
 import com.oct.L3.dtos.ProposalDTO;
 import com.oct.L3.entity.EventFormEntity;

@@ -29,40 +29,24 @@ public class SalaryIncreaseController {
     @PreAuthorize("hasRole('MANAGER')")
     @PostMapping("/create")
     public ResponseEntity<ResponseObject> createSalaryIncrease(@RequestBody @Valid SalaryIncreaseDTO salaryIncreaseDTO) {
-        try {
             SalaryIncreaseDTO salaryIncreaseResult = salaryIncreaseService.createSalaryIncrease(salaryIncreaseDTO);
             return ResponseEntity.ok().body(ResponseObject.builder()
                     .message("Salary increase created successfully")
                     .status(HttpStatus.CREATED)
                     .data(salaryIncreaseResult)
                     .build());
-        } catch (Exception e) {
-            return ResponseEntity.ok().body(ResponseObject.builder()
-                    .message("Salary increase creation failed" + e)
-                    .status(HttpStatus.BAD_REQUEST)
-                    .data(null)
-                    .build());
-        }
     }
 
     @PreAuthorize("hasRole('MANAGER')")
     @PutMapping("/update/{id}")
-    public ResponseEntity<ResponseObject> updateSalaryIncrease(@PathVariable Integer id, @RequestBody @Valid SalaryIncreaseDTO salaryIncreaseDTO
-                                                               ) {
-        try {
-            SalaryIncreaseDTO salaryIncreaseResult = salaryIncreaseService.updateSalaryIncrease(id, salaryIncreaseDTO);
+    public ResponseEntity<ResponseObject> updateSalaryIncrease(@PathVariable Integer id,
+                                                               @RequestBody @Valid SalaryIncreaseDTO salaryIncreaseDTO) {
+        SalaryIncreaseDTO salaryIncreaseResult = salaryIncreaseService.updateSalaryIncrease(id, salaryIncreaseDTO);
             return ResponseEntity.ok().body(ResponseObject.builder()
                     .message("Salary increase updated successfully")
                     .status(HttpStatus.OK)
                     .data(salaryIncreaseResult)
                     .build());
-        } catch (Exception e) {
-            return ResponseEntity.ok().body(ResponseObject.builder()
-                    .message("Salary increase update failed" + e)
-                    .status(HttpStatus.BAD_REQUEST)
-                    .data(null)
-                    .build());
-        }
     }
 
 }

@@ -26,39 +26,23 @@ public class PromotionController {
     @PreAuthorize("hasRole('MANAGER')")
     @PostMapping("/create")
     public ResponseEntity<ResponseObject> createPromotion(@RequestBody @Valid PromotionDTO promotionDTO) {
-        try {
             PromotionDTO promotionResult = promotionService.createPromotion(promotionDTO);
             return ResponseEntity.ok().body(ResponseObject.builder()
                     .message("PromotionEntity created successfully")
                     .status(HttpStatus.CREATED)
                     .data(promotionResult)
                     .build());
-        } catch (Exception e) {
-            return ResponseEntity.ok().body(ResponseObject.builder()
-                    .message("PromotionEntity creation failed" + e)
-                    .status(HttpStatus.BAD_REQUEST)
-                    .data(null)
-                    .build());
-        }
     }
 
     @PreAuthorize("hasRole('MANAGER')")
     @PutMapping("/update/{id}")
     public ResponseEntity<ResponseObject> updatePromotion(@PathVariable Integer id,
                                                           @RequestBody @Valid PromotionDTO promotionDTO) {
-        try {
             PromotionDTO promotionResult = promotionService.updatePromotion(id, promotionDTO);
             return ResponseEntity.ok().body(ResponseObject.builder()
                     .message("PromotionEntity updated successfully")
                     .status(HttpStatus.OK)
                     .data(promotionResult)
                     .build());
-        } catch (Exception e) {
-            return ResponseEntity.ok().body(ResponseObject.builder()
-                    .message("PromotionEntity update failed" + e)
-                    .status(HttpStatus.BAD_REQUEST)
-                    .data(null)
-                    .build());
-        }
     }
 }

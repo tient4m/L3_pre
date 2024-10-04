@@ -1,5 +1,6 @@
 package com.oct.L3.service.impl;
 
+import com.oct.L3.components.SecurityUtils;
 import com.oct.L3.dtos.EventFormHistoryDTO;
 import com.oct.L3.entity.EmployeeEntity;
 import com.oct.L3.entity.EventFormEntity;
@@ -15,9 +16,9 @@ import com.oct.L3.repository.EventFormHistoryRepository;
 import com.oct.L3.repository.EventFormRepository;
 import com.oct.L3.service.*;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
 import java.util.List;
@@ -35,6 +36,7 @@ public class EventFormServiceImpl implements EventFormService {
     private final EventFormHistoryRepository eventFormHistoryRepository;
     private final EmployeeRepository employeeRepository;
     private final EventFormMapper eventFormMapper;
+    private final SecurityUtils securityUtils;
 
 
     @Override
@@ -46,6 +48,8 @@ public class EventFormServiceImpl implements EventFormService {
             }
         }
 
+        UserEntity userEntity = securityUtils.getLoggedInUser();
+        eventFormDTO.setManagerId(userEntity.getId());
         eventFormDTO.setStatus(DRAFT);
         eventFormDTO.setDate(new Date());
 
@@ -77,9 +81,11 @@ public class EventFormServiceImpl implements EventFormService {
 
 
     @Override
+    @Transactional
     public EventFormDTO sendFormToLeader(Integer leaderId,
                                          Integer eventFormId,
-                                         String managerComments) throws DataNotFoundException {
+                                         Date setSubmissionDate,
+                                         String managerComments) {
 
         EventFormEntity eventFormEntity = eventFormRepository.findById(eventFormId)
                 .orElseThrow(()-> new DataNotFoundException("EventFormEntity not found"));
@@ -88,10 +94,15 @@ public class EventFormServiceImpl implements EventFormService {
             throw new InvalidStatusException("EventFormEntity is not in draft or additional requirements status");
         }
 
+        UserEntity userEntity = securityUtils.getLoggedInUser();
+        if (!userEntity.getId().equals(eventFormEntity.getManagerId())) {
+            throw new AccessDeniedException("Manager is not allowed to send form to leader");
+        }
+
         eventFormEntity.setLeaderId(leaderId);
         eventFormEntity.setStatus(PENDING);
         eventFormEntity.setManagerComments(managerComments);
-        eventFormEntity.setSubmissionDate(new Date());
+        eventFormEntity.setSubmissionDate(setSubmissionDate);
 
         EventFormHistoryEntity eventFormHistoryEntity = EventFormHistoryEntity.builder()
                 .eventFormId(eventFormEntity.getId())
@@ -124,13 +135,6 @@ public class EventFormServiceImpl implements EventFormService {
                                               String leaderComments,
                                               String status) throws DataNotFoundException {
 
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication != null && authentication.getPrincipal() instanceof UserEntity userEntity) {
-            String userName = userEntity.getUsername();
-        }
-
-
-
         EventFormEntity eventFormEntity = eventFormRepository.findById(eventFormId)
                 .orElseThrow(()-> new DataNotFoundException("EventFormEntity not found"));
 
@@ -152,7 +156,9 @@ public class EventFormServiceImpl implements EventFormService {
         if (eventFormEntity.getType().equals(TERMINATION_REQUEST) && APPROVED.equals(status)){
             employeeEntity.setStatus(TERMINATED);
         }
+        UserEntity userEntity = securityUtils.getLoggedInUser();
 
+        eventFormEntity.setLeaderId(userEntity.getId());
         eventFormEntity.setStatus(status);
         eventFormEntity.setSubmissionDate(new Date());
 
@@ -182,5 +188,6 @@ public class EventFormServiceImpl implements EventFormService {
     private boolean isEventFormCompleted(String status) {
         return "APPROVED".equals(status);
     }
+
 }
 
