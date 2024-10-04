@@ -5,5 +5,7 @@ import com.oct.L3.dtos.EndCaseDTO;
 public interface EndCaseService {
     EndCaseDTO createEndCase(EndCaseDTO endCaseDTO);
 
-    EndCaseDTO updateEndCase(Integer id, EndCaseDTO endCaseDTO);
+    EndCaseDTO update(Integer id, EndCaseDTO endCaseDTO);
+
+    void delete(Integer id);
 }

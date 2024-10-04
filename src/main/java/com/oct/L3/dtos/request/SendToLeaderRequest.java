@@ -9,7 +9,7 @@ import java.util.Date;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class SendToLeaderDTO {
+public class SendToLeaderRequest {
     private Integer leaderId;
     private Integer eventFormId;
     private Date submissionDate;

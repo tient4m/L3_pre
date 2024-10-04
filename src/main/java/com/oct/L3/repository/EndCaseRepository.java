@@ -6,4 +6,6 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface EndCaseRepository extends JpaRepository<EndCaseEntity, Integer> {
+
+    void deleteAllByEventFormId(Integer id);
 }

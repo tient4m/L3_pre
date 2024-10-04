@@ -21,5 +21,4 @@ public class EndCaseEntity {
     private Date endDate;
     private String archiveNumber;
     private String reason;
-
 }

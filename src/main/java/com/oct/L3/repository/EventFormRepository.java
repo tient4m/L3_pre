@@ -17,4 +17,10 @@ public interface EventFormRepository extends JpaRepository<EventFormEntity, Inte
     List<EventFormEntity> findAllByManagerIdOrLeaderId(Integer id);
 
     List<EventFormEntity> findByEmployeeId(Integer employeeId);
+
+     boolean existsByEmployeeIdAndStatusAndType(Integer employeeId, String status, String type);
+
+
+
+
 }

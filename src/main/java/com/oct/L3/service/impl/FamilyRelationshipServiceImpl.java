@@ -1,6 +1,7 @@
 package com.oct.L3.service.impl;
 
 import com.oct.L3.entity.FamilyRelationshipEntity;
+import com.oct.L3.exceptions.DataNotFoundException;
 import com.oct.L3.mapper.FamilyRelationshipMapper;
 import com.oct.L3.dtos.FamilyRelationshipDTO;
 import com.oct.L3.repository.FamilyRelationshipRepository;
@@ -25,6 +26,14 @@ public class FamilyRelationshipServiceImpl implements FamilyRelationshipService 
         return familyRelationshipRepository.saveAll(familyRelationshipEntities).stream()
                 .map(familyRelationshipMapper::toDTO)
                 .toList();
+    }
+
+    @Override
+    public void delete(Integer id) {
+        if (familyRelationshipRepository.existsById(id)){
+            throw new DataNotFoundException("Family Relationship not found");
+        }
+        familyRelationshipRepository.deleteById(id);
     }
 
  }

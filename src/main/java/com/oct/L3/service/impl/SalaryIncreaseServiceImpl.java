@@ -13,7 +13,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import static com.oct.L3.constant.EventType.SALARYINCREASE;
+import static com.oct.L3.constant.EventType.SALARY_INCREASE;
 import static com.oct.L3.constant.Status.ACTIVE;
 import static com.oct.L3.constant.Status.DRAFT;
 
@@ -40,7 +40,7 @@ public class SalaryIncreaseServiceImpl implements SalaryIncreaseService {
             throw new RuntimeException("EventFormEntity is required");
         }
 
-        salaryIncreaseDTO.getEventFormDTO().setType(SALARYINCREASE);
+        salaryIncreaseDTO.getEventFormDTO().setType(SALARY_INCREASE);
         salaryIncreaseDTO.getEventFormDTO().setStatus(DRAFT);
         return salaryIncreaseMapper.toDTO(salaryIncreaseRepository.save(salaryIncreaseMapper.toEntity(salaryIncreaseDTO)));
     }

@@ -2,6 +2,7 @@ package com.oct.L3.service.impl;
 
 import com.oct.L3.components.SecurityUtils;
 import com.oct.L3.dtos.EventFormHistoryDTO;
+import com.oct.L3.dtos.response.EventFormResponse;
 import com.oct.L3.entity.EmployeeEntity;
 import com.oct.L3.entity.EventFormEntity;
 import com.oct.L3.entity.UserEntity;
@@ -11,9 +12,7 @@ import com.oct.L3.dtos.EventFormDTO;
 import com.oct.L3.entity.EventFormHistoryEntity;
 import com.oct.L3.exceptions.DataNotFoundException;
 import com.oct.L3.mapper.EventFormMapper;
-import com.oct.L3.repository.EmployeeRepository;
-import com.oct.L3.repository.EventFormHistoryRepository;
-import com.oct.L3.repository.EventFormRepository;
+import com.oct.L3.repository.*;
 import com.oct.L3.service.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.AccessDeniedException;
@@ -23,40 +22,39 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.Date;
 import java.util.List;
 
-import static com.oct.L3.constant.EventType.REGISTRATION;
-import static com.oct.L3.constant.EventType.TERMINATION_REQUEST;
+import static com.oct.L3.constant.EventType.*;
 import static com.oct.L3.constant.Status.*;
 
 
 @Service
 @RequiredArgsConstructor
 public class EventFormServiceImpl implements EventFormService {
-    private final EventFormRepository eventFormRepository;
-    private final EventFormHistoryMapper eventFormHistoryMapper;
     private final EventFormHistoryRepository eventFormHistoryRepository;
+    private final EventFormRepository eventFormRepository;
     private final EmployeeRepository employeeRepository;
+    private final EndCaseRepository endCaseRepository;
+    private final SalaryIncreaseRepository salaryIncreaseRepository;
+    private final PromotionRepository promotionRepository;
+    private final ProposalRepository proposalRepository;
+
+
+
+    private final EventFormHistoryMapper eventFormHistoryMapper;
     private final EventFormMapper eventFormMapper;
     private final SecurityUtils securityUtils;
 
 
     @Override
     public EventFormDTO createEventForm(EventFormDTO eventFormDTO) {
-
-        if (eventFormDTO.getType().equals(TERMINATION_REQUEST)){
-            if (hasIncompleteEventForms(eventFormDTO.getEmployeeId())) {
-                throw new RuntimeException("EmployeeEntity has incomplete event forms");
-            }
-        }
-
         UserEntity userEntity = securityUtils.getLoggedInUser();
         eventFormDTO.setManagerId(userEntity.getId());
         eventFormDTO.setStatus(DRAFT);
         eventFormDTO.setDate(new Date());
-
         return eventFormMapper.toDTO(eventFormRepository.save(eventFormMapper.toEntity(eventFormDTO)));
     }
 
     @Override
+    @Transactional
     public EventFormDTO updateEventForm(Integer eventFormId, EventFormDTO eventFormDTO) throws DataNotFoundException {
         EventFormEntity eventFormEntity = eventFormRepository.findById(eventFormId)
                 .orElseThrow(()->
@@ -94,6 +92,10 @@ public class EventFormServiceImpl implements EventFormService {
             throw new InvalidStatusException("EventFormEntity is not in draft or additional requirements status");
         }
 
+        if (!employeeRepository.existsById(leaderId)) {
+            throw new DataNotFoundException("Leader not found");
+        }
+
         UserEntity userEntity = securityUtils.getLoggedInUser();
         if (!userEntity.getId().equals(eventFormEntity.getManagerId())) {
             throw new AccessDeniedException("Manager is not allowed to send form to leader");
@@ -124,22 +126,20 @@ public class EventFormServiceImpl implements EventFormService {
     }
 
     @Override
-    public List<EventFormDTO> getAllEventFormsByManagerIdOrLeaderId(Integer id) {
-
+    public List<EventFormResponse> getAllEventFormsByManagerIdOrLeaderId(Integer id) {
         List<EventFormEntity> eventFormEntities = eventFormRepository.findAllByManagerIdOrLeaderId(id);
-        return eventFormEntities.stream().map(eventFormMapper::toDTO).toList();
+        List<EventFormDTO> eventFormDTOS = eventFormEntities.stream().map(eventFormMapper::toDTO).toList();
+        return eventFormDTOS.stream().map(eventFormMapper::toResponse).toList();
     }
 
     @Override
-    public EventFormDTO updateEventFormStatus(Integer eventFormId,
-                                              String leaderComments,
-                                              String status) throws DataNotFoundException {
+    @Transactional
+    public EventFormDTO processEventFormByLeader(Integer eventFormId,
+                                                 String leaderComments,
+                                                 String status) throws DataNotFoundException {
 
         EventFormEntity eventFormEntity = eventFormRepository.findById(eventFormId)
                 .orElseThrow(()-> new DataNotFoundException("EventFormEntity not found"));
-
-        EmployeeEntity employeeEntity = employeeRepository.findById(eventFormEntity.getEmployeeId())
-                .orElseThrow(() -> new DataNotFoundException("EmployeeEntity not found"));
 
         if(!PENDING.equals(eventFormEntity.getStatus())){
             throw new InvalidStatusException("EventFormEntity is not in pending status");
@@ -148,17 +148,14 @@ public class EventFormServiceImpl implements EventFormService {
         if (leaderComments != null) {
             eventFormEntity.setLeaderComments(leaderComments);
         }
-
-        if (eventFormEntity.getType().equals(REGISTRATION) && APPROVED.equals(status) ) {
-            employeeEntity.setStatus(ACTIVE);
-        }
-
-        if (eventFormEntity.getType().equals(TERMINATION_REQUEST) && APPROVED.equals(status)){
-            employeeEntity.setStatus(TERMINATED);
+        if (status.equals(APPROVED)) {
+            this.approvedEventForm(eventFormEntity);
         }
         UserEntity userEntity = securityUtils.getLoggedInUser();
+        if (!userEntity.getId().equals(eventFormEntity.getLeaderId())) {
+            throw new AccessDeniedException("Leader is not allowed to process event form");
+        }
 
-        eventFormEntity.setLeaderId(userEntity.getId());
         eventFormEntity.setStatus(status);
         eventFormEntity.setSubmissionDate(new Date());
 
@@ -172,22 +169,55 @@ public class EventFormServiceImpl implements EventFormService {
         eventFormHistoryRepository.save(eventFormHistoryMapper.toEntity(eventFormHistoryDTO));
 
         EventFormEntity savedEventFormEntity = eventFormRepository.save(eventFormEntity);
+
         return eventFormMapper.toDTO(savedEventFormEntity);
     }
 
-    private boolean hasIncompleteEventForms(Integer employeeId) {
-        List<EventFormEntity> eventFormEntities = eventFormRepository.findByEmployeeId(employeeId);
-        for (EventFormEntity eventFormEntity : eventFormEntities) {
-            if (!isEventFormCompleted(eventFormEntity.getStatus())) {
-                return true;
-            }
+    private void approvedEventForm(EventFormEntity eventFormEntity) {
+        EmployeeEntity employeeEntity = employeeRepository.findById(eventFormEntity.getEmployeeId())
+                .orElseThrow(() -> new DataNotFoundException("EmployeeEntity not found"));
+
+        if (eventFormEntity.getType().equals(REGISTRATION)) {
+            employeeEntity.setStatus(ACTIVE);
         }
-        return false;
+        if (eventFormEntity.getType().equals(TERMINATION_REQUEST)) {
+            employeeEntity.setStatus(TERMINATED);
+        }
+        employeeRepository.save(employeeEntity);
     }
 
-    private boolean isEventFormCompleted(String status) {
-        return "APPROVED".equals(status);
+    @Override
+    @Transactional
+    public void deleteEventForm(Integer id) {
+
+        EventFormEntity eventFormEntity = eventFormRepository.findById(id)
+                .orElseThrow(() -> new DataNotFoundException("EventFormEntity not found"));
+
+        UserEntity userEntity = securityUtils.getLoggedInUser();
+        if (!userEntity.getId().equals(eventFormEntity.getManagerId())) {
+            throw new AccessDeniedException("Manager is not allowed to delete event form");
+        }
+        switch (eventFormEntity.getType())
+        {
+            case REGISTRATION:
+                proposalRepository.deleteAllByEventFormId(id);
+                break;
+            case SALARY_INCREASE:
+                salaryIncreaseRepository.deleteAllByEventFormId(id);
+                break;
+            case PROMOTION:
+                promotionRepository.deleteAllByEventFormId(id);
+                break;
+            case TERMINATION_REQUEST:
+                endCaseRepository.deleteAllByEventFormId(id);
+                break;
+        }
+        eventFormHistoryRepository.deleteAllByEventFormId(id);
+        eventFormRepository.deleteById(id);
     }
+
+
+
 
 }
 

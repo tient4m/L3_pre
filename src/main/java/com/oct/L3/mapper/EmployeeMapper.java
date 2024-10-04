@@ -4,6 +4,8 @@ import com.oct.L3.dtos.CertificateDTO;
 import com.oct.L3.dtos.EmployeeDTO;
 import com.oct.L3.dtos.FamilyRelationshipDTO;
 import com.oct.L3.entity.*;
+import com.oct.L3.repository.CertificateRepository;
+import com.oct.L3.repository.FamilyRelationshipRepository;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;
@@ -15,8 +17,21 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class EmployeeMapper {
 
+    private final CertificateRepository certificateRepository;
+    private final FamilyRelationshipRepository familyRelationshipRepository;
+    private final FamilyRelationshipMapper familyRelationshipMapper;
+    private final CertificateMapper certificateMapper;
+
 
     public EmployeeDTO toDTO(EmployeeEntity employeeEntity) {
+
+        List<CertificateDTO> certificateDTOS = certificateRepository.findAllByEmployeeId(employeeEntity.getId()).stream()
+                .map(certificateMapper::toDTO)
+                .toList();
+        List<FamilyRelationshipDTO> familyRelationshipDTOS = familyRelationshipRepository.findAllByEmployeeId(employeeEntity.getId()).stream()
+                .map(familyRelationshipMapper::toDTO)
+                .toList();
+
         return EmployeeDTO.builder()
                 .id(employeeEntity.getId())
                 .name(employeeEntity.getName())
@@ -33,6 +48,8 @@ public class EmployeeMapper {
                 .hometown(employeeEntity.getHometown())
                 .ethnicity(employeeEntity.getEthnicity())
                 .educationLevel(employeeEntity.getEducationLevel())
+                .familyRelationships(familyRelationshipDTOS)
+                .certificates(certificateDTOS)
                 .build();
     }
 

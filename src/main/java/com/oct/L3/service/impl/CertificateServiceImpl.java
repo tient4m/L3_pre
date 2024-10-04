@@ -2,6 +2,7 @@ package com.oct.L3.service.impl;
 
 import com.oct.L3.dtos.CertificateDTO;
 import com.oct.L3.entity.CertificateEntity;
+import com.oct.L3.exceptions.DataNotFoundException;
 import com.oct.L3.mapper.CertificateMapper;
 import com.oct.L3.repository.CertificateRepository;
 import com.oct.L3.service.CertificateService;
@@ -25,6 +26,21 @@ public class CertificateServiceImpl implements CertificateService {
         return certificateRepository.saveAll(certificateEntities).stream()
                 .map(certificateMapper::toDTO)
                 .toList();
+    }
+
+    @Override
+    public List<CertificateDTO> getAllByEmployeeId(Integer employeeId) {
+        return certificateRepository.findAllByEmployeeId(employeeId).stream()
+                .map(certificateMapper::toDTO)
+                .toList();
+    }
+
+    @Override
+    public void delete(Integer id) {
+        if (certificateRepository.existsById(id)){
+            throw new DataNotFoundException("Certificate not found");
+        }
+        certificateRepository.deleteById(id);
     }
 
 

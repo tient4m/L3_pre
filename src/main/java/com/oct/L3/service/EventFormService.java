@@ -1,6 +1,7 @@
 package com.oct.L3.service;
 
 import com.oct.L3.dtos.EventFormDTO;
+import com.oct.L3.dtos.response.EventFormResponse;
 import com.oct.L3.exceptions.DataNotFoundException;
 
 import java.util.Date;
@@ -17,9 +18,11 @@ public interface EventFormService {
 
     EventFormDTO getEventFormById(Integer id) throws DataNotFoundException;
 
-    List<EventFormDTO> getAllEventFormsByManagerIdOrLeaderId(Integer id) throws DataNotFoundException;
+    List<EventFormResponse> getAllEventFormsByManagerIdOrLeaderId(Integer id) throws DataNotFoundException;
 
-    EventFormDTO updateEventFormStatus(Integer eventFormId,
-                                       String leaderComments,
-                                       String status) throws DataNotFoundException;
+    EventFormDTO processEventFormByLeader(Integer eventFormId,
+                                          String leaderComments,
+                                          String status) throws DataNotFoundException;
+
+    void deleteEventForm(Integer id);
 }

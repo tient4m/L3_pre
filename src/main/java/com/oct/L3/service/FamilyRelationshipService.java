@@ -9,4 +9,6 @@ public interface FamilyRelationshipService {
 
 
     List<FamilyRelationshipDTO> saveAllFamilyRelationship(List<FamilyRelationshipDTO> familyRelationshipDTOs, Integer employeeId);
+
+    void delete(Integer id);
 }

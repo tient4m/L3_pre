@@ -8,4 +8,6 @@ import java.util.List;
 public interface EventFormHistoryRepository extends JpaRepository<EventFormHistoryEntity, Integer> {
 
     List<EventFormHistoryEntity> findByEventFormId(Integer eventFormId);
+
+    void deleteAllByEventFormId(Integer eventFormId);
 }

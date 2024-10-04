@@ -12,4 +12,6 @@ public interface PromotionRepository extends JpaRepository<PromotionEntity, Inte
 
     @Query(value = "SELECT * FROM promotion WHERE event_form_id = :id", nativeQuery = true)
     PromotionEntity findByEventForm(Integer id);
+
+    void deleteAllByEventFormId(Integer id);
 }

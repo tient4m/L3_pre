@@ -11,7 +11,7 @@ public class SecurityUtils {
     public UserEntity getLoggedInUser() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication != null &&
-                authentication.getPrincipal() instanceof UserEntity selectedUser) {
+                authentication.getPrincipal() instanceof UserEntity) {
             return (UserEntity) authentication.getPrincipal();
         }
         return null;

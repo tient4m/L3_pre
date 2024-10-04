@@ -1,5 +1,6 @@
 package com.oct.L3.controller;
 
+import com.oct.L3.dtos.request.EmployeeRegistrationRequest;
 import com.oct.L3.dtos.response.ResponseObject;
 import com.oct.L3.dtos.EmployeeDTO;
 import com.oct.L3.service.EmployeeService;
@@ -19,7 +20,6 @@ import java.util.List;
 @RequiredArgsConstructor
 @RequestMapping("${api.prefix}/employee")
 public class EmployeeController {
-
 
     private final EmployeeService employeeService;
 
@@ -54,5 +54,17 @@ public class EmployeeController {
                     .data(employeeService.updateEmployee(id, employeeDTO))
                     .build());
     }
+
+    @PreAuthorize("hasRole('MANAGER')")
+    @PostMapping("/register")
+    public ResponseEntity<ResponseObject> registerEmployee(@RequestBody @Valid EmployeeRegistrationRequest request) {
+            return ResponseEntity.ok().body(ResponseObject.builder()
+                    .message("EmployeeEntity registered successfully")
+                    .status(HttpStatus.OK)
+                    .data(employeeService.registrationEmployee(request))
+                    .build());
+    }
+
+
 
 }

@@ -1,6 +1,7 @@
 package com.oct.L3.controller;
 
-import com.oct.L3.dtos.request.SendToLeaderDTO;
+import com.oct.L3.dtos.request.LeaderActionRequest;
+import com.oct.L3.dtos.request.SendToLeaderRequest;
 import com.oct.L3.dtos.response.*;
 import com.oct.L3.mapper.EventFormMapper;
 import com.oct.L3.mapper.PromotionMapper;
@@ -15,9 +16,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import static com.oct.L3.constant.Status.*;
@@ -29,12 +28,6 @@ import static com.oct.L3.constant.EventType.*;
 public class EventFormController {
 
     private final EventFormService eventFormService;
-    private final PromotionMapper promotionMapper;
-    private final SalaryIncreaseMapper salaryIncreaseMapper;
-    private final SalaryIncreaseService salaryIncreaseService;
-    private final PromotionService promotionService;
-    private final ProposalMapper proposalMapper;
-    private final ProposalService proposalService;
     private final EventFormMapper eventFormMapper;
 
     @PreAuthorize("hasRole('ROLE_MANAGER')")
@@ -48,21 +41,6 @@ public class EventFormController {
                     .data(empResult)
                     .build());
     }
-
-    @PreAuthorize("hasRole('ROLE_MANAGER')")
-    @PostMapping("register")
-    public ResponseEntity<ResponseObject> registerEmployee(
-            @Valid @RequestBody EventFormDTO eventFormDTO
-    ) {
-            eventFormDTO.setType(REGISTRATION);
-            EventFormDTO empResult = eventFormService.createEventForm(eventFormDTO);
-            return ResponseEntity.ok().body(ResponseObject.builder()
-                    .message("EmployeeEntity registration successful")
-                    .status(HttpStatus.CREATED)
-                    .data(empResult)
-                    .build());
-    }
-
     @PreAuthorize("hasRole('ROLE_MANAGER')")
     @PutMapping("update/{id}")
     public ResponseEntity<ResponseObject> updateEmployee(
@@ -81,14 +59,14 @@ public class EventFormController {
     @PreAuthorize("hasRole('ROLE_MANAGER')")
     @PostMapping ("send-to-leader")
     public ResponseEntity<ResponseObject> sendToLeader(
-            @RequestBody SendToLeaderDTO sendToLeaderDTO
+            @RequestBody SendToLeaderRequest sendToLeaderRequest
             ) {
 
             EventFormDTO empResult = eventFormService.sendFormToLeader(
-                    sendToLeaderDTO.getLeaderId(),
-                    sendToLeaderDTO.getEventFormId(),
-                    sendToLeaderDTO.getSubmissionDate(),
-                    sendToLeaderDTO.getManagerComments()
+                    sendToLeaderRequest.getLeaderId(),
+                    sendToLeaderRequest.getEventFormId(),
+                    sendToLeaderRequest.getSubmissionDate(),
+                    sendToLeaderRequest.getManagerComments()
             );
 
             return ResponseEntity.ok().body(ResponseObject.builder()
@@ -101,10 +79,9 @@ public class EventFormController {
     @PreAuthorize("hasRole('ROLE_LEADER')")
     @PostMapping("rejected")
     public ResponseEntity<ResponseObject> rejectEmployee(
-            @RequestBody Integer eventFormId,
-            @RequestBody String leaderComments
+            @RequestBody LeaderActionRequest leaderActionRequest
     ) {
-            EventFormDTO empResult = eventFormService.updateEventFormStatus(eventFormId,leaderComments,REJECTED);
+            EventFormDTO empResult = eventFormService.processEventFormByLeader(leaderActionRequest.getEventFormId(),leaderActionRequest.getLeaderComments(),REJECTED);
             return ResponseEntity.ok().body(ResponseObject.builder()
                     .message("EmployeeEntity rejected successful")
                     .status(HttpStatus.OK)
@@ -115,67 +92,35 @@ public class EventFormController {
     @PreAuthorize("hasRole('ROLE_LEADER')")
     @PostMapping("approve")
     public ResponseEntity<ResponseObject> approveEmployee(
-            @RequestBody Integer eventFormId,
-            @RequestBody String leaderComments
+            @RequestBody LeaderActionRequest leaderActionRequest
     ) {
-            EventFormDTO empResult = eventFormService.updateEventFormStatus(eventFormId,leaderComments,APPROVED);
+            EventFormDTO empResult = eventFormService.processEventFormByLeader(leaderActionRequest.getEventFormId(), leaderActionRequest.getLeaderComments(),APPROVED);
             return ResponseEntity.ok().body(ResponseObject.builder()
                     .message("EmployeeEntity approved successful")
                     .status(HttpStatus.OK)
-                    .data(empResult)
+                    .data(eventFormMapper.toResponse(empResult))
                     .build());
-    }
-
-    @PreAuthorize("hasRole('ROLE_MANAGER') or hasRole('ROLE_LEADER')")
-
-    @GetMapping("{id}")
-    public ResponseEntity<ResponseObject> getEmployee(@PathVariable Integer id) {
-            EventFormDTO empResult = eventFormService.getEventFormById(id);
-            switch (empResult.getType()) {
-                case SALARYINCREASE:
-                    SalaryIncreaseResponse salaryIncreaseResponse = salaryIncreaseMapper.toResponse(salaryIncreaseService.getSalaryIncreaseByEventFormId(empResult.getId()));
-                    salaryIncreaseResponse.setEventForm(empResult);
-                    return ResponseEntity.ok().body(ResponseObject.builder()
-                            .message("EmployeeEntity retrieved successful")
-                            .status(HttpStatus.OK)
-                            .data(salaryIncreaseResponse)
-                            .build());
-                case PROMOTION:
-                    PromotionResponse promotionResponse = promotionMapper.toResponse(promotionService.getPromotionById(empResult.getId()));
-                    promotionResponse.setEventForm(empResult);
-                    return ResponseEntity.ok().body(ResponseObject.builder()
-                            .message("EmployeeEntity retrieved successful")
-                            .status(HttpStatus.OK)
-                            .data(promotionResponse)
-                            .build());
-                case PROPOSAL:
-                    ProposalResponse proposalResponse = proposalMapper.toResponse(proposalService.getProposalByEventFormId(empResult.getId()));
-                    proposalResponse.setEventForm(empResult);
-                    return ResponseEntity.ok().body(ResponseObject.builder()
-                            .message("EmployeeEntity retrieved successful")
-                            .status(HttpStatus.OK)
-                            .data(proposalResponse)
-                            .build());
-                    default:
-                        EventFormResponse eventFormResponse  = eventFormMapper.toResponse(empResult);
-                    return ResponseEntity.ok().body(ResponseObject.builder()
-                            .message("EmployeeEntity retrieved successful")
-                            .status(HttpStatus.OK)
-                            .data(eventFormResponse)
-                            .build());
-            }
     }
 
     @PreAuthorize("hasRole('ROLE_LEADER')")
     @PostMapping("additional-requirements")
     public ResponseEntity<ResponseObject> additionalRequirements(
-            @RequestBody Integer eventFormId,
-            @RequestBody String leaderComments
-    ) {         EventFormDTO empResult = eventFormService.updateEventFormStatus(eventFormId,leaderComments,ADDITIONAL_REQUIREMENTS);
+            @RequestBody LeaderActionRequest leaderActionRequest
+    ) {         EventFormDTO empResult = eventFormService.processEventFormByLeader(leaderActionRequest.getEventFormId(),leaderActionRequest.getLeaderComments(),ADDITIONAL_REQUIREMENTS);
             return ResponseEntity.ok().body(ResponseObject.builder()
                     .message("EmployeeEntity additional requirements successful")
                     .status(HttpStatus.OK)
                     .data(empResult)
+                    .build());
+    }
+
+    @PreAuthorize("hasRole('ROLE_MANAGER')")
+    @DeleteMapping("{id}")
+    public ResponseEntity<ResponseObject> deleteEmployee(@PathVariable Integer id) {
+            eventFormService.deleteEventForm(id);
+            return ResponseEntity.ok().body(ResponseObject.builder()
+                    .message("EmployeeEntity deleted successful")
+                    .status(HttpStatus.OK)
                     .build());
     }
 }
