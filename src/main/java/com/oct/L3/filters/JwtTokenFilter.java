@@ -1,6 +1,6 @@
 package com.oct.L3.filters;
 
-import com.oct.L3.configurations.JWTTokenUtil;
+import com.oct.L3.components.JWTTokenUtil;
 import com.oct.L3.entity.UserEntity;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;

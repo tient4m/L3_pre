@@ -111,36 +111,22 @@ public class EmployeeServiceImpl implements EmployeeService {
         employee.setPositionId(request.getPositionId());
         employee.setStatus(PENDING);
 
-        EventFormEntity eventForm = EventFormEntity.builder()
+        EventFormDTO eventForm = EventFormDTO.builder()
                 .employeeId(request.getEmployeeId())
                 .type(REGISTRATION)
                 .date(new Date())
                 .content(request.getContent())
                 .status(PENDING)
+                .managerComments(request.getManagerComments())
                 .managerId(user.getId())
                 .note(request.getNote())
                 .leaderId(request.getLeaderId())
                 .build();
-
-        EventFormDTO eventFormDTO = eventFormMapper.toDTO(eventFormRepository.save(eventForm));
-
+        EventFormEntity eventFormEntity = eventFormRepository.save(eventFormMapper.toEntity(eventForm));
         return EmployeeRegistrationRespon.builder()
-                .eventFormDTO(eventFormDTO)
+                .eventFormDTO(eventFormMapper.toDTO(eventFormEntity))
                 .employeeDTO(employeeMapper.toDTO(employeeRepository.save(employee)))
                 .build();
 
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
 }

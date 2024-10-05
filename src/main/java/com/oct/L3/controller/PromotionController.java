@@ -38,11 +38,10 @@ public class PromotionController {
     @PutMapping("/update/{id}")
     public ResponseEntity<ResponseObject> updatePromotion(@PathVariable Integer id,
                                                           @RequestBody @Valid PromotionDTO promotionDTO) {
-            PromotionDTO promotionResult = promotionService.updatePromotion(id, promotionDTO);
             return ResponseEntity.ok().body(ResponseObject.builder()
                     .message("PromotionEntity updated successfully")
                     .status(HttpStatus.OK)
-                    .data(promotionResult)
+                    .data(promotionService.updatePromotion(id, promotionDTO))
                     .build());
     }
 }

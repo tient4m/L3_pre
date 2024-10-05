@@ -13,5 +13,6 @@ public interface SalaryIncreaseRepository extends JpaRepository<SalaryIncreaseEn
     @Query(value = "SELECT * FROM salary_increase WHERE event_form_id = :id", nativeQuery = true)
     SalaryIncreaseEntity findByEventFormId(Integer id);
 
-    void deleteAllByEventFormId(Integer id);
+
+    void deleteByEventFormId(Integer id);
 }

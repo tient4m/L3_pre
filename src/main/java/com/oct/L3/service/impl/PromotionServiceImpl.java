@@ -1,7 +1,9 @@
 package com.oct.L3.service.impl;
 
+import com.oct.L3.components.SecurityUtils;
 import com.oct.L3.entity.EmployeeEntity;
 import com.oct.L3.entity.PromotionEntity;
+import com.oct.L3.entity.UserEntity;
 import com.oct.L3.exceptions.InvalidStatusException;
 import com.oct.L3.mapper.EventFormMapper;
 import com.oct.L3.mapper.PromotionMapper;
@@ -16,6 +18,7 @@ import com.oct.L3.service.PromotionService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import static com.oct.L3.constant.EventType.PROMOTION;
 import static com.oct.L3.constant.Status.DRAFT;
 
 @Service
@@ -23,52 +26,31 @@ import static com.oct.L3.constant.Status.DRAFT;
 public class PromotionServiceImpl implements PromotionService {
 
     private final PromotionRepository promotionRepository;
-    private final EventFormRepository eventFormRepository;
-    private final EmployeeRepository employeeRepository;
     private final PositionRepository positionRepository;
-    private final EventFormMapper eventFormMapper;
     private final PromotionMapper promotionMapper;
     private final EventFormService eventFormService;
 
     @Override
-    public PromotionDTO createPromotion(PromotionDTO promotionDTO) throws DataNotFoundException {
-        EmployeeEntity employeeEntity = employeeRepository.findById(promotionDTO.getEventFormDTO().getEmployeeId())
-                .orElseThrow(() -> new DataNotFoundException("EmployeeEntity not found"));
+    public PromotionDTO createPromotion(PromotionDTO promotionDTO) {
 
-        validatePositionIds(promotionDTO.getOldPositionId(), promotionDTO.getNewPositionId());
-        promotionDTO.getEventFormDTO().setType("PROMOTION");
-        promotionDTO.getEventFormDTO().setStatus(DRAFT);
-
-        if (!employeeEntity.getStatus().equals("ACTIVE")) {
-            throw new InvalidStatusException("EmployeeEntity is not active");
-        }
         if (promotionDTO.getEventFormDTO() == null) {
             throw new RuntimeException("EventFormEntity is null");
         }
-        promotionDTO.getEventFormDTO().setStatus("DRAFT");
-        promotionDTO.getEventFormDTO().setType("PROMOTION");
+        validatePositionIds(promotionDTO.getOldPositionId(), promotionDTO.getNewPositionId());
 
-        eventFormRepository.save(eventFormMapper.toEntity(promotionDTO.getEventFormDTO()));
-        PromotionEntity promotionEntity = promotionMapper.toEntity(promotionDTO);
-        return promotionMapper.toDTO(promotionRepository.save(promotionEntity));
+        promotionDTO.getEventFormDTO().setType(PROMOTION);
+        eventFormService.createEventForm(promotionDTO.getEventFormDTO());
+        return promotionMapper.toDTO(promotionRepository.save(promotionMapper.toEntity(promotionDTO)));
     }
 
     @Override
     public PromotionDTO updatePromotion(Integer id, PromotionDTO promotionDTO) throws DataNotFoundException {
         validatePositionIds(promotionDTO.getOldPositionId(), promotionDTO.getNewPositionId());
-
-        eventFormRepository.findById(promotionDTO.getEventFormDTO().getId())
-                .orElseThrow(() -> new DataNotFoundException("EventFormEntity not found"));
-
         if (id.equals(promotionDTO.getId())) {
             throw new RuntimeException("Id mismatch");
         }
-
         eventFormService.updateEventForm(promotionDTO.getEventFormDTO().getId(), promotionDTO.getEventFormDTO());
-
-        PromotionEntity promotionEntity = promotionMapper.toEntity(promotionDTO);
-        promotionRepository.save(promotionEntity);
-        return promotionDTO;
+        return promotionMapper.toDTO(promotionRepository.save(promotionMapper.toEntity(promotionDTO)));
     }
 
     @Override

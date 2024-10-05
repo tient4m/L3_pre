@@ -1,4 +1,4 @@
-package com.oct.L3.configurations;
+package com.oct.L3.components;
 
 import com.oct.L3.entity.UserEntity;
 import io.jsonwebtoken.*;

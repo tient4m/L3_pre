@@ -3,13 +3,10 @@ package com.oct.L3.service.impl;
 import com.oct.L3.components.SecurityUtils;
 import com.oct.L3.dtos.EventFormHistoryDTO;
 import com.oct.L3.dtos.response.EventFormResponse;
-import com.oct.L3.entity.EmployeeEntity;
-import com.oct.L3.entity.EventFormEntity;
-import com.oct.L3.entity.UserEntity;
+import com.oct.L3.entity.*;
 import com.oct.L3.exceptions.InvalidStatusException;
 import com.oct.L3.mapper.EventFormHistoryMapper;
 import com.oct.L3.dtos.EventFormDTO;
-import com.oct.L3.entity.EventFormHistoryEntity;
 import com.oct.L3.exceptions.DataNotFoundException;
 import com.oct.L3.mapper.EventFormMapper;
 import com.oct.L3.repository.*;
@@ -46,6 +43,12 @@ public class EventFormServiceImpl implements EventFormService {
 
     @Override
     public EventFormDTO createEventForm(EventFormDTO eventFormDTO) {
+        EmployeeEntity employeeEntity = employeeRepository.findById(eventFormDTO.getEmployeeId())
+                .orElseThrow(() -> new DataNotFoundException("EmployeeEntity not found"));
+        if (!employeeEntity.getStatus().equals("ACTIVE")) {
+            throw new InvalidStatusException("EmployeeEntity is not active");
+        }
+
         UserEntity userEntity = securityUtils.getLoggedInUser();
         eventFormDTO.setManagerId(userEntity.getId());
         eventFormDTO.setStatus(DRAFT);
@@ -59,6 +62,9 @@ public class EventFormServiceImpl implements EventFormService {
         EventFormEntity eventFormEntity = eventFormRepository.findById(eventFormId)
                 .orElseThrow(()->
                         new DataNotFoundException("EventFormEntity not found"));
+        if (eventFormId.equals(eventFormDTO.getId())) {
+            throw new RuntimeException("Id not match");
+        }
         if (
                 !DRAFT.equals(eventFormEntity.getStatus()) &&
                 !REJECTED.equals(eventFormEntity.getStatus()) &&
@@ -66,6 +72,7 @@ public class EventFormServiceImpl implements EventFormService {
         ) {
             throw new RuntimeException("EventForm is not in draft,rejected and additional requirements status");
         }
+
 
         if (eventFormDTO.getEmployeeId() != null) {
             eventFormEntity.setEmployeeId(eventFormDTO.getEmployeeId());
@@ -144,18 +151,16 @@ public class EventFormServiceImpl implements EventFormService {
         if(!PENDING.equals(eventFormEntity.getStatus())){
             throw new InvalidStatusException("EventFormEntity is not in pending status");
         }
-
-        if (leaderComments != null) {
-            eventFormEntity.setLeaderComments(leaderComments);
-        }
-        if (status.equals(APPROVED)) {
-            this.approvedEventForm(eventFormEntity);
-        }
         UserEntity userEntity = securityUtils.getLoggedInUser();
         if (!userEntity.getId().equals(eventFormEntity.getLeaderId())) {
             throw new AccessDeniedException("Leader is not allowed to process event form");
         }
-
+        if (status.equals(APPROVED)) {
+            this.handleEmployeeWhenEventFormApproved(eventFormEntity);
+        }
+        if (leaderComments != null) {
+            eventFormEntity.setLeaderComments(leaderComments);
+        }
         eventFormEntity.setStatus(status);
         eventFormEntity.setSubmissionDate(new Date());
 
@@ -173,7 +178,39 @@ public class EventFormServiceImpl implements EventFormService {
         return eventFormMapper.toDTO(savedEventFormEntity);
     }
 
-    private void approvedEventForm(EventFormEntity eventFormEntity) {
+    @Override
+    @Transactional
+    public void deleteEventForm(Integer id) {
+
+        EventFormEntity eventFormEntity = eventFormRepository.findById(id)
+                .orElseThrow(() -> new DataNotFoundException("EventFormEntity not found"));
+        if (PENDING.equals(eventFormEntity.getStatus())) {
+            throw new RuntimeException("EventFormEntity is in pending status");
+        }
+        UserEntity userEntity = securityUtils.getLoggedInUser();
+        if (!userEntity.getId().equals(eventFormEntity.getManagerId())) {
+            throw new AccessDeniedException("Manager is not allowed to delete event form");
+        }
+        switch (eventFormEntity.getType())
+        {
+            case REGISTRATION:
+                proposalRepository.deleteByEventFormId(id);
+                break;
+            case SALARY_INCREASE:
+                salaryIncreaseRepository.deleteByEventFormId(id);
+                break;
+            case PROMOTION:
+                promotionRepository.deleteByEventFormId(id);
+                break;
+            case TERMINATION_REQUEST:
+                endCaseRepository.deleteByEventFormId(id);
+                break;
+        }
+        eventFormHistoryRepository.deleteAllByEventFormId(id);
+        eventFormRepository.deleteById(id);
+    }
+
+    private void handleEmployeeWhenEventFormApproved(EventFormEntity eventFormEntity) {
         EmployeeEntity employeeEntity = employeeRepository.findById(eventFormEntity.getEmployeeId())
                 .orElseThrow(() -> new DataNotFoundException("EmployeeEntity not found"));
 
@@ -183,41 +220,12 @@ public class EventFormServiceImpl implements EventFormService {
         if (eventFormEntity.getType().equals(TERMINATION_REQUEST)) {
             employeeEntity.setStatus(TERMINATED);
         }
+        if (PROMOTION.equals(eventFormEntity.getType())) {
+            PromotionEntity promotionEntity = promotionRepository.findByEventForm(eventFormEntity.getId());
+            employeeEntity.setPositionId(promotionEntity.getNewPositionId());
+        }
+
         employeeRepository.save(employeeEntity);
     }
-
-    @Override
-    @Transactional
-    public void deleteEventForm(Integer id) {
-
-        EventFormEntity eventFormEntity = eventFormRepository.findById(id)
-                .orElseThrow(() -> new DataNotFoundException("EventFormEntity not found"));
-
-        UserEntity userEntity = securityUtils.getLoggedInUser();
-        if (!userEntity.getId().equals(eventFormEntity.getManagerId())) {
-            throw new AccessDeniedException("Manager is not allowed to delete event form");
-        }
-        switch (eventFormEntity.getType())
-        {
-            case REGISTRATION:
-                proposalRepository.deleteAllByEventFormId(id);
-                break;
-            case SALARY_INCREASE:
-                salaryIncreaseRepository.deleteAllByEventFormId(id);
-                break;
-            case PROMOTION:
-                promotionRepository.deleteAllByEventFormId(id);
-                break;
-            case TERMINATION_REQUEST:
-                endCaseRepository.deleteAllByEventFormId(id);
-                break;
-        }
-        eventFormHistoryRepository.deleteAllByEventFormId(id);
-        eventFormRepository.deleteById(id);
-    }
-
-
-
-
 }
 

@@ -1,6 +1,5 @@
 package com.oct.L3.service.impl;
 
-import com.oct.L3.entity.EmployeeEntity;
 import com.oct.L3.entity.ProposalEntity;
 import com.oct.L3.mapper.EventFormMapper;
 import com.oct.L3.mapper.ProposalMapper;
@@ -13,14 +12,12 @@ import com.oct.L3.service.EventFormService;
 import com.oct.L3.service.ProposalService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
-import static com.oct.L3.constant.Status.DRAFT;
+import static com.oct.L3.constant.EventType.PROPOSAL;
 
 @Service
 @RequiredArgsConstructor
 public class ProposalServiceImpl implements ProposalService {
-
         private final ProposalRepository proposalRepository;
         private final ProposalMapper proposalMapper;
         private final EventFormService eventFormService;
@@ -30,40 +27,22 @@ public class ProposalServiceImpl implements ProposalService {
 
         @Override
         public ProposalDTO createProposal(ProposalDTO proposalDTO) {
-
-                ProposalEntity proposalEntity = proposalMapper.toEntity(proposalDTO);
-                proposalDTO.getEventFormDTO().setType("PROPOSAL");
-                proposalDTO.getEventFormDTO().setStatus(DRAFT);
-
-                EmployeeEntity employeeEntity = employeeRepository.findById(proposalDTO.getEventFormDTO().getEmployeeId())
-                        .orElseThrow(() -> new RuntimeException("EmployeeEntity not found"));
-
-                if (!employeeEntity.getStatus().equals("ACTIVE")) {
-                        throw new RuntimeException("EmployeeEntity is not active");
-                }
                 if (proposalDTO.getEventFormDTO() == null) {
                         throw new RuntimeException("EventFormEntity is required");
                 }
-
+                proposalDTO.getEventFormDTO().setType(PROPOSAL);
                 eventFormRepository.save(eventFormMapper.toEntity(proposalDTO.getEventFormDTO()));
-                return proposalMapper.toDTO(proposalRepository.save(proposalEntity));
+                return proposalMapper.toDTO(proposalRepository.save(proposalMapper.toEntity(proposalDTO)));
         }
 
 
         @Override
-        public ProposalDTO updateProposal(Integer evenFormId, ProposalDTO proposalDTO) throws DataNotFoundException {
-
-                eventFormService.updateEventForm(evenFormId, proposalDTO.getEventFormDTO());
-
-                ProposalEntity proposalEntity = ProposalEntity.builder()
-                        .id(proposalDTO.getProposalId())
-                        .content(proposalDTO.getContent())
-                        .type(proposalDTO.getType())
-                        .description(proposalDTO.getDescription())
-                        .note(proposalDTO.getNote())
-                        .build();
-                proposalRepository.save(proposalEntity);
-                return proposalDTO;
+        public ProposalDTO updateProposal(Integer Id, ProposalDTO proposalDTO) throws DataNotFoundException {
+                if (Id.equals(proposalDTO.getProposalId())) {
+                        throw new RuntimeException("Id mismatch");
+                }
+                eventFormService.updateEventForm(proposalDTO.getEventFormDTO().getId(), proposalDTO.getEventFormDTO());
+                return proposalMapper.toDTO(proposalRepository.save(proposalMapper.toEntity(proposalDTO)));
         }
 
         @Override

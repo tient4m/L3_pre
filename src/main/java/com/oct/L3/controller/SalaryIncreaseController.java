@@ -1,7 +1,7 @@
 package com.oct.L3.controller;
 
 import com.oct.L3.dtos.response.ResponseObject;
-import com.oct.L3.configurations.JWTTokenUtil;
+import com.oct.L3.components.JWTTokenUtil;
 import com.oct.L3.dtos.SalaryIncreaseDTO;
 import com.oct.L3.service.EventFormService;
 import com.oct.L3.service.SalaryIncreaseService;
@@ -35,11 +35,10 @@ public class SalaryIncreaseController {
     @PutMapping("/update/{id}")
     public ResponseEntity<ResponseObject> updateSalaryIncrease(@PathVariable Integer id,
                                                                @RequestBody @Valid SalaryIncreaseDTO salaryIncreaseDTO) {
-        SalaryIncreaseDTO salaryIncreaseResult = salaryIncreaseService.updateSalaryIncrease(id, salaryIncreaseDTO);
             return ResponseEntity.ok().body(ResponseObject.builder()
                     .message("Salary increase updated successfully")
                     .status(HttpStatus.OK)
-                    .data(salaryIncreaseResult)
+                    .data(salaryIncreaseService.updateSalaryIncrease(id, salaryIncreaseDTO))
                     .build());
     }
 

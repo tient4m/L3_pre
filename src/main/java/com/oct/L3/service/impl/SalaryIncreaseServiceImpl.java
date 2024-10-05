@@ -30,30 +30,21 @@ public class SalaryIncreaseServiceImpl implements SalaryIncreaseService {
     @Transactional
     @Override
     public SalaryIncreaseDTO createSalaryIncrease(SalaryIncreaseDTO salaryIncreaseDTO) {
-        EmployeeEntity employeeEntity = employeeRepository.findById(salaryIncreaseDTO.getEventFormDTO().getEmployeeId())
-                .orElseThrow(() -> new RuntimeException("EmployeeEntity not found"));
-
-        if (!employeeEntity.getStatus().equals(ACTIVE)) {
-            throw new RuntimeException("EmployeeEntity is not active");
-        }
         if (salaryIncreaseDTO.getEventFormDTO() == null) {
             throw new RuntimeException("EventFormEntity is required");
         }
-
         salaryIncreaseDTO.getEventFormDTO().setType(SALARY_INCREASE);
-        salaryIncreaseDTO.getEventFormDTO().setStatus(DRAFT);
+        eventFormService.createEventForm(salaryIncreaseDTO.getEventFormDTO());
         return salaryIncreaseMapper.toDTO(salaryIncreaseRepository.save(salaryIncreaseMapper.toEntity(salaryIncreaseDTO)));
     }
  
     @Transactional
     @Override
     public SalaryIncreaseDTO updateSalaryIncrease(Integer id, SalaryIncreaseDTO salaryIncreaseDTO) throws DataNotFoundException {
-
         if (id.equals(salaryIncreaseDTO.getId())) {
             throw new RuntimeException("Id not match");
         }
-
-        eventFormService.updateEventForm( id, salaryIncreaseDTO.getEventFormDTO());
+        eventFormService.updateEventForm(salaryIncreaseDTO.getEventFormDTO().getId(), salaryIncreaseDTO.getEventFormDTO());
         return salaryIncreaseMapper.toDTO(salaryIncreaseRepository.save(salaryIncreaseMapper.toEntity(salaryIncreaseDTO)));
     }
 

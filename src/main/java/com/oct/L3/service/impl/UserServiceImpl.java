@@ -1,7 +1,7 @@
 package com.oct.L3.service.impl;
 
 import com.oct.L3.dtos.response.UserLoginResponse;
-import com.oct.L3.configurations.JWTTokenUtil;
+import com.oct.L3.components.JWTTokenUtil;
 import com.oct.L3.entity.UserEntity;
 import com.oct.L3.mapper.UserMapper;
 import com.oct.L3.dtos.PositionDTO;

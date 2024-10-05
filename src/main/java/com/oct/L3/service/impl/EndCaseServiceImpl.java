@@ -75,6 +75,9 @@ public class EndCaseServiceImpl implements EndCaseService {
         EndCaseEntity endCaseEntity = endCaseRepository.findById(id)
                 .orElseThrow(() -> new DataNotFoundException("EndCaseEntity not found"));
 
+        if (!eventFormEntity.getStatus().equals(ADDITIONAL_REQUIREMENTS)) {
+            throw new InvalidStatusException("EventFormEntity is not in additional requirements status");
+        }
         if (endCaseEntity.getEventFormId().equals(eventFormEntity.getId())) {
             throw new RuntimeException("EventFormEntity not match");
         }
