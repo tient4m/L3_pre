@@ -1,7 +1,9 @@
 package com.oct.L3.service.impl;
 
+import com.oct.L3.dtos.EventFormDTO;
 import com.oct.L3.entity.EmployeeEntity;
 import com.oct.L3.entity.SalaryIncreaseEntity;
+import com.oct.L3.mapper.EventFormMapper;
 import com.oct.L3.mapper.SalaryIncreaseMapper;
 import com.oct.L3.dtos.SalaryIncreaseDTO;
 import com.oct.L3.exceptions.DataNotFoundException;
@@ -25,6 +27,7 @@ public class SalaryIncreaseServiceImpl implements SalaryIncreaseService {
     private final EventFormService eventFormService;
     private final SalaryIncreaseMapper salaryIncreaseMapper;
     private final EmployeeRepository employeeRepository;
+    private final EventFormMapper eventFormMapper;
 
 
     @Transactional
@@ -34,14 +37,15 @@ public class SalaryIncreaseServiceImpl implements SalaryIncreaseService {
             throw new RuntimeException("EventFormEntity is required");
         }
         salaryIncreaseDTO.getEventFormDTO().setType(SALARY_INCREASE);
-        eventFormService.createEventForm(salaryIncreaseDTO.getEventFormDTO());
+        EventFormDTO eventFormDTO = eventFormService.createEventForm(salaryIncreaseDTO.getEventFormDTO());
+        salaryIncreaseDTO.setEventFormDTO(eventFormDTO);
         return salaryIncreaseMapper.toDTO(salaryIncreaseRepository.save(salaryIncreaseMapper.toEntity(salaryIncreaseDTO)));
     }
  
     @Transactional
     @Override
     public SalaryIncreaseDTO updateSalaryIncrease(Integer id, SalaryIncreaseDTO salaryIncreaseDTO) throws DataNotFoundException {
-        if (id.equals(salaryIncreaseDTO.getId())) {
+        if (!id.equals(salaryIncreaseDTO.getId())) {
             throw new RuntimeException("Id not match");
         }
         eventFormService.updateEventForm(salaryIncreaseDTO.getEventFormDTO().getId(), salaryIncreaseDTO.getEventFormDTO());

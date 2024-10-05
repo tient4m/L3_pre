@@ -39,6 +39,7 @@ public class EventFormServiceImpl implements EventFormService {
     private final EventFormHistoryMapper eventFormHistoryMapper;
     private final EventFormMapper eventFormMapper;
     private final SecurityUtils securityUtils;
+    private final UserRepository userRepository;
 
 
     @Override
@@ -62,7 +63,7 @@ public class EventFormServiceImpl implements EventFormService {
         EventFormEntity eventFormEntity = eventFormRepository.findById(eventFormId)
                 .orElseThrow(()->
                         new DataNotFoundException("EventFormEntity not found"));
-        if (eventFormId.equals(eventFormDTO.getId())) {
+        if (!eventFormId.equals(eventFormDTO.getId())) {
             throw new RuntimeException("Id not match");
         }
         if (
@@ -73,6 +74,10 @@ public class EventFormServiceImpl implements EventFormService {
             throw new RuntimeException("EventForm is not in draft,rejected and additional requirements status");
         }
 
+        UserEntity userEntity = securityUtils.getLoggedInUser();
+        if (!userEntity.getId().equals(eventFormEntity.getManagerId())) {
+            throw new AccessDeniedException("Manager is not allowed to update event form");
+        }
 
         if (eventFormDTO.getEmployeeId() != null) {
             eventFormEntity.setEmployeeId(eventFormDTO.getEmployeeId());
@@ -99,7 +104,7 @@ public class EventFormServiceImpl implements EventFormService {
             throw new InvalidStatusException("EventFormEntity is not in draft or additional requirements status");
         }
 
-        if (!employeeRepository.existsById(leaderId)) {
+        if (!userRepository.existsById(leaderId)) {
             throw new DataNotFoundException("Leader not found");
         }
 
@@ -117,6 +122,7 @@ public class EventFormServiceImpl implements EventFormService {
                 .eventFormId(eventFormEntity.getId())
                 .status(PENDING)
                 .requestDate(new Date())
+                .comments(managerComments)
                 .build();
 
         eventFormHistoryRepository.save(eventFormHistoryEntity);

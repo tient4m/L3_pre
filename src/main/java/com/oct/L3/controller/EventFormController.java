@@ -119,7 +119,7 @@ public class EventFormController {
     public ResponseEntity<ResponseObject> deleteEmployee(@PathVariable Integer id) {
             eventFormService.deleteEventForm(id);
             return ResponseEntity.ok().body(ResponseObject.builder()
-                    .message("EmployeeEntity deleted successful")
+                    .message("EvenForm deleted successful")
                     .status(HttpStatus.OK)
                     .build());
     }

@@ -17,8 +17,6 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class SalaryIncreaseController {
     private final SalaryIncreaseService salaryIncreaseService;
-    private final EventFormService eventFormService;
-    private final JWTTokenUtil jwtTokenUtil;
 
     @PreAuthorize("hasRole('MANAGER')")
     @PostMapping("/create")
