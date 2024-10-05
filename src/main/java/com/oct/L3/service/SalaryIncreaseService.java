@@ -1,13 +1,12 @@
 package com.oct.L3.service;
 
 import com.oct.L3.dtos.SalaryIncreaseDTO;
-import com.oct.L3.exceptions.DataNotFoundException;
+import com.oct.L3.dtos.response.SalaryIncreaseResponse;
 
 public interface SalaryIncreaseService {
-    SalaryIncreaseDTO createSalaryIncrease(SalaryIncreaseDTO salaryIncreaseDTO);
+    SalaryIncreaseResponse createSalaryIncrease(SalaryIncreaseDTO salaryIncreaseDTO);
 
-    SalaryIncreaseDTO updateSalaryIncrease(Integer id, SalaryIncreaseDTO salaryIncreaseDTO) throws DataNotFoundException;
+    SalaryIncreaseResponse updateSalaryIncrease(Integer id, SalaryIncreaseDTO salaryIncreaseDTO) ;
 
 
-    SalaryIncreaseDTO getSalaryIncreaseByEventFormId(Integer id) throws DataNotFoundException;
 }

@@ -1,25 +1,23 @@
 package com.oct.L3.service.impl;
 
-import com.oct.L3.components.SecurityUtils;
+import com.oct.L3.dtos.EventFormDTO;
+import com.oct.L3.dtos.response.PromotionResponse;
 import com.oct.L3.entity.EmployeeEntity;
 import com.oct.L3.entity.PromotionEntity;
-import com.oct.L3.entity.UserEntity;
 import com.oct.L3.exceptions.InvalidStatusException;
-import com.oct.L3.mapper.EventFormMapper;
 import com.oct.L3.mapper.PromotionMapper;
 import com.oct.L3.dtos.PromotionDTO;
 import com.oct.L3.exceptions.DataNotFoundException;
 import com.oct.L3.repository.EmployeeRepository;
-import com.oct.L3.repository.EventFormRepository;
 import com.oct.L3.repository.PositionRepository;
 import com.oct.L3.repository.PromotionRepository;
 import com.oct.L3.service.EventFormService;
 import com.oct.L3.service.PromotionService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import static com.oct.L3.constant.EventType.PROMOTION;
-import static com.oct.L3.constant.Status.DRAFT;
 
 @Service
 @RequiredArgsConstructor
@@ -29,28 +27,32 @@ public class PromotionServiceImpl implements PromotionService {
     private final PositionRepository positionRepository;
     private final PromotionMapper promotionMapper;
     private final EventFormService eventFormService;
+    private final EmployeeRepository employeeRepository;
 
     @Override
-    public PromotionDTO createPromotion(PromotionDTO promotionDTO) {
+    @Transactional
+    public PromotionResponse createPromotion(PromotionDTO promotionDTO) {
 
         if (promotionDTO.getEventFormDTO() == null) {
             throw new RuntimeException("EventFormEntity is null");
         }
-        validatePositionIds(promotionDTO.getOldPositionId(), promotionDTO.getNewPositionId());
-
+        validatePositionIds(promotionDTO);
         promotionDTO.getEventFormDTO().setType(PROMOTION);
-        eventFormService.createEventForm(promotionDTO.getEventFormDTO());
-        return promotionMapper.toDTO(promotionRepository.save(promotionMapper.toEntity(promotionDTO)));
+        EventFormDTO eventFormDTO = eventFormService.createEventForm(promotionDTO.getEventFormDTO());
+        promotionDTO.setEventFormDTO(eventFormDTO);
+        PromotionDTO promotion = promotionMapper.toDTO(promotionRepository.save(promotionMapper.toEntity(promotionDTO)));
+        return promotionMapper.toResponse(promotion);
     }
 
     @Override
-    public PromotionDTO updatePromotion(Integer id, PromotionDTO promotionDTO) throws DataNotFoundException {
-        validatePositionIds(promotionDTO.getOldPositionId(), promotionDTO.getNewPositionId());
-        if (id.equals(promotionDTO.getId())) {
+    public PromotionResponse updatePromotion(Integer id, PromotionDTO promotionDTO) throws DataNotFoundException {
+        validatePositionIds(promotionDTO);
+        if (!id.equals(promotionDTO.getId())) {
             throw new RuntimeException("Id mismatch");
         }
         eventFormService.updateEventForm(promotionDTO.getEventFormDTO().getId(), promotionDTO.getEventFormDTO());
-        return promotionMapper.toDTO(promotionRepository.save(promotionMapper.toEntity(promotionDTO)));
+        PromotionDTO promotion = promotionMapper.toDTO(promotionRepository.save(promotionMapper.toEntity(promotionDTO)));
+        return promotionMapper.toResponse(promotion);
     }
 
     @Override
@@ -62,10 +64,19 @@ public class PromotionServiceImpl implements PromotionService {
         return promotionMapper.toDTO(promotionEntity);
     }
 
-    private void validatePositionIds(Integer oldPositionId, Integer newPositionId) throws DataNotFoundException {
-        positionRepository.findById(oldPositionId)
+    private void validatePositionIds(PromotionDTO dto) throws DataNotFoundException {
+
+        EmployeeEntity employeeEntity = employeeRepository.findById(dto.getEventFormDTO().getEmployeeId())
+                .orElseThrow(() -> new DataNotFoundException("EmployeeEntity not found"));
+
+        if (!employeeEntity.getPositionId().equals(dto.getOldPositionId())) {
+            throw new InvalidStatusException("Old position is not correct");
+        }
+
+        positionRepository.findById(dto.getOldPositionId())
                 .orElseThrow(() -> new DataNotFoundException("OldPositionEntity not found"));
-        positionRepository.findById(newPositionId)
+
+        positionRepository.findById(dto.getNewPositionId())
                 .orElseThrow(() -> new DataNotFoundException("NewPositionEntity not found"));
     }
 

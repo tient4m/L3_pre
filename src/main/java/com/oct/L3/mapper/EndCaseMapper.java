@@ -2,6 +2,7 @@ package com.oct.L3.mapper;
 
 import com.oct.L3.dtos.EndCaseDTO;
 import com.oct.L3.dtos.EventFormDTO;
+import com.oct.L3.dtos.response.EndCaseResponse;
 import com.oct.L3.entity.EndCaseEntity;
 import com.oct.L3.repository.EventFormRepository;
 import lombok.RequiredArgsConstructor;
@@ -36,5 +37,19 @@ public class EndCaseMapper {
                 .archiveNumber(endCaseDTO.getArchiveNumber())
                 .reason(endCaseDTO.getReason())
                 .build();
+    }
+
+    public EndCaseResponse toResponse(EndCaseDTO dto) {
+        return EndCaseResponse.builder()
+                .Id(dto.getId())
+                .endDate(dto.getEndDate())
+                .archiveNumber(dto.getArchiveNumber())
+                .reason(dto.getReason())
+                .eventForm(eventFormMapper.toResponse(dto.getEventFormDTO()))
+                .build();
+    }
+
+    public EndCaseResponse toResponse(EndCaseEntity entity) {
+        return toResponse(toDTO(entity));
     }
 }

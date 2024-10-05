@@ -6,7 +6,6 @@ import com.oct.L3.entity.UserEntity;
 import com.oct.L3.mapper.UserMapper;
 import com.oct.L3.dtos.PositionDTO;
 import com.oct.L3.dtos.UserDTO;
-import com.oct.L3.repository.PositionRepository;
 import com.oct.L3.repository.UserRepository;
 import com.oct.L3.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -22,7 +21,6 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final ModelMapper modelMapper;
-    private final PositionRepository positionRepository;
     private final JWTTokenUtil jwtTokenUtil;
     private final AuthenticationManager authenticationManager;
     private final UserMapper userMapper;

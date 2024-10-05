@@ -1,6 +1,6 @@
 package com.oct.L3.controller;
 
-import com.oct.L3.dtos.LoginDTO;
+import com.oct.L3.dtos.request.LoginRequest;
 import com.oct.L3.dtos.UserDTO;
 import com.oct.L3.dtos.response.ResponseObject;
 import com.oct.L3.dtos.response.UserLoginResponse;
@@ -33,19 +33,19 @@ public class UserController {
                 .data(userResponse)
                 .build());
     }
-    @PreAuthorize("#userId == authentication.principal.id")
-    @GetMapping("/get-event-form/{userId}")
-    public ResponseEntity<ResponseObject> getEventFormByUserId(@PathVariable Integer userId) {
+
+    @GetMapping("/get-event-form")
+    public ResponseEntity<ResponseObject> getEventFormByUserId() {
         return ResponseEntity.ok().body(ResponseObject.builder()
                 .message("Event form retrieved successfully")
                 .status(HttpStatus.OK)
-                .data(eventFormService.getAllEventFormsByManagerIdOrLeaderId(userId))
+                .data(eventFormService.getAllEventFormsByManagerIdOrLeaderId())
                 .build());
     }
 
     @PostMapping("/login")
-    public ResponseEntity<ResponseObject> login(@RequestBody LoginDTO loginDTO) throws Exception {
-        UserLoginResponse userLoginResponse = userService.login(loginDTO.getUserName(), loginDTO.getPassword());
+    public ResponseEntity<ResponseObject> login(@RequestBody LoginRequest loginRequest) throws Exception {
+        UserLoginResponse userLoginResponse = userService.login(loginRequest.getUserName(), loginRequest.getPassword());
         return ResponseEntity.ok().body(ResponseObject.builder()
                 .message("User logged in successfully")
                 .status(HttpStatus.OK)

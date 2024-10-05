@@ -18,8 +18,8 @@ public class FamilyRelationshipServiceImpl implements FamilyRelationshipService 
     private final FamilyRelationshipMapper familyRelationshipMapper;
 
     @Override
-    public List<FamilyRelationshipDTO> saveAllFamilyRelationship(List<FamilyRelationshipDTO> familyRelationshipDTOs, Integer employeeId) {
-        List<FamilyRelationshipEntity> familyRelationshipEntities = familyRelationshipDTOs.stream()
+    public List<FamilyRelationshipDTO> saveAllFamilyRelationship(List<FamilyRelationshipDTO> familyRelationshipDTOS, Integer employeeId) {
+        List<FamilyRelationshipEntity> familyRelationshipEntities = familyRelationshipDTOS.stream()
                 .map(familyRelationshipMapper::toEntity)
                 .peek(employeeEntity -> employeeEntity.setEmployeeId(employeeId))
                 .toList();

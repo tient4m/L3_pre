@@ -7,11 +7,9 @@ import com.oct.L3.entity.*;
 import com.oct.L3.repository.CertificateRepository;
 import com.oct.L3.repository.FamilyRelationshipRepository;
 import lombok.RequiredArgsConstructor;
-import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Component
 @RequiredArgsConstructor

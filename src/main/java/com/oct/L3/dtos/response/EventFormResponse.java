@@ -14,12 +14,12 @@ import java.util.List;
 @NoArgsConstructor
 public class EventFormResponse{
     private Integer eventFormId;
-    private EmployeeDTO employee;
     private String type;
     private Date date;
     private Date submissionDate;
     private String content;
     private String status;
     private String note;
+    private EmployeeDTO employee;
     private List<EventFormHistoryDTO> histories;
 }

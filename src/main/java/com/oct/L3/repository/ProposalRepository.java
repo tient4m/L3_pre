@@ -15,4 +15,6 @@ public interface ProposalRepository extends JpaRepository<ProposalEntity, Intege
 
 
     void deleteByEventFormId(Integer id);
+
+    ProposalEntity findByEventFormId(Integer id);
 }

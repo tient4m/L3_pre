@@ -2,6 +2,7 @@ package com.oct.L3.service.impl;
 
 import com.oct.L3.components.SecurityUtils;
 import com.oct.L3.dtos.EndCaseDTO;
+import com.oct.L3.dtos.response.EndCaseResponse;
 import com.oct.L3.entity.EmployeeEntity;
 import com.oct.L3.entity.EndCaseEntity;
 import com.oct.L3.entity.EventFormEntity;
@@ -37,9 +38,9 @@ public class EndCaseServiceImpl implements EndCaseService {
 
     @Override
     @Transactional
-    public EndCaseDTO createEndCase(EndCaseDTO endCaseDTO) {
+    public EndCaseResponse createEndCase(EndCaseDTO dto) {
 
-        EmployeeEntity employeeEntity = employeeRepository.findById(endCaseDTO.getEventFormDTO().getEmployeeId()).orElseThrow(
+        EmployeeEntity employeeEntity = employeeRepository.findById(dto.getEventFormDTO().getEmployeeId()).orElseThrow(
                 () -> new DataNotFoundException("Employee not found"));
 
         if (!employeeEntity.getStatus().equals(ACTIVE)) {
@@ -50,36 +51,39 @@ public class EndCaseServiceImpl implements EndCaseService {
         }
         UserEntity user = securityUtils.getLoggedInUser();
         EventFormEntity eventForm = EventFormEntity.builder()
-                .employeeId(endCaseDTO.getEventFormDTO().getEmployeeId())
-                .managerComments(endCaseDTO.getEventFormDTO().getManagerComments())
+                .employeeId(dto.getEventFormDTO().getEmployeeId())
+                .managerComments(dto.getEventFormDTO().getManagerComments())
                 .type(TERMINATION_REQUEST)
                 .date(new Date())
                 .submissionDate(new Date())
-                .content(endCaseDTO.getEventFormDTO().getContent())
+                .content(dto.getEventFormDTO().getContent())
                 .managerId(user.getId())
-                .leaderId(endCaseDTO.getEventFormDTO().getLeaderId())
+                .leaderId(dto.getEventFormDTO().getLeaderId())
                 .status(PENDING)
-                .note(endCaseDTO.getEventFormDTO().getNote())
+                .note(dto.getEventFormDTO().getNote())
                 .build();
         eventFormRepository.save(eventForm);
-        return endCaseMapper.toDTO(endCaseRepository.save(endCaseMapper.toEntity(endCaseDTO)));
+        EndCaseEntity endCaseEntity = endCaseMapper.toEntity(dto);
+        EndCaseDTO endCaseDTO = endCaseMapper.toDTO(endCaseRepository.save(endCaseEntity));
+        return endCaseMapper.toResponse(endCaseDTO);
+
 
     }
 
     @Override
     @Transactional
-    public EndCaseDTO update(Integer id, EndCaseDTO endCaseDTO) {
-
-        EndCaseEntity endCaseEntity = endCaseRepository.findById(id)
-                .orElseThrow(() -> new DataNotFoundException("EndCaseEntity not found"));
-
-        if (!endCaseDTO.getId().equals(id)) {
+    public EndCaseResponse update(Integer id, EndCaseDTO dto) {
+        if (!endCaseRepository.existsById(id)) {
+            throw new DataNotFoundException("EndCaseEntity not found");
+        }
+        if (!dto.getId().equals(id)) {
             throw new RuntimeException("Id not match");
         }
 
-        eventFormService.updateEventForm(endCaseDTO.getEventFormDTO().getId(), endCaseDTO.getEventFormDTO());
-
-        return endCaseMapper.toDTO(endCaseRepository.save(endCaseMapper.toEntity(endCaseDTO)));
+        eventFormService.updateEventForm(dto.getEventFormDTO().getId(), dto.getEventFormDTO());
+        EndCaseEntity endCaseEntity = endCaseMapper.toEntity(dto);
+        EndCaseDTO endCaseDTO = endCaseMapper.toDTO(endCaseRepository.save(endCaseEntity));
+        return endCaseMapper.toResponse(endCaseDTO);
     }
 
     @Override

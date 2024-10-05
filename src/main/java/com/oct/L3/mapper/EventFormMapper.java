@@ -58,7 +58,6 @@ public class EventFormMapper {
     }
 
     public  EventFormResponse toResponse(EventFormDTO dto) {
-
         List<EventFormHistoryDTO> histories = eventFormHistoryRepository
                 .findByEventFormId(dto.getId())
                 .stream()
@@ -69,15 +68,19 @@ public class EventFormMapper {
 
         return EventFormResponse.builder()
                 .eventFormId(dto.getId())
-                .employee(employeeMapper.toDTO(entity))
                 .type(dto.getType())
                 .date(dto.getDate())
                 .submissionDate(dto.getSubmissionDate())
                 .content(dto.getContent())
                 .status(dto.getStatus())
                 .note(dto.getNote())
+                .employee(employeeMapper.toDTO(entity))
                 .histories(histories)
                 .build();
+    }
+
+    public EventFormResponse toResponse(EventFormEntity entity) {
+        return toResponse(toDTO(entity));
     }
 }
 

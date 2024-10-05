@@ -3,12 +3,12 @@ package com.oct.L3.service.impl;
 import com.oct.L3.components.SecurityUtils;
 import com.oct.L3.dtos.EventFormHistoryDTO;
 import com.oct.L3.dtos.response.EventFormResponse;
+import com.oct.L3.dtos.response.ProposalResponse;
 import com.oct.L3.entity.*;
 import com.oct.L3.exceptions.InvalidStatusException;
-import com.oct.L3.mapper.EventFormHistoryMapper;
+import com.oct.L3.mapper.*;
 import com.oct.L3.dtos.EventFormDTO;
 import com.oct.L3.exceptions.DataNotFoundException;
-import com.oct.L3.mapper.EventFormMapper;
 import com.oct.L3.repository.*;
 import com.oct.L3.service.*;
 import lombok.RequiredArgsConstructor;
@@ -16,8 +16,7 @@ import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 import static com.oct.L3.constant.EventType.*;
 import static com.oct.L3.constant.Status.*;
@@ -33,13 +32,17 @@ public class EventFormServiceImpl implements EventFormService {
     private final SalaryIncreaseRepository salaryIncreaseRepository;
     private final PromotionRepository promotionRepository;
     private final ProposalRepository proposalRepository;
-
-
-
-    private final EventFormHistoryMapper eventFormHistoryMapper;
-    private final EventFormMapper eventFormMapper;
-    private final SecurityUtils securityUtils;
     private final UserRepository userRepository;
+
+    private final EventFormMapper eventFormMapper;
+    private final EventFormHistoryMapper eventFormHistoryMapper;
+    private final ProposalMapper proposalMapper;
+    private final SalaryIncreaseMapper salaryIncreaseMapper;
+    private final PromotionMapper promotionMapper;
+    private final EndCaseMapper endCaseMapper;
+
+    private final SecurityUtils securityUtils;
+
 
 
     @Override
@@ -92,7 +95,7 @@ public class EventFormServiceImpl implements EventFormService {
 
     @Override
     @Transactional
-    public EventFormDTO sendFormToLeader(Integer leaderId,
+    public EventFormResponse sendFormToLeader(Integer leaderId,
                                          Integer eventFormId,
                                          Date setSubmissionDate,
                                          String managerComments) {
@@ -126,8 +129,9 @@ public class EventFormServiceImpl implements EventFormService {
                 .build();
 
         eventFormHistoryRepository.save(eventFormHistoryEntity);
+        EventFormDTO eventFormDTO = eventFormMapper.toDTO(eventFormRepository.save(eventFormEntity));
+        return eventFormMapper.toResponse(eventFormDTO);
 
-        return eventFormMapper.toDTO(eventFormRepository.save(eventFormEntity));
     }
 
     @Override
@@ -139,15 +143,41 @@ public class EventFormServiceImpl implements EventFormService {
     }
 
     @Override
-    public List<EventFormResponse> getAllEventFormsByManagerIdOrLeaderId(Integer id) {
-        List<EventFormEntity> eventFormEntities = eventFormRepository.findAllByManagerIdOrLeaderId(id);
+    public Map<String, List<Object>> getAllEventFormsByManagerIdOrLeaderId() {
+        UserEntity userEntity = securityUtils.getLoggedInUser();
+        List<EventFormEntity> eventFormEntities = eventFormRepository.findAllByManagerIdOrLeaderId(userEntity.getId());
+
         List<EventFormDTO> eventFormDTOS = eventFormEntities.stream().map(eventFormMapper::toDTO).toList();
-        return eventFormDTOS.stream().map(eventFormMapper::toResponse).toList();
+        Map<String, List<Object>> map = new HashMap<>();
+        map.putIfAbsent(REGISTRATION, new ArrayList<>());
+        map.putIfAbsent(SALARY_INCREASE, new ArrayList<>());
+        map.putIfAbsent(PROMOTION, new ArrayList<>());
+        map.putIfAbsent(TERMINATION_REQUEST, new ArrayList<>());
+        map.putIfAbsent(PROPOSAL, new ArrayList<>());
+
+        eventFormDTOS.forEach(eventFormDTO -> {
+            if (eventFormDTO.getType().equals(PROPOSAL)) {
+                map.get(PROPOSAL).add(proposalMapper.toResponse(proposalRepository.findByEventFormId(eventFormDTO.getId())));
+            }
+            if (eventFormDTO.getType().equals(SALARY_INCREASE)) {
+                map.get(SALARY_INCREASE).add(salaryIncreaseMapper.toResponse(salaryIncreaseRepository.findByEventFormId(eventFormDTO.getId())));
+            }
+            if (eventFormDTO.getType().equals(PROMOTION)) {
+                map.get(PROMOTION).add(promotionMapper.toResponse(promotionRepository.findByEventFormId(eventFormDTO.getId())));
+            }
+            if (eventFormDTO.getType().equals(TERMINATION_REQUEST)) {
+                map.get(TERMINATION_REQUEST).add(endCaseMapper.toResponse(endCaseRepository.findByEventFormId(eventFormDTO.getId())));
+            }
+            if (eventFormDTO.getType().equals(REGISTRATION)) {
+                map.get(REGISTRATION).add(eventFormMapper.toResponse(eventFormDTO));
+            }
+        });
+        return map;
     }
 
     @Override
     @Transactional
-    public EventFormDTO processEventFormByLeader(Integer eventFormId,
+    public EventFormResponse processEventFormByLeader(Integer eventFormId,
                                                  String leaderComments,
                                                  String status) throws DataNotFoundException {
 
@@ -178,10 +208,8 @@ public class EventFormServiceImpl implements EventFormService {
                 .build();
 
         eventFormHistoryRepository.save(eventFormHistoryMapper.toEntity(eventFormHistoryDTO));
-
-        EventFormEntity savedEventFormEntity = eventFormRepository.save(eventFormEntity);
-
-        return eventFormMapper.toDTO(savedEventFormEntity);
+        EventFormDTO eventFormDTO = eventFormMapper.toDTO(eventFormRepository.save(eventFormEntity));
+        return eventFormMapper.toResponse(eventFormDTO);
     }
 
     @Override

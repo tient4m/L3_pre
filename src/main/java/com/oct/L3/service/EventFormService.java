@@ -6,6 +6,7 @@ import com.oct.L3.exceptions.DataNotFoundException;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 public interface EventFormService {
 
@@ -14,13 +15,13 @@ public interface EventFormService {
 
     EventFormDTO updateEventForm(Integer id, EventFormDTO eventFormDTO) throws DataNotFoundException;
 
-    EventFormDTO sendFormToLeader(Integer leaderId, Integer eventFormId, Date SubmissionDate, String managerComments);
+    EventFormResponse sendFormToLeader(Integer leaderId, Integer eventFormId, Date SubmissionDate, String managerComments);
 
     EventFormDTO getEventFormById(Integer id) throws DataNotFoundException;
 
-    List<EventFormResponse> getAllEventFormsByManagerIdOrLeaderId(Integer id) throws DataNotFoundException;
+    Map<String, List<Object>> getAllEventFormsByManagerIdOrLeaderId();
 
-    EventFormDTO processEventFormByLeader(Integer eventFormId,
+    EventFormResponse processEventFormByLeader(Integer eventFormId,
                                           String leaderComments,
                                           String status) throws DataNotFoundException;
 

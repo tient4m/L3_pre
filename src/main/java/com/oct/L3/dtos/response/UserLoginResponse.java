@@ -13,7 +13,6 @@ public class UserLoginResponse {
     private String userName;
     private String role;
     private String fullName;
-    private PositionDTO positionDTO;
     private String token;
-
+    private PositionDTO positionDTO;
 }

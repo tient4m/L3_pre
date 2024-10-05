@@ -16,5 +16,5 @@ public class PromotionResponse {
     private PositionDTO oldPosition;
     private PositionDTO newPosition;
     private String note;
-    private EventFormDTO eventForm;
+    private EventFormResponse eventForm;
 }

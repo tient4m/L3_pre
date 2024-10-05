@@ -49,7 +49,6 @@ public class EmployeeDTO {
 
     private Integer positionId;
     private Integer managerId;
-
     @NotBlank(message = "Status is required")
     private String status;
 

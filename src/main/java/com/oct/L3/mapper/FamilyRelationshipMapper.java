@@ -2,9 +2,7 @@ package com.oct.L3.mapper;
 
 import com.oct.L3.dtos.FamilyRelationshipDTO;
 import com.oct.L3.entity.FamilyRelationshipEntity;
-import com.oct.L3.repository.EmployeeRepository;
 import lombok.RequiredArgsConstructor;
-import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;
 
 @RequiredArgsConstructor

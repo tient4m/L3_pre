@@ -2,9 +2,7 @@ package com.oct.L3.mapper;
 
 import com.oct.L3.dtos.CertificateDTO;
 import com.oct.L3.entity.CertificateEntity;
-import com.oct.L3.repository.EmployeeRepository;
 import lombok.RequiredArgsConstructor;
-import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;
 
 @Component

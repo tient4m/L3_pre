@@ -57,11 +57,15 @@ public class PromotionMapper {
         return PromotionResponse.builder()
                 .promotionId(dto.getId())
                 .times(dto.getTimes())
-                .newPosition(newPosition)
-                .oldPosition(oldPosition)
                 .reason(dto.getReason())
                 .note(dto.getNote())
-                .eventForm(dto.getEventFormDTO())
+                .newPosition(newPosition)
+                .oldPosition(oldPosition)
+                .eventForm(eventFormMapper.toResponse(dto.getEventFormDTO()))
                 .build();
+    }
+
+    public PromotionResponse toResponse(PromotionEntity entity) {
+        return toResponse(toDTO(entity));
     }
 }

@@ -20,11 +20,10 @@ public class ProposalController {
     @PreAuthorize("hasRole('MANAGER')")
     @PostMapping("/create")
     public ResponseEntity<ResponseObject> createProposal(@RequestBody @Valid ProposalDTO proposalDTO) {
-            ProposalDTO proposalResult = proposalService.createProposal(proposalDTO);
             return ResponseEntity.ok().body(ResponseObject.builder()
                     .message("ProposalEntity created successfully")
                     .status(HttpStatus.CREATED)
-                    .data(proposalResult)
+                    .data(proposalService.createProposal(proposalDTO))
                     .build());
     }
 
@@ -36,7 +35,7 @@ public class ProposalController {
             return ResponseEntity.ok().body(ResponseObject.builder()
                     .message("ProposalEntity updated successfully")
                     .status(HttpStatus.OK)
-                    .data(proposalService.updateProposal(id,proposalDTO))
+                    .data(proposalService.updateProposal(id, proposalDTO))
                     .build());
     }
 }

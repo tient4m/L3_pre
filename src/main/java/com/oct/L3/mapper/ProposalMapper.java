@@ -1,13 +1,11 @@
 package com.oct.L3.mapper;
 
-import com.oct.L3.dtos.EventFormDTO;
 import com.oct.L3.dtos.response.ProposalResponse;
 import com.oct.L3.dtos.ProposalDTO;
 import com.oct.L3.entity.EventFormEntity;
 import com.oct.L3.entity.ProposalEntity;
 import com.oct.L3.repository.EventFormRepository;
 import lombok.RequiredArgsConstructor;
-import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -51,8 +49,12 @@ public class ProposalMapper {
                 .type(dto.getType())
                 .description(dto.getDescription())
                 .note(dto.getNote())
-                .eventForm(dto.getEventFormDTO())
+                .eventForm(eventFormMapper.toResponse(dto.getEventFormDTO()))
                 .build();
+    }
+
+    public ProposalResponse toResponse(ProposalEntity entity) {
+        return toResponse(toDTO(entity));
     }
 
 }

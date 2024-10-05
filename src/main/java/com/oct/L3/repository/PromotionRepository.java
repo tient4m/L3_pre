@@ -14,5 +14,8 @@ public interface PromotionRepository extends JpaRepository<PromotionEntity, Inte
     PromotionEntity findByEventForm(Integer id);
 
 
+
     void deleteByEventFormId(Integer id);
+
+    PromotionEntity findByEventFormId(Integer id);
 }

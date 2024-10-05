@@ -49,7 +49,11 @@ public class SalaryIncreaseMapper {
                 .reason(dto.getReason())
                 .level(dto.getLevel())
                 .note(dto.getNote())
-                .eventForm(dto.getEventFormDTO())
+                .eventForm(eventFormMapper.toResponse(dto.getEventFormDTO()))
                 .build();
+    }
+
+    public SalaryIncreaseResponse toResponse(SalaryIncreaseEntity entity) {
+        return toResponse(toDTO(entity));
     }
 }

@@ -1,4 +1,4 @@
-package com.oct.L3.dtos;
+package com.oct.L3.dtos.response;
 
 import lombok.*;
 
@@ -9,10 +9,10 @@ import java.util.Date;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class EndCaseDTO {
+public class EndCaseResponse {
     private Integer Id;
     private Date endDate;
     private String archiveNumber;
     private String reason;
-    private EventFormDTO eventFormDTO;
+    private EventFormResponse eventForm;
 }

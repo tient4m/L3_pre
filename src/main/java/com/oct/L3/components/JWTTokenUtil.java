@@ -29,13 +29,12 @@ public class JWTTokenUtil {
         claims.put("id", userEntity.getId());
         try
         {
-            String token = Jwts.builder()
+            return Jwts.builder()
                     .setClaims(claims)
                     .setSubject(userEntity.getUsername())
                     .setExpiration(new Date(System.currentTimeMillis() + expiration * 1000L))
                     .signWith(getSignInKey(), SignatureAlgorithm.HS256)
                     .compact();
-            return token;
         }
         catch (Exception e)
         {

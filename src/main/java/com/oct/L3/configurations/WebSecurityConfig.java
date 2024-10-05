@@ -20,8 +20,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @RequiredArgsConstructor
 //@EnableWebSecurity(debug = true)
 public class WebSecurityConfig {
-    @Value("${jwt.secretKey}")
-    private String secretKey;
+
     private final JwtTokenFilter jwtTokenFilter;
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -32,6 +31,7 @@ public class WebSecurityConfig {
                         .requestMatchers("/api/v1/users/login").permitAll()
                         .requestMatchers("/api/v1/users/create").permitAll()
                         .requestMatchers("/api/v1/users/update/**").permitAll()
+                        .requestMatchers("/api/v1/users/get-event-form").permitAll()
                         .requestMatchers(HttpMethod.GET,"/api/v1/event-form**").permitAll()
                         .anyRequest().authenticated()
                 );

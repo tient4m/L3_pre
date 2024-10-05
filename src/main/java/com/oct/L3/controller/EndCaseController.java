@@ -20,11 +20,10 @@ public class EndCaseController {
     @PreAuthorize("hasRole('MANAGER')")
     @PostMapping("")
     public ResponseEntity<ResponseObject> createEndCase(@RequestBody @Valid EndCaseDTO endCaseDTO){
-            EndCaseDTO endCase = endCaseService.createEndCase(endCaseDTO);
             return ResponseEntity.ok().body(ResponseObject.builder()
                     .message("End case created successfully")
                     .status(HttpStatus.CREATED)
-                    .data(endCase)
+                    .data(endCaseService.createEndCase(endCaseDTO))
                     .build());
     }
 
@@ -32,11 +31,10 @@ public class EndCaseController {
     @PutMapping("/update/{id}")
     public ResponseEntity<ResponseObject> updateEndCase(@PathVariable Integer id,
                                                           @RequestBody @Valid EndCaseDTO endCaseDTO) {
-            EndCaseDTO endCase = endCaseService.update(id, endCaseDTO);
             return ResponseEntity.ok().body(ResponseObject.builder()
                     .message("End case updated successfully")
                     .status(HttpStatus.OK)
-                    .data(endCase)
+                    .data(endCaseService.update(id, endCaseDTO))
                     .build());
     }
 }

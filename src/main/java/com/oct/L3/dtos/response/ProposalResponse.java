@@ -14,5 +14,5 @@ public class ProposalResponse {
     private String type;
     private String description;
     private String note;
-    private EventFormDTO eventForm;
+    private EventFormResponse eventForm;
 }

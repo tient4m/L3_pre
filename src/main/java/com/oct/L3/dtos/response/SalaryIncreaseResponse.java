@@ -14,5 +14,5 @@ public class SalaryIncreaseResponse {
     private String reason;
     private String level;
     private String note;
-    private EventFormDTO eventForm;
+    private EventFormResponse eventForm;
 }

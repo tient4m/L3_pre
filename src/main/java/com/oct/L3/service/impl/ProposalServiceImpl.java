@@ -1,11 +1,12 @@
 package com.oct.L3.service.impl;
 
+import com.oct.L3.dtos.EventFormDTO;
+import com.oct.L3.dtos.response.ProposalResponse;
 import com.oct.L3.entity.ProposalEntity;
 import com.oct.L3.mapper.EventFormMapper;
 import com.oct.L3.mapper.ProposalMapper;
 import com.oct.L3.dtos.ProposalDTO;
 import com.oct.L3.exceptions.DataNotFoundException;
-import com.oct.L3.repository.EmployeeRepository;
 import com.oct.L3.repository.EventFormRepository;
 import com.oct.L3.repository.ProposalRepository;
 import com.oct.L3.service.EventFormService;
@@ -21,28 +22,30 @@ public class ProposalServiceImpl implements ProposalService {
         private final ProposalRepository proposalRepository;
         private final ProposalMapper proposalMapper;
         private final EventFormService eventFormService;
-        private final EmployeeRepository employeeRepository;
         private final EventFormRepository eventFormRepository;
         private final EventFormMapper eventFormMapper;
 
         @Override
-        public ProposalDTO createProposal(ProposalDTO proposalDTO) {
-                if (proposalDTO.getEventFormDTO() == null) {
+        public ProposalResponse createProposal(ProposalDTO dto) {
+                if (dto.getEventFormDTO() == null) {
                         throw new RuntimeException("EventFormEntity is required");
                 }
-                proposalDTO.getEventFormDTO().setType(PROPOSAL);
-                eventFormRepository.save(eventFormMapper.toEntity(proposalDTO.getEventFormDTO()));
-                return proposalMapper.toDTO(proposalRepository.save(proposalMapper.toEntity(proposalDTO)));
+                dto.getEventFormDTO().setType(PROPOSAL);
+                EventFormDTO eventFormDTO = eventFormMapper.toDTO(eventFormRepository.save(eventFormMapper.toEntity(dto.getEventFormDTO())));
+                dto.setEventFormDTO(eventFormDTO);
+                ProposalDTO proposalDTO = proposalMapper.toDTO(proposalRepository.save(proposalMapper.toEntity(dto)));
+                return proposalMapper.toResponse(proposalDTO);
         }
 
 
         @Override
-        public ProposalDTO updateProposal(Integer Id, ProposalDTO proposalDTO) throws DataNotFoundException {
-                if (Id.equals(proposalDTO.getProposalId())) {
+        public ProposalResponse updateProposal(Integer Id, ProposalDTO dto) throws DataNotFoundException {
+                if (!Id.equals(dto.getProposalId())) {
                         throw new RuntimeException("Id mismatch");
                 }
-                eventFormService.updateEventForm(proposalDTO.getEventFormDTO().getId(), proposalDTO.getEventFormDTO());
-                return proposalMapper.toDTO(proposalRepository.save(proposalMapper.toEntity(proposalDTO)));
+                eventFormService.updateEventForm(dto.getEventFormDTO().getId(), dto.getEventFormDTO());
+                ProposalDTO proposalDTO = proposalMapper.toDTO(proposalRepository.save(proposalMapper.toEntity(dto)));
+                return proposalMapper.toResponse(proposalDTO);
         }
 
         @Override

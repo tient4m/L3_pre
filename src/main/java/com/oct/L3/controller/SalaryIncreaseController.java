@@ -1,9 +1,7 @@
 package com.oct.L3.controller;
 
 import com.oct.L3.dtos.response.ResponseObject;
-import com.oct.L3.components.JWTTokenUtil;
 import com.oct.L3.dtos.SalaryIncreaseDTO;
-import com.oct.L3.service.EventFormService;
 import com.oct.L3.service.SalaryIncreaseService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -21,11 +19,10 @@ public class SalaryIncreaseController {
     @PreAuthorize("hasRole('MANAGER')")
     @PostMapping("/create")
     public ResponseEntity<ResponseObject> createSalaryIncrease(@RequestBody @Valid SalaryIncreaseDTO salaryIncreaseDTO) {
-            SalaryIncreaseDTO salaryIncreaseResult = salaryIncreaseService.createSalaryIncrease(salaryIncreaseDTO);
             return ResponseEntity.ok().body(ResponseObject.builder()
                     .message("Salary increase created successfully")
                     .status(HttpStatus.CREATED)
-                    .data(salaryIncreaseResult)
+                    .data(salaryIncreaseService.createSalaryIncrease(salaryIncreaseDTO))
                     .build());
     }
 

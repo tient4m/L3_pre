@@ -71,7 +71,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     @Override
     @Transactional
-    public EmployeeDTO updateEmployee(Integer id,EmployeeDTO employeeDTO) {
+    public EmployeeDTO updateEmployee(Integer id, EmployeeDTO employeeDTO) {
         if (!employeeRepository.existsById(id)) {
             throw new RuntimeException("EmployeeEntity not found");
         }
