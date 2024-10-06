@@ -1,10 +1,9 @@
 package com.oct.L3.controller;
 
+import com.oct.L3.dtos.EventFormDTO;
 import com.oct.L3.dtos.request.LeaderActionRequest;
 import com.oct.L3.dtos.request.SendToLeaderRequest;
-import com.oct.L3.dtos.response.*;
-import com.oct.L3.mapper.EventFormMapper;
-import com.oct.L3.dtos.EventFormDTO;
+import com.oct.L3.dtos.response.ResponseObject;
 import com.oct.L3.service.EventFormService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -14,7 +13,6 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import static com.oct.L3.constant.Status.*;
-import static com.oct.L3.constant.EventType.*;
 
 @RequiredArgsConstructor
 @RestController
@@ -22,7 +20,6 @@ import static com.oct.L3.constant.EventType.*;
 public class EventFormController {
 
     private final EventFormService eventFormService;
-    private final EventFormMapper eventFormMapper;
 
 
     @PreAuthorize("hasRole('ROLE_MANAGER')")

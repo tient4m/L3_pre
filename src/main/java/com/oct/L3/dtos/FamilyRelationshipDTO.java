@@ -26,7 +26,7 @@ public class FamilyRelationshipDTO {
     private String gender;
 
     @Past(message = "Date of birth must be in the past")
-    @AgeConstraint(min = 0, max = 100, message = "Age must be between 0 and 100 years")
+    @AgeConstraint(message = "Age must be between 0 and 100 years")
     private Date dateOfBirth;
 
     @NotBlank(message = "Identity card is required")

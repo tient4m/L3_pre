@@ -9,7 +9,7 @@ import lombok.*;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class EmployeeRegistrationRespon {
+public class EmployeeRegistrationResponse {
     private EventFormDTO eventFormDTO;
     private EmployeeDTO employeeDTO;
 }

@@ -3,7 +3,6 @@ package com.oct.L3.service.impl;
 import com.oct.L3.components.SecurityUtils;
 import com.oct.L3.dtos.EventFormHistoryDTO;
 import com.oct.L3.dtos.response.EventFormResponse;
-import com.oct.L3.dtos.response.ProposalResponse;
 import com.oct.L3.entity.*;
 import com.oct.L3.exceptions.InvalidStatusException;
 import com.oct.L3.mapper.*;
@@ -156,19 +155,19 @@ public class EventFormServiceImpl implements EventFormService {
         map.putIfAbsent(PROPOSAL, new ArrayList<>());
 
         eventFormDTOS.forEach(eventFormDTO -> {
-            if (eventFormDTO.getType().equals(PROPOSAL)) {
+            if (PROPOSAL.equals(eventFormDTO.getType())) {
                 map.get(PROPOSAL).add(proposalMapper.toResponse(proposalRepository.findByEventFormId(eventFormDTO.getId())));
             }
-            if (eventFormDTO.getType().equals(SALARY_INCREASE)) {
+            if (SALARY_INCREASE.equals(eventFormDTO.getType())) {
                 map.get(SALARY_INCREASE).add(salaryIncreaseMapper.toResponse(salaryIncreaseRepository.findByEventFormId(eventFormDTO.getId())));
             }
-            if (eventFormDTO.getType().equals(PROMOTION)) {
+            if (PROMOTION.equals(eventFormDTO.getType())) {
                 map.get(PROMOTION).add(promotionMapper.toResponse(promotionRepository.findByEventFormId(eventFormDTO.getId())));
             }
-            if (eventFormDTO.getType().equals(TERMINATION_REQUEST)) {
+            if (TERMINATION_REQUEST.equals(eventFormDTO.getType())) {
                 map.get(TERMINATION_REQUEST).add(endCaseMapper.toResponse(endCaseRepository.findByEventFormId(eventFormDTO.getId())));
             }
-            if (eventFormDTO.getType().equals(REGISTRATION)) {
+            if (REGISTRATION.equals(eventFormDTO.getType())) {
                 map.get(REGISTRATION).add(eventFormMapper.toResponse(eventFormDTO));
             }
         });

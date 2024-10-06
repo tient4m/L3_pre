@@ -3,7 +3,7 @@ package com.oct.L3.service.impl;
 import com.oct.L3.components.SecurityUtils;
 import com.oct.L3.dtos.EventFormDTO;
 import com.oct.L3.dtos.request.EmployeeRegistrationRequest;
-import com.oct.L3.dtos.response.EmployeeRegistrationRespon;
+import com.oct.L3.dtos.response.EmployeeRegistrationResponse;
 import com.oct.L3.exceptions.DataNotFoundException;
 import com.oct.L3.exceptions.InvalidStatusException;
 import com.oct.L3.mapper.EmployeeMapper;
@@ -86,7 +86,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     @Override
     @Transactional
-    public EmployeeRegistrationRespon registrationEmployee(EmployeeRegistrationRequest request){
+    public EmployeeRegistrationResponse registrationEmployee(EmployeeRegistrationRequest request){
         EmployeeEntity employee = employeeRepository.findById(request.getEmployeeId()).orElseThrow(
                 ()->new DataNotFoundException("Employee not found")
         );
@@ -123,7 +123,7 @@ public class EmployeeServiceImpl implements EmployeeService {
                 .leaderId(request.getLeaderId())
                 .build();
         EventFormEntity eventFormEntity = eventFormRepository.save(eventFormMapper.toEntity(eventForm));
-        return EmployeeRegistrationRespon.builder()
+        return EmployeeRegistrationResponse.builder()
                 .eventFormDTO(eventFormMapper.toDTO(eventFormEntity))
                 .employeeDTO(employeeMapper.toDTO(employeeRepository.save(employee)))
                 .build();

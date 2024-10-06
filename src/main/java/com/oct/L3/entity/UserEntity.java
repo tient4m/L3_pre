@@ -28,9 +28,6 @@ public class UserEntity implements UserDetails {
     private String password;
     private Integer positionId;
 
-    public UserEntity(Integer leaderId) {
-    }
-
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         List<SimpleGrantedAuthority> authorityList = new ArrayList<>();

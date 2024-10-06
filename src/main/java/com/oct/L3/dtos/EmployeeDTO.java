@@ -28,7 +28,7 @@ public class EmployeeDTO {
     private String gender;
 
     @Past(message = "Date of birth must be in the past")
-    @AgeConstraint(min = 18, max = 100, message = "Age must be between 18 and 100 years")
+    @AgeConstraint()
     private Date dateOfBirth;
 
     @NotBlank(message = "Address is required")
