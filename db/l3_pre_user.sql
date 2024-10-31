@@ -1,6 +1,6 @@
 -- MySQL dump 10.13  Distrib 8.0.36, for Win64 (x86_64)
 --
--- Host: 127.0.0.1    Database: l3
+-- Host: 127.0.0.1    Database: l3_pre
 -- ------------------------------------------------------
 -- Server version	8.2.0
 
@@ -16,34 +16,34 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
--- Table structure for table `users`
+-- Table structure for table `user`
 --
 
-DROP TABLE IF EXISTS `users`;
+DROP TABLE IF EXISTS `user`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `users` (
-  `user_id` int NOT NULL AUTO_INCREMENT,
-  `user_name` varchar(25) NOT NULL,
-  `full_name` varchar(225) NOT NULL,
-  `password` varchar(225) NOT NULL,
+CREATE TABLE `user` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `user_name` varchar(255) NOT NULL,
+  `full_name` varchar(255) NOT NULL,
+  `password` varchar(255) NOT NULL,
   `position_id` int NOT NULL,
-  `role` varchar(20) DEFAULT NULL,
-  PRIMARY KEY (`user_id`),
+  `role` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`id`),
   UNIQUE KEY `user_name` (`user_name`),
-  KEY `position_id` (`position_id`),
-  CONSTRAINT `users_ibfk_1` FOREIGN KEY (`position_id`) REFERENCES `positions` (`position_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+  KEY `user_ibfk_1` (`position_id`),
+  CONSTRAINT `user_ibfk_1` FOREIGN KEY (`position_id`) REFERENCES `position` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `users`
+-- Dumping data for table `user`
 --
 
-LOCK TABLES `users` WRITE;
-/*!40000 ALTER TABLE `users` DISABLE KEYS */;
-INSERT INTO `users` VALUES (1,'user1','Nguyen Van A','password123',3,'Manager'),(2,'user2','Tran Thi B','password123',6,'Manager'),(3,'user3','Le Van C','password123',11,'Director'),(4,'user4','Pham Thi D','password123',12,'Director');
-/*!40000 ALTER TABLE `users` ENABLE KEYS */;
+LOCK TABLES `user` WRITE;
+/*!40000 ALTER TABLE `user` DISABLE KEYS */;
+INSERT INTO `user` VALUES (8,'Leader','Leader','$2a$10$F7hsGECaACjzx4pJNWTHO.TuyiG.DrzunjHumr/sdZ6KsbfdAajQa',21,'LEADER'),(9,'Leader1','Leader1','$2a$10$30TenFnElg4GXKdcLrziU.Iu8XXk5iMfbeK2/PGzQ9duFIB2OKA8i',22,'LEADER'),(10,'Leader2','Leader2','$2a$10$mKXdsvw8thIiadzS/O0KOegDfuU.Eyyh6U5muensSfE5xZed4i3SW',14,'LEADER'),(11,'Manager','Manager','$2a$10$ZzOf92LRAis.Xs.m2jQkUuaNbWZDFSLvx.lWAyteRAmYBGYIOA2Wy',20,'MANAGER'),(12,'Manager1','Manager1','$2a$10$wytQiN1n7MHScfSgRS1guO65kol9arC4l.n/83/JO2SxVN65GavXu',20,'MANAGER'),(13,'Manager2','Manager2','$2a$10$/Z.03tLg/YGtfZWRKDgZ4.u2sf5tV3CLkaRopSz7MIBItujgZ3XY.',20,'MANAGER');
+/*!40000 ALTER TABLE `user` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
@@ -55,4 +55,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2024-09-12 21:26:40
+-- Dump completed on 2024-10-31 15:02:16

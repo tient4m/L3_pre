@@ -34,7 +34,7 @@ public class PromotionServiceImpl implements PromotionService {
     public PromotionResponse createPromotion(PromotionDTO promotionDTO) {
 
         if (promotionDTO.getEventFormDTO() == null) {
-            throw new RuntimeException("EventFormEntity is null");
+            throw new IllegalArgumentException("EventFormEntity is null");
         }
         validatePositionIds(promotionDTO);
         promotionDTO.getEventFormDTO().setType(PROMOTION);
@@ -47,8 +47,9 @@ public class PromotionServiceImpl implements PromotionService {
     @Override
     public PromotionResponse updatePromotion(Integer id, PromotionDTO promotionDTO) throws DataNotFoundException {
         validatePositionIds(promotionDTO);
+
         if (!id.equals(promotionDTO.getId())) {
-            throw new RuntimeException("Id mismatch");
+            throw new IllegalArgumentException("Id mismatch");
         }
         eventFormService.updateEventForm(promotionDTO.getEventFormDTO().getId(), promotionDTO.getEventFormDTO());
         PromotionDTO promotion = promotionMapper.toDTO(promotionRepository.save(promotionMapper.toEntity(promotionDTO)));
@@ -72,13 +73,14 @@ public class PromotionServiceImpl implements PromotionService {
         if (!employeeEntity.getPositionId().equals(dto.getOldPositionId())) {
             throw new InvalidStatusException("Old position is not correct");
         }
-
-        positionRepository.findById(dto.getOldPositionId())
-                .orElseThrow(() -> new DataNotFoundException("OldPositionEntity not found"));
-
-        positionRepository.findById(dto.getNewPositionId())
-                .orElseThrow(() -> new DataNotFoundException("NewPositionEntity not found"));
+        if (!positionRepository.existsById(dto.getNewPositionId())) {
+            throw new DataNotFoundException("NewPositionEntity not found");
+        }
+        if (dto.getOldPositionId().equals(dto.getNewPositionId())) {
+            throw new InvalidStatusException("Old and new positions are the same");
+        }
     }
+
 
 
 }

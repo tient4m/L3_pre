@@ -1,6 +1,6 @@
 -- MySQL dump 10.13  Distrib 8.0.36, for Win64 (x86_64)
 --
--- Host: 127.0.0.1    Database: l3
+-- Host: 127.0.0.1    Database: l3_pre
 -- ------------------------------------------------------
 -- Server version	8.2.0
 
@@ -16,32 +16,38 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
--- Table structure for table `proposalEntity`
+-- Table structure for table `promotion`
 --
 
-DROP TABLE IF EXISTS `proposalEntity`;
+DROP TABLE IF EXISTS `promotion`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `proposalEntity` (
-  `proposal_id` int NOT NULL AUTO_INCREMENT,
+CREATE TABLE `promotion` (
+  `id` int NOT NULL AUTO_INCREMENT,
   `event_form_id` int DEFAULT NULL,
-  `content` text,
-  `type` varchar(50) DEFAULT NULL,
-  `description` text,
-  `note` text,
-  PRIMARY KEY (`proposal_id`),
-  KEY `event_form_id` (`event_form_id`),
-  CONSTRAINT `proposal_ibfk_1` FOREIGN KEY (`event_form_id`) REFERENCES `eventform` (`event_form_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+  `times` int DEFAULT NULL,
+  `reason` varchar(255) DEFAULT NULL,
+  `old_position_id` int DEFAULT NULL,
+  `new_position_id` int DEFAULT NULL,
+  `note` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `promotion_ibfk_1` (`event_form_id`),
+  KEY `promotion_ibfk_2` (`old_position_id`),
+  KEY `promotion_ibfk_3` (`new_position_id`),
+  CONSTRAINT `promotion_ibfk_1` FOREIGN KEY (`event_form_id`) REFERENCES `event_form` (`id`),
+  CONSTRAINT `promotion_ibfk_2` FOREIGN KEY (`old_position_id`) REFERENCES `position` (`id`),
+  CONSTRAINT `promotion_ibfk_3` FOREIGN KEY (`new_position_id`) REFERENCES `position` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `proposalEntity`
+-- Dumping data for table `promotion`
 --
 
-LOCK TABLES `proposalEntity` WRITE;
-/*!40000 ALTER TABLE `proposalEntity` DISABLE KEYS */;
-/*!40000 ALTER TABLE `proposalEntity` ENABLE KEYS */;
+LOCK TABLES `promotion` WRITE;
+/*!40000 ALTER TABLE `promotion` DISABLE KEYS */;
+INSERT INTO `promotion` VALUES (1,NULL,1,'làm tốt, đóng góp',14,13,NULL),(3,38,1,'làm tốt, đóng góp',13,15,NULL);
+/*!40000 ALTER TABLE `promotion` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
@@ -53,4 +59,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2024-09-12 21:26:40
+-- Dump completed on 2024-10-31 15:02:17

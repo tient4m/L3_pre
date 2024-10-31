@@ -6,5 +6,4 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface PositionRepository extends JpaRepository<PositionEntity, Integer> {
-    // Các phương thức tùy chỉnh nếu cần
 }

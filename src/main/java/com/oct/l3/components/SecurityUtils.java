@@ -10,10 +10,10 @@ public class SecurityUtils {
 
     public UserEntity getLoggedInUser() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication != null &&
-                authentication.getPrincipal() instanceof UserEntity) {
-            return (UserEntity) authentication.getPrincipal();
+        if (authentication != null && authentication.getPrincipal() instanceof UserEntity userEntity) {
+            return userEntity;
         }
         return null;
     }
+
 }

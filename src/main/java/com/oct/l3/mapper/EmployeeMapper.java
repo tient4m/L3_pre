@@ -1,7 +1,7 @@
 package com.oct.l3.mapper;
 
 import com.oct.l3.dtos.CertificateDTO;
-import com.oct.l3.dtos.EmployeeDTO;
+import com.oct.l3.dtos.request.EmployeeRequest;
 import com.oct.l3.dtos.FamilyRelationshipDTO;
 import com.oct.l3.entity.*;
 import com.oct.l3.repository.CertificateRepository;
@@ -21,7 +21,7 @@ public class EmployeeMapper {
     private final CertificateMapper certificateMapper;
 
 
-    public EmployeeDTO toDTO(EmployeeEntity employeeEntity) {
+    public EmployeeRequest toDTO(EmployeeEntity employeeEntity) {
 
         List<CertificateDTO> certificateDTOS = certificateRepository.findAllByEmployeeId(employeeEntity.getId()).stream()
                 .map(certificateMapper::toDTO)
@@ -30,7 +30,7 @@ public class EmployeeMapper {
                 .map(familyRelationshipMapper::toDTO)
                 .toList();
 
-        return EmployeeDTO.builder()
+        return EmployeeRequest.builder()
                 .id(employeeEntity.getId())
                 .name(employeeEntity.getName())
                 .code(employeeEntity.getCode())
@@ -51,23 +51,23 @@ public class EmployeeMapper {
                 .build();
     }
 
-    public EmployeeEntity toEntity(EmployeeDTO employeeDTO) {
+    public EmployeeEntity toEntity(EmployeeRequest employeeRequest) {
         return EmployeeEntity.builder()
-                .id(employeeDTO.getId())
-                .name(employeeDTO.getName())
-                .code(employeeDTO.getCode())
-                .gender(employeeDTO.getGender())
-                .dateOfBirth(employeeDTO.getDateOfBirth())
-                .address(employeeDTO.getAddress())
-                .identityCard(employeeDTO.getIdentityCard())
-                .phoneNumber(employeeDTO.getPhoneNumber())
-                .email(employeeDTO.getEmail())
-                .positionId(employeeDTO.getPositionId())
-                .managerId(employeeDTO.getManagerId())
-                .status(employeeDTO.getStatus())
-                .hometown(employeeDTO.getHometown())
-                .ethnicity(employeeDTO.getEthnicity())
-                .educationLevel(employeeDTO.getEducationLevel())
+                .id(employeeRequest.getId())
+                .name(employeeRequest.getName())
+                .code(employeeRequest.getCode())
+                .gender(employeeRequest.getGender())
+                .dateOfBirth(employeeRequest.getDateOfBirth())
+                .address(employeeRequest.getAddress())
+                .identityCard(employeeRequest.getIdentityCard())
+                .phoneNumber(employeeRequest.getPhoneNumber())
+                .email(employeeRequest.getEmail())
+                .positionId(employeeRequest.getPositionId())
+                .managerId(employeeRequest.getManagerId())
+                .status(employeeRequest.getStatus())
+                .hometown(employeeRequest.getHometown())
+                .ethnicity(employeeRequest.getEthnicity())
+                .educationLevel(employeeRequest.getEducationLevel())
                 .build();
     }
 

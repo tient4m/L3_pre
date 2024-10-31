@@ -1,6 +1,6 @@
 -- MySQL dump 10.13  Distrib 8.0.36, for Win64 (x86_64)
 --
--- Host: 127.0.0.1    Database: l3
+-- Host: 127.0.0.1    Database: l3_pre
 -- ------------------------------------------------------
 -- Server version	8.2.0
 
@@ -16,37 +16,33 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
--- Table structure for table `familyrelationship`
+-- Table structure for table `salary_increase`
 --
 
-DROP TABLE IF EXISTS `familyrelationship`;
+DROP TABLE IF EXISTS `salary_increase`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `familyrelationship` (
-  `relationship_id` int NOT NULL AUTO_INCREMENT,
-  `employee_id` int DEFAULT NULL,
-  `full_name` varchar(225) DEFAULT NULL,
-  `gender` varchar(225) DEFAULT NULL,
-  `date_of_birth` date DEFAULT NULL,
-  `identity_card` varchar(20) DEFAULT NULL,
-  `relationship` varchar(225) DEFAULT NULL,
-  `address` varchar(225) DEFAULT NULL,
-  `phone_number` varchar(13) DEFAULT NULL,
-  `email` varchar(225) DEFAULT NULL,
-  `job` varchar(225) DEFAULT NULL,
-  PRIMARY KEY (`relationship_id`),
-  KEY `employee_id` (`employee_id`),
-  CONSTRAINT `familyrelationship_ibfk_1` FOREIGN KEY (`employee_id`) REFERENCES `employees` (`employee_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+CREATE TABLE `salary_increase` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `event_form_id` int DEFAULT NULL,
+  `times` int DEFAULT NULL,
+  `reason` text,
+  `level` varchar(255) DEFAULT NULL,
+  `note` text,
+  PRIMARY KEY (`id`),
+  KEY `salary_increase_ibfk_1` (`event_form_id`),
+  CONSTRAINT `salary_increase_ibfk_1` FOREIGN KEY (`event_form_id`) REFERENCES `event_form` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `familyrelationship`
+-- Dumping data for table `salary_increase`
 --
 
-LOCK TABLES `familyrelationship` WRITE;
-/*!40000 ALTER TABLE `familyrelationship` DISABLE KEYS */;
-/*!40000 ALTER TABLE `familyrelationship` ENABLE KEYS */;
+LOCK TABLES `salary_increase` WRITE;
+/*!40000 ALTER TABLE `salary_increase` DISABLE KEYS */;
+INSERT INTO `salary_increase` VALUES (13,34,1,'đạt chỉ tiêu','Bậc 2',NULL),(14,35,2,'đạt chỉ tiêu','Bậc 4',NULL),(15,42,2,'đạt chỉ tiêu','Bậc 2',NULL);
+/*!40000 ALTER TABLE `salary_increase` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
@@ -58,4 +54,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2024-09-12 21:26:40
+-- Dump completed on 2024-10-31 15:02:17

@@ -1,6 +1,8 @@
-package com.oct.l3.dtos;
+package com.oct.l3.dtos.request;
 
-import com.oct.l3.validator.ageconstraint.AgeConstraint;
+import com.oct.l3.dtos.CertificateDTO;
+import com.oct.l3.dtos.FamilyRelationshipDTO;
+import com.oct.l3.validator.annotation.AgeConstraint;
 import jakarta.validation.constraints.*;
 import lombok.*;
 
@@ -12,7 +14,7 @@ import java.util.List;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class EmployeeDTO {
+public class EmployeeRequest {
     private Integer id;
 
     @NotBlank(message = "Name is required")
@@ -40,7 +42,8 @@ public class EmployeeDTO {
     private String identityCard;
 
     @NotBlank(message = "Phone number is required")
-    @Pattern(regexp = "^[0-9]{10,11}$", message = "Phone number must only contain 10 or 11 digits")
+    @Size(min = 10, max = 11, message = "Phone number must contain 10 or 11 digits")
+    @Pattern(regexp = "^[0-9]+$", message = "Phone number must only contain digits")
     private String phoneNumber;
 
     @NotBlank(message = "Email is required")

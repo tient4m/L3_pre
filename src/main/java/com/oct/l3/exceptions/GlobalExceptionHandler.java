@@ -85,6 +85,46 @@ public class GlobalExceptionHandler {
                         .build()
         );
     }
+    @ExceptionHandler(EmployeeNotFoundException.class)
+    public ResponseEntity<ResponseObject> handleEmployeeNotFoundException(EmployeeNotFoundException ex) {
+        return ResponseEntity.internalServerError().body(
+                ResponseObject.builder()
+                        .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                        .message(ex.getMessage())
+                        .build()
+        );
+    }
+
+    @ExceptionHandler(InvalidEventFormStatusException.class)
+    public ResponseEntity<ResponseObject> handleInvalidEventFormStatusException(InvalidEventFormStatusException ex) {
+        return ResponseEntity.internalServerError().body(
+                ResponseObject.builder()
+                        .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                        .message(ex.getMessage())
+                        .build()
+        );
+    }
+
+    @ExceptionHandler(EvenFormNotFoundException.class)
+    public ResponseEntity<ResponseObject> handleEvenFormNotFoundException(EvenFormNotFoundException ex) {
+        return ResponseEntity.internalServerError().body(
+                ResponseObject.builder()
+                        .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                        .message(ex.getMessage())
+                        .build()
+        );
+    }
+
+    @ExceptionHandler(InvalidEmployeeStatusException.class)
+    public ResponseEntity<ResponseObject> handleInvalidInvalidEmployeeStatusException(InvalidEmployeeStatusException ex) {
+        return ResponseEntity.internalServerError().body(
+                ResponseObject.builder()
+                        .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                        .message(ex.getMessage())
+                        .build()
+        );
+    }
+
 
 
 }

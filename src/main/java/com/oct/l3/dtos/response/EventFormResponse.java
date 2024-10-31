@@ -1,6 +1,6 @@
 package com.oct.l3.dtos.response;
 
-import com.oct.l3.dtos.EmployeeDTO;
+import com.oct.l3.dtos.request.EmployeeRequest;
 import com.oct.l3.dtos.EventFormHistoryDTO;
 import lombok.*;
 
@@ -20,6 +20,6 @@ public class EventFormResponse{
     private String content;
     private String status;
     private String note;
-    private EmployeeDTO employee;
+    private EmployeeRequest employee;
     private List<EventFormHistoryDTO> histories;
 }

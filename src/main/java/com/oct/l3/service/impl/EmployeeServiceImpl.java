@@ -7,7 +7,7 @@ import com.oct.l3.dtos.response.EmployeeRegistrationResponse;
 import com.oct.l3.exceptions.DataNotFoundException;
 import com.oct.l3.exceptions.InvalidStatusException;
 import com.oct.l3.mapper.EmployeeMapper;
-import com.oct.l3.dtos.EmployeeDTO;
+import com.oct.l3.dtos.request.EmployeeRequest;
 import com.oct.l3.entity.*;
 import com.oct.l3.mapper.EventFormMapper;
 import com.oct.l3.repository.EmployeeRepository;
@@ -44,7 +44,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     private final UserRepository userRepository;
 
     @Override
-    public List<EmployeeDTO> getAll() {
+    public List<EmployeeRequest> getAll() {
         return employeeRepository.findAll().stream()
                 .map(employeeMapper::toDTO)
                 .toList();
@@ -52,35 +52,35 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     @Override
     @Transactional
-    public EmployeeDTO createEmployee(EmployeeDTO employeeDTO)  {
+    public EmployeeRequest createEmployee(EmployeeRequest employeeRequest)  {
 
-        if (!positionRepository.existsById(employeeDTO.getPositionId())) {
+        if (!positionRepository.existsById(employeeRequest.getPositionId())) {
             throw new DataNotFoundException("Position not found");
         }
 
         UserEntity userEntity = securityUtils.getLoggedInUser();
 
-        employeeDTO.setManagerId(userEntity.getId());
-        employeeDTO.setStatus(DRAFT);
-        EmployeeEntity employeeEntity = employeeRepository.save(employeeMapper.toEntity(employeeDTO));
-        certificateService.saveAllCertificate(employeeDTO.getCertificates(), employeeEntity.getId());
-        familyRelationshipService.saveAllFamilyRelationship(employeeDTO.getFamilyRelationships(), employeeEntity.getId());
+        employeeRequest.setManagerId(userEntity.getId());
+        employeeRequest.setStatus(DRAFT);
+        EmployeeEntity employeeEntity = employeeRepository.save(employeeMapper.toEntity(employeeRequest));
+        certificateService.saveAllCertificate(employeeRequest.getCertificates(), employeeEntity.getId());
+        familyRelationshipService.saveAllFamilyRelationship(employeeRequest.getFamilyRelationships(), employeeEntity.getId());
 
         return employeeMapper.toDTO(employeeEntity);
     }
 
     @Override
     @Transactional
-    public EmployeeDTO updateEmployee(Integer id, EmployeeDTO employeeDTO) {
+    public EmployeeRequest updateEmployee(Integer id, EmployeeRequest employeeRequest) {
         if (!employeeRepository.existsById(id)) {
-            throw new RuntimeException("EmployeeEntity not found");
+            throw new IllegalArgumentException("EmployeeEntity not found");
         }
-        if (!Objects.equals(employeeDTO.getId(), id)) {
-            throw new RuntimeException("Id not match");
+        if (!Objects.equals(employeeRequest.getId(), id)) {
+            throw new IllegalArgumentException("Id not match");
         }
-        EmployeeEntity employeeEntity = employeeMapper.toEntity(employeeDTO);
-        certificateService.saveAllCertificate(employeeDTO.getCertificates(), employeeEntity.getId());
-        familyRelationshipService.saveAllFamilyRelationship(employeeDTO.getFamilyRelationships(), employeeEntity.getId());
+        EmployeeEntity employeeEntity = employeeMapper.toEntity(employeeRequest);
+        certificateService.saveAllCertificate(employeeRequest.getCertificates(), employeeEntity.getId());
+        familyRelationshipService.saveAllFamilyRelationship(employeeRequest.getFamilyRelationships(), employeeEntity.getId());
         return employeeMapper.toDTO(employeeRepository.save(employeeEntity));
     }
 
@@ -99,7 +99,7 @@ public class EmployeeServiceImpl implements EmployeeService {
         }
 
         if(eventFormRepository.existsByEmployeeIdAndStatusAndType(request.getEmployeeId(),PENDING,REGISTRATION)){
-            throw new RuntimeException("Employee registration request is already exist");
+            throw new IllegalArgumentException("Employee registration request is already exist");
         }
 
         if (!positionRepository.existsById(request.getPositionId())){
@@ -125,7 +125,7 @@ public class EmployeeServiceImpl implements EmployeeService {
         EventFormEntity eventFormEntity = eventFormRepository.save(eventFormMapper.toEntity(eventForm));
         return EmployeeRegistrationResponse.builder()
                 .eventFormDTO(eventFormMapper.toDTO(eventFormEntity))
-                .employeeDTO(employeeMapper.toDTO(employeeRepository.save(employee)))
+                .employeeRequest(employeeMapper.toDTO(employeeRepository.save(employee)))
                 .build();
 
     }

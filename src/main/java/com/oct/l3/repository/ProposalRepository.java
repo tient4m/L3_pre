@@ -11,7 +11,6 @@ public interface ProposalRepository extends JpaRepository<ProposalEntity, Intege
     @Query(value = "SELECT * FROM proposal WHERE event_form_id = :id", nativeQuery = true)
     ProposalEntity findByEventForm(Integer id);
 
-
     void deleteByEventFormId(Integer id);
 
     ProposalEntity findByEventFormId(Integer id);

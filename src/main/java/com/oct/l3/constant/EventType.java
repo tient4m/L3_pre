@@ -6,4 +6,9 @@ public class EventType {
     public static final String PROPOSAL = "PROPOSAL";
     public static final String PROMOTION = "PROMOTION";
     public static final String TERMINATION_REQUEST  = "TERMINATION REQUEST";
+
+    private EventType() {
+        throw new UnsupportedOperationException("This is a utility class and cannot be instantiated");
+    }
+
 }

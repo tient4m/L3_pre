@@ -20,9 +20,13 @@ public class CertificateServiceImpl implements CertificateService {
     @Override
     public List<CertificateDTO> saveAllCertificate(List<CertificateDTO> certificateDTOList, Integer employeeId) {
         List<CertificateEntity> certificateEntities = certificateDTOList.stream()
-                .map(certificateMapper::toEntity)
-                .peek(certificateEntity -> certificateEntity.setEmployeeId(employeeId))
+                .map(dto -> {
+                    CertificateEntity entity = certificateMapper.toEntity(dto);
+                    entity.setEmployeeId(employeeId);
+                    return entity;
+                })
                 .toList();
+
         return certificateRepository.saveAll(certificateEntities).stream()
                 .map(certificateMapper::toDTO)
                 .toList();

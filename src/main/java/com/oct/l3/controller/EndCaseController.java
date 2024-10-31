@@ -30,7 +30,7 @@ public class EndCaseController {
     @PreAuthorize("hasRole('MANAGER')")
     @PutMapping("/update/{id}")
     public ResponseEntity<ResponseObject> updateEndCase(@PathVariable Integer id,
-                                                          @RequestBody @Valid EndCaseDTO endCaseDTO) {
+                                                        @RequestBody @Valid EndCaseDTO endCaseDTO) {
             return ResponseEntity.ok().body(ResponseObject.builder()
                     .message("End case updated successfully")
                     .status(HttpStatus.OK)

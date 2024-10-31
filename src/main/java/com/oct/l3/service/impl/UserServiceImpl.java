@@ -3,6 +3,8 @@ package com.oct.l3.service.impl;
 import com.oct.l3.dtos.response.UserLoginResponse;
 import com.oct.l3.components.JWTTokenUtil;
 import com.oct.l3.entity.UserEntity;
+import com.oct.l3.exceptions.DataNotFoundException;
+import com.oct.l3.exceptions.InvalidStatusException;
 import com.oct.l3.mapper.UserMapper;
 import com.oct.l3.dtos.PositionDTO;
 import com.oct.l3.dtos.UserDTO;
@@ -32,11 +34,11 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserLoginResponse login(String userName, String password) throws Exception {
+    public UserLoginResponse login(String userName, String password){
         UserEntity userEntity = userRepository.findByUserName(userName)
-                .orElseThrow(() -> new RuntimeException("UserEntity not found"));
+                .orElseThrow(() -> new DataNotFoundException("User not found"));
         if (!passwordEncoder.matches(password, userEntity.getPassword())) {
-            throw new RuntimeException("Password is incorrect");
+            throw new IllegalArgumentException("Password is incorrect");
         }
         PositionDTO positionDTO = modelMapper.map(userEntity.getPositionId(), PositionDTO.class);
         UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(
@@ -57,7 +59,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public void delete(Integer userId) {
         if (!userRepository.existsById(userId)) {
-            throw new RuntimeException("UserEntity not found");
+            throw new DataNotFoundException("User not found");
         }
         userRepository.deleteById(userId);
     }
@@ -65,8 +67,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserDTO updateUser(Integer userId, UserDTO userDTO) {
         UserEntity existingUser = userRepository.findById(userId)
-                .orElseThrow(() -> new RuntimeException("UserEntity not found"));
-
+                .orElseThrow(() -> new InvalidStatusException("UserEntity not found"));
         existingUser.setFullName(userDTO.getFullName());
         existingUser.setRole(userDTO.getRole());
         existingUser.setPositionId(userDTO.getPositionId());
@@ -74,7 +75,6 @@ public class UserServiceImpl implements UserService {
         if (userDTO.getPassword() != null && !userDTO.getPassword().isEmpty()) {
             existingUser.setPassword(passwordEncoder.encode(userDTO.getPassword()));
         }
-
         return userMapper.toDTO(userRepository.save(existingUser));
     }
 }

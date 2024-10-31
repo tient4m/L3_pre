@@ -1,6 +1,6 @@
 -- MySQL dump 10.13  Distrib 8.0.36, for Win64 (x86_64)
 --
--- Host: 127.0.0.1    Database: l3
+-- Host: 127.0.0.1    Database: l3_pre
 -- ------------------------------------------------------
 -- Server version	8.2.0
 
@@ -16,32 +16,32 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
--- Table structure for table `salaryincrease`
+-- Table structure for table `event_form_history`
 --
 
-DROP TABLE IF EXISTS `salaryincrease`;
+DROP TABLE IF EXISTS `event_form_history`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `salaryincrease` (
-  `salary_increase_id` int NOT NULL AUTO_INCREMENT,
-  `event_form_id` int DEFAULT NULL,
-  `times` int DEFAULT NULL,
-  `reason` text,
-  `level` varchar(50) DEFAULT NULL,
-  `note` text,
-  PRIMARY KEY (`salary_increase_id`),
-  KEY `event_form_id` (`event_form_id`),
-  CONSTRAINT `salaryincrease_ibfk_1` FOREIGN KEY (`event_form_id`) REFERENCES `eventform` (`event_form_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+CREATE TABLE `event_form_history` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `event_form_id` int NOT NULL,
+  `request_date` datetime(6) NOT NULL,
+  `comments` varchar(255) DEFAULT NULL,
+  `status` varchar(255) NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `fk_event_form` (`event_form_id`),
+  CONSTRAINT `fk_event_form` FOREIGN KEY (`event_form_id`) REFERENCES `event_form` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=48 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `salaryincrease`
+-- Dumping data for table `event_form_history`
 --
 
-LOCK TABLES `salaryincrease` WRITE;
-/*!40000 ALTER TABLE `salaryincrease` DISABLE KEYS */;
-/*!40000 ALTER TABLE `salaryincrease` ENABLE KEYS */;
+LOCK TABLES `event_form_history` WRITE;
+/*!40000 ALTER TABLE `event_form_history` DISABLE KEYS */;
+INSERT INTO `event_form_history` VALUES (39,32,'2024-10-05 15:29:44.212000','đồng ý','APPROVED'),(40,34,'2024-10-05 15:39:04.893000',NULL,'PENDING'),(41,34,'2024-10-05 15:40:05.285000','Đồng ý','APPROVED'),(42,35,'2024-10-05 15:52:36.827000','xin xet duyet','PENDING'),(45,41,'2024-10-29 15:38:22.474000','Đồng ý','APPROVED'),(46,42,'2024-10-29 16:49:58.747000','xin xet duyet','PENDING'),(47,42,'2024-10-29 16:51:06.778000','từ chối','REJECTED');
+/*!40000 ALTER TABLE `event_form_history` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
@@ -53,4 +53,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2024-09-12 21:26:40
+-- Dump completed on 2024-10-31 15:02:17

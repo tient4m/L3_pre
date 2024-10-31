@@ -1,6 +1,6 @@
 -- MySQL dump 10.13  Distrib 8.0.36, for Win64 (x86_64)
 --
--- Host: 127.0.0.1    Database: l3
+-- Host: 127.0.0.1    Database: l3_pre
 -- ------------------------------------------------------
 -- Server version	8.2.0
 
@@ -16,32 +16,33 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
--- Table structure for table `certificateEntities`
+-- Table structure for table `proposal`
 --
 
-DROP TABLE IF EXISTS `certificates`;
+DROP TABLE IF EXISTS `proposal`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `certificates` (
-  `certificate_id` int NOT NULL AUTO_INCREMENT,
-  `employee_id` int DEFAULT NULL,
-  `name` varchar(225) DEFAULT NULL,
-  `field` varchar(225) DEFAULT NULL,
-  `issue_date` date DEFAULT NULL,
-  `description` varchar(225) DEFAULT NULL,
-  PRIMARY KEY (`certificate_id`),
-  KEY `employee_id` (`employee_id`),
-  CONSTRAINT `certificates_ibfk_1` FOREIGN KEY (`employee_id`) REFERENCES `employees` (`employee_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+CREATE TABLE `proposal` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `event_form_id` int DEFAULT NULL,
+  `content` varchar(255) DEFAULT NULL,
+  `type` varchar(255) DEFAULT NULL,
+  `description` varchar(255) DEFAULT NULL,
+  `note` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `fk_event_form_proposal` (`event_form_id`),
+  CONSTRAINT `fk_event_form_proposal` FOREIGN KEY (`event_form_id`) REFERENCES `event_form` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `certificateEntities`
+-- Dumping data for table `proposal`
 --
 
-LOCK TABLES `certificates` WRITE;
-/*!40000 ALTER TABLE `certificateEntities` DISABLE KEYS */;
-/*!40000 ALTER TABLE `certificateEntities` ENABLE KEYS */;
+LOCK TABLES `proposal` WRITE;
+/*!40000 ALTER TABLE `proposal` DISABLE KEYS */;
+INSERT INTO `proposal` VALUES (1,NULL,'đề xuất  abcxcdádsa','đề xuất','fdfsdfadsadasd',NULL),(2,40,'đề xuất  abcxcdádsa','đề xuất','fdfsdfadsadasd',NULL);
+/*!40000 ALTER TABLE `proposal` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
@@ -53,4 +54,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2024-09-12 21:26:40
+-- Dump completed on 2024-10-31 15:02:16

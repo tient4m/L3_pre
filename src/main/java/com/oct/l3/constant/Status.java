@@ -1,7 +1,6 @@
 package com.oct.l3.constant;
 
 public class Status {
-
     public static final String DRAFT = "DRAFT";
     public static final String PENDING = "PENDING";
     public static final String REJECTED = "REJECTED";
@@ -10,5 +9,7 @@ public class Status {
     public static final String TERMINATED = "TERMINATED";
     public static final String ACTIVE = "ACTIVE";
 
-
+    private Status() {
+        throw new UnsupportedOperationException("This is a utility class and cannot be instantiated");
+    }
 }

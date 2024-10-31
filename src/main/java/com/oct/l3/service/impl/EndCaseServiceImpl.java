@@ -47,7 +47,7 @@ public class EndCaseServiceImpl implements EndCaseService {
             throw new InvalidStatusException("EmployeeEntity is not active");
         }
         if (hasIncompleteEventForms(employeeEntity.getId())) {
-            throw new RuntimeException("EmployeeEntity has incomplete event forms");
+            throw new IllegalArgumentException("EmployeeEntity has incomplete event forms");
         }
         UserEntity user = securityUtils.getLoggedInUser();
         EventFormEntity eventForm = EventFormEntity.builder()
@@ -77,7 +77,7 @@ public class EndCaseServiceImpl implements EndCaseService {
             throw new DataNotFoundException("EndCaseEntity not found");
         }
         if (!dto.getId().equals(id)) {
-            throw new RuntimeException("Id not match");
+            throw new IllegalArgumentException("Id not match");
         }
 
         eventFormService.updateEventForm(dto.getEventFormDTO().getId(), dto.getEventFormDTO());
@@ -89,8 +89,6 @@ public class EndCaseServiceImpl implements EndCaseService {
     @Override
     @Transactional
     public void delete(Integer id) {
-        endCaseRepository.findById(id).orElseThrow(()
-                -> new DataNotFoundException("EndCaseEntity not found"));
         endCaseRepository.deleteById(id);
     }
 

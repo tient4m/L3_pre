@@ -1,6 +1,6 @@
 package com.oct.l3.dtos;
 
-import com.oct.l3.validator.ageconstraint.AgeConstraint;
+import com.oct.l3.validator.annotation.AgeConstraint;
 import jakarta.validation.constraints.*;
 import lombok.*;
 
@@ -19,6 +19,7 @@ public class FamilyRelationshipDTO {
     @Pattern(regexp = "^[a-zA-Z\\s]+$", message = "Full name must not contain numbers or special characters")
     private String fullName;
 
+    @NotBlank(message = "Full name is required")
     private Integer employeeId;
 
     @NotBlank(message = "Gender is required")
@@ -40,7 +41,8 @@ public class FamilyRelationshipDTO {
     private String address;
 
     @NotBlank(message = "Phone number is required")
-    @Pattern(regexp = "^[0-9]{10,11}$", message = "Phone number must only contain 10 or 11 digits")
+    @Size(min = 10, max = 11, message = "Phone number must contain 10 or 11 digits")
+    @Pattern(regexp = "^[0-9]+$", message = "Phone number must only contain digits")
     private String phoneNumber;
 
     @Email(message = "Email is not valid")

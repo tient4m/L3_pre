@@ -2,6 +2,7 @@ package com.oct.l3.service.impl;
 
 import com.oct.l3.dtos.PositionDTO;
 import com.oct.l3.entity.PositionEntity;
+import com.oct.l3.exceptions.DataNotFoundException;
 import com.oct.l3.repository.PositionRepository;
 import com.oct.l3.service.PositionService;
 import lombok.RequiredArgsConstructor;
@@ -18,7 +19,7 @@ public class PositionServiceImpl implements PositionService {
     @Override
     public void delete(Integer positionId) {
         if (!positionRepository.existsById(positionId)) {
-            throw new RuntimeException("PositionEntity not found");
+            throw new DataNotFoundException("PositionEntity not found");
         }
         positionRepository.deleteById(positionId);
     }

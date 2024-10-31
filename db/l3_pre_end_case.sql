@@ -1,6 +1,6 @@
 -- MySQL dump 10.13  Distrib 8.0.36, for Win64 (x86_64)
 --
--- Host: 127.0.0.1    Database: l3
+-- Host: 127.0.0.1    Database: l3_pre
 -- ------------------------------------------------------
 -- Server version	8.2.0
 
@@ -16,32 +16,32 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
--- Table structure for table `endcase`
+-- Table structure for table `end_case`
 --
 
-DROP TABLE IF EXISTS `endcase`;
+DROP TABLE IF EXISTS `end_case`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `endcase` (
-  `end_case_id` int NOT NULL AUTO_INCREMENT,
-  `event_form_id` int DEFAULT NULL,
-  `reason` text,
-  `decision_number` varchar(50) DEFAULT NULL,
-  `file_number` varchar(50) DEFAULT NULL,
-  `status` varchar(50) DEFAULT NULL,
-  PRIMARY KEY (`end_case_id`),
+CREATE TABLE `end_case` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `event_form_id` int NOT NULL,
+  `end_date` datetime(6) NOT NULL,
+  `reason` varchar(255) DEFAULT NULL,
+  `archiveNumber` varchar(225) DEFAULT NULL,
+  `archive_number` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`id`),
   KEY `event_form_id` (`event_form_id`),
-  CONSTRAINT `endcase_ibfk_1` FOREIGN KEY (`event_form_id`) REFERENCES `eventform` (`event_form_id`)
+  CONSTRAINT `end_case_ibfk_1` FOREIGN KEY (`event_form_id`) REFERENCES `event_form` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `endcase`
+-- Dumping data for table `end_case`
 --
 
-LOCK TABLES `endcase` WRITE;
-/*!40000 ALTER TABLE `endcase` DISABLE KEYS */;
-/*!40000 ALTER TABLE `endcase` ENABLE KEYS */;
+LOCK TABLES `end_case` WRITE;
+/*!40000 ALTER TABLE `end_case` DISABLE KEYS */;
+/*!40000 ALTER TABLE `end_case` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
@@ -53,4 +53,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2024-09-12 21:26:40
+-- Dump completed on 2024-10-31 15:02:16

@@ -25,7 +25,7 @@ public class JWTTokenUtil {
     private String secretKey;
 
 
-    public String generateToken(UserEntity userEntity) throws Exception {
+    public String generateToken(UserEntity userEntity) {
         Map<String, Object> claims = new HashMap<>();
         claims.put("role", userEntity.getRole());
         claims.put("id", userEntity.getId());
@@ -63,17 +63,8 @@ public class JWTTokenUtil {
         return claimsResolver.apply(claims);
     }
 
-    public boolean isTokenExpired(String token) {
-        Date expirationDate = this.extractClaim(token, Claims::getExpiration);
-        return expirationDate.before(new Date());
-    }
     public String getSubject(String token) {
         return  extractClaim(token, Claims::getSubject);
     }
-
-    public Integer extractId(String token) {
-        return extractClaim(token, claims -> claims.get("id", Integer.class));
-    }
-
 
 }

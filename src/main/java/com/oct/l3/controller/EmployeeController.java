@@ -2,7 +2,7 @@ package com.oct.l3.controller;
 
 import com.oct.l3.dtos.request.EmployeeRegistrationRequest;
 import com.oct.l3.dtos.response.ResponseObject;
-import com.oct.l3.dtos.EmployeeDTO;
+import com.oct.l3.dtos.request.EmployeeRequest;
 import com.oct.l3.service.EmployeeService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -29,24 +29,23 @@ public class EmployeeController {
 
     @PreAuthorize("hasRole('MANAGER')")
     @PostMapping("")
-    public ResponseEntity<ResponseObject> createEmployee(@RequestBody @Valid EmployeeDTO employeeDTO) {
-
+    public ResponseEntity<ResponseObject> createEmployee(@RequestBody @Valid EmployeeRequest employeeRequest) {
             return ResponseEntity.ok().body(ResponseObject.builder()
                     .message("EmployeeEntity saved successfully")
                     .status(HttpStatus.OK)
-                    .data(employeeService.createEmployee(employeeDTO))
+                    .data(employeeService.createEmployee(employeeRequest))
                     .build());
     }
 
     @PreAuthorize("hasRole('MANAGER')")
     @PutMapping("/{id}")
     public ResponseEntity<ResponseObject> updateEmployee(@PathVariable Integer id,
-                                                         @RequestBody @Valid EmployeeDTO employeeDTO
+                                                         @RequestBody @Valid EmployeeRequest employeeRequest
     ) {
             return ResponseEntity.ok().body(ResponseObject.builder()
                     .message("EmployeeEntity updated successfully")
                     .status(HttpStatus.OK)
-                    .data(employeeService.updateEmployee(id, employeeDTO))
+                    .data(employeeService.updateEmployee(id, employeeRequest))
                     .build());
     }
 

@@ -3,6 +3,7 @@ package com.oct.l3.service.impl;
 import com.oct.l3.dtos.EventFormDTO;
 import com.oct.l3.dtos.response.ProposalResponse;
 import com.oct.l3.entity.ProposalEntity;
+import com.oct.l3.exceptions.InvalidStatusException;
 import com.oct.l3.mapper.EventFormMapper;
 import com.oct.l3.mapper.ProposalMapper;
 import com.oct.l3.dtos.ProposalDTO;
@@ -28,7 +29,7 @@ public class ProposalServiceImpl implements ProposalService {
         @Override
         public ProposalResponse createProposal(ProposalDTO dto) {
                 if (dto.getEventFormDTO() == null) {
-                        throw new RuntimeException("EventFormEntity is required");
+                        throw new InvalidStatusException("EventFormEntity is required");
                 }
                 dto.getEventFormDTO().setType(PROPOSAL);
                 EventFormDTO eventFormDTO = eventFormMapper.toDTO(eventFormRepository.save(eventFormMapper.toEntity(dto.getEventFormDTO())));
@@ -39,9 +40,9 @@ public class ProposalServiceImpl implements ProposalService {
 
 
         @Override
-        public ProposalResponse updateProposal(Integer Id, ProposalDTO dto) throws DataNotFoundException {
-                if (!Id.equals(dto.getProposalId())) {
-                        throw new RuntimeException("Id mismatch");
+        public ProposalResponse updateProposal(Integer id, ProposalDTO dto) throws DataNotFoundException {
+                if (!id.equals(dto.getProposalId())) {
+                        throw new InvalidStatusException("Id mismatch");
                 }
                 eventFormService.updateEventForm(dto.getEventFormDTO().getId(), dto.getEventFormDTO());
                 ProposalDTO proposalDTO = proposalMapper.toDTO(proposalRepository.save(proposalMapper.toEntity(dto)));

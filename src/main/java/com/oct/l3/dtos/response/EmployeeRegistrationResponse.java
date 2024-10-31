@@ -1,6 +1,6 @@
 package com.oct.l3.dtos.response;
 
-import com.oct.l3.dtos.EmployeeDTO;
+import com.oct.l3.dtos.request.EmployeeRequest;
 import com.oct.l3.dtos.EventFormDTO;
 import lombok.*;
 
@@ -11,5 +11,5 @@ import lombok.*;
 @NoArgsConstructor
 public class EmployeeRegistrationResponse {
     private EventFormDTO eventFormDTO;
-    private EmployeeDTO employeeDTO;
+    private EmployeeRequest employeeRequest;
 }

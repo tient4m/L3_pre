@@ -15,6 +15,7 @@ import java.util.Date;
 public class CertificateDTO {
 
     private Integer id;
+    @NotBlank(message = "Full name is required")
     private Integer employeeId;
     @NotBlank(message = "CertificateEntity name is required")
     private String name;

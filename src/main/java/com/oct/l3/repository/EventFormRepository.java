@@ -9,9 +9,6 @@ import java.util.List;
 
 @Repository
 public interface EventFormRepository extends JpaRepository<EventFormEntity, Integer> {
-    List<EventFormEntity> findByType(String type);
-
-    List<EventFormEntity> findByStatus(String status);
 
     @Query(value = "SELECT * FROM event_form WHERE manager_id = ?1 OR leader_id = ?1", nativeQuery = true)
     List<EventFormEntity> findAllByManagerIdOrLeaderId(Integer id);

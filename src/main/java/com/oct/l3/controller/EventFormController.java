@@ -46,10 +46,10 @@ public class EventFormController {
                     .status(HttpStatus.OK)
                     .data(
                             eventFormService.sendFormToLeader(
-                            sendToLeaderRequest.getLeaderId(),
-                            sendToLeaderRequest.getEventFormId(),
-                            sendToLeaderRequest.getSubmissionDate(),
-                            sendToLeaderRequest.getManagerComments()
+                                sendToLeaderRequest.getLeaderId(),
+                                sendToLeaderRequest.getEventFormId(),
+                                sendToLeaderRequest.getSubmissionDate(),
+                                sendToLeaderRequest.getManagerComments()
                     ))
                     .build());
     }
