@@ -1,8 +1,10 @@
-package com.example.test;
+package com.example.test.controller;
 
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import com.example.test.dto.EmployeeRequest;
+import com.example.test.dto.ResponseObject;
+import com.example.test.service.EmployeeService;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/employee")
@@ -17,5 +19,10 @@ public class EmployeeController {
         @GetMapping
         public ResponseObject getAllEmployees() {
             return employeeService.getAllEmployees();
+        }
+
+        @PostMapping
+        public ResponseObject createEmployee(@RequestBody EmployeeRequest employeeRequest) throws JsonProcessingException {
+            return employeeService.createEmployee(employeeRequest);
         }
 }

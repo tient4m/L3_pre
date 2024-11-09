@@ -1,6 +1,6 @@
-package com.oct.l3.exceptions;
+package com.example.test.exceptions;
 
-import com.oct.l3.dtos.response.ResponseObject;
+import com.example.test.dto.ResponseObject;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

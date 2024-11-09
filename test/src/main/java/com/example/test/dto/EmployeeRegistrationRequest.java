@@ -1,4 +1,4 @@
-package com.oct.l3.dtos.request;
+package com.example.test.dto;
 
 import lombok.*;
 
